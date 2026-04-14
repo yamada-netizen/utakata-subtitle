@@ -412,9 +412,17 @@ window.runBurn = async function() {
     const srt = buildSrt();
     await ffmpeg.writeFile('subs.srt', new TextEncoder().encode(srt));
 
+    if (!state.fontLoaded) {
+      const fontRes = await fetch(`${location.origin}/ffmpeg/font.ttf`);
+      const fontBuf = new Uint8Array(await fontRes.arrayBuffer());
+      await ffmpeg.createDir('/fonts').catch(() => {});
+      await ffmpeg.writeFile('/fonts/font.ttf', fontBuf);
+      state.fontLoaded = true;
+    }
+
     await ffmpeg.exec([
       '-i', inputName,
-      '-vf', "subtitles=subs.srt:force_style='FontSize=22,PrimaryColour=&HFFFFFF&,OutlineColour=&H000000&,BorderStyle=1,Outline=2,Alignment=2,MarginV=80'",
+      '-vf', "subtitles=subs.srt:fontsdir=/fonts:force_style='FontName=Sawarabi Gothic,FontSize=22,PrimaryColour=&HFFFFFF&,OutlineColour=&H000000&,BorderStyle=1,Outline=2,Alignment=2,MarginV=80'",
       '-c:a', 'copy',
       '-preset', 'ultrafast',
       'output.mp4'
