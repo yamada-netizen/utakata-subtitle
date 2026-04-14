@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた 字幕ツール</title>
+<style>
+:root {
+  --sakura: #f5d5d0;
+  --sakura-dark: #c98a83;
+  --sakura-light: #fbe8e5;
+  --charcoal: #3a3a3a;
+  --mist: #888;
+  --cream: #faf6f4;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+.serif { font-family: 'Hiragino Mincho ProN', serif; }
+header {
+  background: white;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 1.25rem;
+}
+.header-title { font-size: 1.25rem; font-weight: 500; }
+.header-sub { font-size: 0.75rem; color: var(--mist); margin-top: 0.25rem; }
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+.step {
+  background: white;
+  border: 1px solid #e8e0de;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.step-label {
+  font-size: 0.8rem;
+  color: var(--sakura-dark);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+.step h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.upload-area {
+  border: 2px dashed var(--sakura);
+  border-radius: 0.75rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.upload-area:hover { background: var(--sakura-light); }
+.upload-area input { display: none; }
+.upload-icon { font-size: 2rem; margin-bottom: 0.5rem; color: var(--sakura-dark); }
+.upload-text { font-size: 0.9rem; color: var(--mist); }
+.file-info { font-size: 0.8rem; color: var(--charcoal); margin-top: 0.5rem; }
+.btn-primary {
+  background: var(--sakura-dark);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary {
+  background: white;
+  color: var(--sakura-dark);
+  border: 1px solid var(--sakura);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  margin-top: 0.5rem;
+}
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+.progress-dot {
+  width: 1rem; height: 1rem; border-radius: 50%;
+  background: #eee;
+  flex-shrink: 0;
+}
+.progress-dot.active { background: var(--sakura-dark); animation: pulse 1.2s infinite; }
+.progress-dot.done { background: #7cc47c; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.segment {
+  border: 1px solid #eee;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--cream);
+}
+.segment-time {
+  font-size: 0.7rem;
+  color: var(--mist);
+  margin-bottom: 0.25rem;
+  font-family: ui-monospace, monospace;
+}
+.segment textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 2.5rem;
+  padding: 0;
+  color: var(--charcoal);
+}
+.segment textarea:focus { outline: none; }
+.error-box {
+  background: #fde8e7;
+  color: #a04040;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+}
+.hint { font-size: 0.75rem; color: var(--mist); margin-top: 0.5rem; }
+video { width: 100%; border-radius: 0.5rem; margin-top: 0.75rem; }
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.modal-box {
+  background: white; border-radius: 1.25rem; padding: 2rem;
+  width: 90%; max-width: 360px; text-align: center;
+}
+.modal-box h2 { font-family: 'Hiragino Mincho ProN', serif; font-size: 1.1rem; margin: 0 0 1rem; }
+.modal-box p { font-size: 0.85rem; color: var(--mist); margin: 0 0 1rem; }
+.modal-box input {
+  width: 100%; border: 1px solid #ddd; border-radius: 0.5rem;
+  padding: 0.6rem; font-size: 0.875rem; margin-bottom: 1rem; font-family: inherit;
+}
+.pw-error { font-size: 0.75rem; color: #a04040; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="accessGate" style="display:flex;">
+  <div class="modal-box">
+    <h2>うたかた 字幕ツール</h2>
+    <p>パスワードを入力してください</p>
+    <input type="password" id="accessInput" placeholder="パスワード" onkeydown="if(event.key==='Enter')submitAccess()">
+    <button class="btn-primary" onclick="submitAccess()">開く</button>
+    <p class="pw-error" id="accessError" style="display:none;">パスワードが違います</p>
+  </div>
+</div>
+
+<header>
+  <div class="header-title serif">うたかた</div>
+  <div class="header-sub">リール字幕 自動生成ツール</div>
+</header>
+
+<main>
+  <div class="step">
+    <div class="step-label">Step 1</div>
+    <h3>動画を選ぶ</h3>
+    <label class="upload-area" for="videoInput">
+      <div class="upload-icon">＋</div>
+      <div class="upload-text">タップして動画を選択<br>（リール用 / 90秒以内推奨）</div>
+      <input type="file" id="videoInput" accept="video/*" onchange="onVideoSelected(event)">
+    </label>
+    <div class="file-info" id="fileInfo"></div>
+  </div>
+
+  <div class="step" id="step2" style="display:none;">
+    <div class="step-label">Step 2</div>
+    <h3>文字起こし</h3>
+    <button class="btn-primary" id="transcribeBtn" onclick="runTranscribe()">文字起こしを開始</button>
+    <div id="progress" style="margin-top:0.75rem;"></div>
+    <div class="error-box" id="errorBox" style="display:none;"></div>
+  </div>
+
+  <div class="step" id="step3" style="display:none;">
+    <div class="step-label">Step 3</div>
+    <h3>字幕を確認・修正</h3>
+    <div class="hint">誤認識があれば直接書き換えてください。空欄にすると削除されます。</div>
+    <div id="segments" style="margin-top:0.75rem;"></div>
+    <button class="btn-primary" onclick="downloadSrt()">SRTファイルをダウンロード</button>
+    <button class="btn-secondary" onclick="runBurn()">字幕を動画に焼き付ける</button>
+    <div class="hint">※ 焼き付けは端末によって数十秒〜数分かかります</div>
+  </div>
+
+  <div class="step" id="step4" style="display:none;">
+    <div class="step-label">Step 4</div>
+    <h3>完成</h3>
+    <video id="resultVideo" controls playsinline></video>
+    <button class="btn-primary" id="downloadBtn" style="margin-top:0.75rem;">動画をダウンロード</button>
+  </div>
+</main>
+
+<script type="module">
+import { FFmpeg } from 'https://esm.sh/@ffmpeg/ffmpeg@0.12.10';
+import { toBlobURL, fetchFile } from 'https://esm.sh/@ffmpeg/util@0.12.1';
+
+const state = {
+  videoFile: null,
+  videoData: null,
+  audioBlob: null,
+  segments: [],
+  ffmpeg: null,
+  ffmpegLoaded: false
+};
+
+async function loadFfmpeg() {
+  if (state.ffmpegLoaded) return state.ffmpeg;
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on('log', ({ message }) => console.log('[ffmpeg]', message));
+  const baseURL = 'https://esm.sh/@ffmpeg/core@0.12.6/dist/umd';
+  await ffmpeg.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
+  });
+  state.ffmpeg = ffmpeg;
+  state.ffmpegLoaded = true;
+  return ffmpeg;
+}
+
+window.onVideoSelected = function(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  state.videoFile = f;
+  const mb = (f.size / 1024 / 1024).toFixed(1);
+  document.getElementById('fileInfo').textContent = `${f.name}（${mb} MB）`;
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('step3').style.display = 'none';
+  document.getElementById('step4').style.display = 'none';
+};
+
+function setProgress(steps) {
+  document.getElementById('progress').innerHTML = steps.map(s =>
+    `<div class="progress-row"><div class="progress-dot ${s.state}"></div><div>${s.label}</div></div>`
+  ).join('');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+window.runTranscribe = async function() {
+  const btn = document.getElementById('transcribeBtn');
+  btn.disabled = true;
+  document.getElementById('errorBox').style.display = 'none';
+  const steps = [
+    { label: 'ffmpeg.wasm 読み込み中...', state: 'active' },
+    { label: '音声を抽出中...', state: '' },
+    { label: 'Whisperで文字起こし中...', state: '' }
+  ];
+  setProgress(steps);
+
+  try {
+    const ffmpeg = await loadFfmpeg();
+    steps[0].state = 'done'; steps[1].state = 'active'; setProgress(steps);
+
+    const inputName = 'input' + (state.videoFile.name.match(/\.[^.]+$/)?.[0] || '.mp4');
+    await ffmpeg.writeFile(inputName, await fetchFile(state.videoFile));
+    state.videoData = await ffmpeg.readFile(inputName);
+
+    await ffmpeg.exec([
+      '-i', inputName,
+      '-vn',
+      '-ac', '1',
+      '-ar', '16000',
+      '-b:a', '64k',
+      'audio.mp3'
+    ]);
+    const audioBuf = await ffmpeg.readFile('audio.mp3');
+    state.audioBlob = new Blob([audioBuf.buffer], { type: 'audio/mpeg' });
+
+    steps[1].state = 'done'; steps[2].state = 'active'; setProgress(steps);
+
+    const audioBase64 = await blobToBase64(state.audioBlob);
+    const res = await fetch('/api/transcribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-password': sessionStorage.getItem('utakata_access') || ''
+      },
+      body: JSON.stringify({ audioBase64, mimeType: 'audio/mpeg', filename: 'audio.mp3' })
+    });
+    if (res.status === 401) {
+      sessionStorage.removeItem('utakata_access');
+      document.getElementById('accessGate').style.display = 'flex';
+      throw new Error('パスワードが違います');
+    }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || '文字起こしに失敗しました');
+    if (!data.segments || !data.segments.length) {
+      throw new Error('音声からテキストを検出できませんでした');
+    }
+
+    state.segments = data.segments.map(s => ({
+      start: s.start,
+      end: s.end,
+      text: s.text.trim()
+    }));
+
+    steps[2].state = 'done'; setProgress(steps);
+    renderSegments();
+    document.getElementById('step3').style.display = 'block';
+    document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    console.error(err);
+    showError(err.message || String(err));
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result.split(',')[1]);
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+
+function renderSegments() {
+  const el = document.getElementById('segments');
+  el.innerHTML = state.segments.map((s, i) => `
+    <div class="segment">
+      <div class="segment-time">${fmtTime(s.start)} → ${fmtTime(s.end)}</div>
+      <textarea oninput="updateSegment(${i}, this.value)">${escapeHtml(s.text)}</textarea>
+    </div>
+  `).join('');
+}
+
+window.updateSegment = function(i, v) {
+  state.segments[i].text = v;
+};
+
+function fmtTime(t) {
+  const m = Math.floor(t / 60);
+  const s = (t % 60).toFixed(1);
+  return `${m}:${s.padStart(4, '0')}`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function buildSrt() {
+  return state.segments
+    .filter(s => s.text.trim())
+    .map((s, i) => {
+      return `${i + 1}\n${srtTime(s.start)} --> ${srtTime(s.end)}\n${s.text}\n`;
+    }).join('\n');
+}
+
+function srtTime(t) {
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = Math.floor(t % 60);
+  const ms = Math.floor((t - Math.floor(t)) * 1000);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')},${String(ms).padStart(3, '0')}`;
+}
+
+window.downloadSrt = function() {
+  const srt = buildSrt();
+  const blob = new Blob([srt], { type: 'text/plain;charset=utf-8' });
+  triggerDownload(blob, 'subtitles.srt');
+};
+
+function triggerDownload(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+window.runBurn = async function() {
+  try {
+    const ffmpeg = await loadFfmpeg();
+    const inputName = 'input' + (state.videoFile.name.match(/\.[^.]+$/)?.[0] || '.mp4');
+
+    const srt = buildSrt();
+    await ffmpeg.writeFile('subs.srt', new TextEncoder().encode(srt));
+
+    await ffmpeg.exec([
+      '-i', inputName,
+      '-vf', "subtitles=subs.srt:force_style='FontSize=22,PrimaryColour=&HFFFFFF&,OutlineColour=&H000000&,BorderStyle=1,Outline=2,Alignment=2,MarginV=80'",
+      '-c:a', 'copy',
+      '-preset', 'ultrafast',
+      'output.mp4'
+    ]);
+
+    const outData = await ffmpeg.readFile('output.mp4');
+    const outBlob = new Blob([outData.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(outBlob);
+    document.getElementById('resultVideo').src = url;
+    document.getElementById('downloadBtn').onclick = () => triggerDownload(outBlob, 'reel_with_subs.mp4');
+    document.getElementById('step4').style.display = 'block';
+    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    console.error(err);
+    alert('焼き付けに失敗しました: ' + err.message + '\nSRTファイルをダウンロードしてCapCut等で合成してください。');
+  }
+};
+
+window.submitAccess = function() {
+  const v = document.getElementById('accessInput').value;
+  if (!v) return;
+  sessionStorage.setItem('utakata_access', v);
+  document.getElementById('accessGate').style.display = 'none';
+  document.getElementById('accessError').style.display = 'none';
+};
+
+if (sessionStorage.getItem('utakata_access')) {
+  document.getElementById('accessGate').style.display = 'none';
+}
+</script>
+</body>
+</html>
