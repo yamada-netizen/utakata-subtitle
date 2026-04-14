@@ -232,12 +232,10 @@ async function loadFfmpeg() {
   if (state.ffmpegLoaded) return state.ffmpeg;
   const ffmpeg = new FFmpeg();
   ffmpeg.on('log', ({ message }) => console.log('[ffmpeg]', message));
-  const coreBase = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
-  const ffmpegBase = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd';
   await ffmpeg.load({
-    classWorkerURL: await toBlobURL(`${ffmpegBase}/814.ffmpeg.js`, 'text/javascript'),
-    coreURL: `${coreBase}/ffmpeg-core.js`,
-    wasmURL: `${coreBase}/ffmpeg-core.wasm`
+    classWorkerURL: '/ffmpeg/814.ffmpeg.js',
+    coreURL: '/ffmpeg/ffmpeg-core.js',
+    wasmURL: '/ffmpeg/ffmpeg-core.wasm'
   });
   state.ffmpeg = ffmpeg;
   state.ffmpegLoaded = true;
