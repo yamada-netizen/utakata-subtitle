@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>素材フォルダ設計ガイド - サロン用</title>
+<style>
+  :root {
+    --c-primary: #6366f1;
+    --c-accent: #ec4899;
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --code-bg: #1e293b;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6; font-size: 14px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+  header {
+    background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+    color: white; padding: 24px 28px; border-radius: 12px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 22px; }
+  header p { margin: 0; opacity: 0.95; font-size: 13px; }
+
+  h2 {
+    font-size: 16px; margin: 28px 0 12px;
+    padding-bottom: 6px; border-bottom: 2px solid var(--c-primary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  h3 { font-size: 14px; margin: 18px 0 8px; }
+
+  /* ツリー表示 */
+  .tree {
+    background: white; border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 22px; font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 13px; line-height: 1.7; overflow-x: auto;
+  }
+  .tree .folder { color: var(--c-primary); font-weight: 700; }
+  .tree .sub { color: #ec4899; }
+  .tree .file { color: var(--muted); }
+  .tree .comment { color: #94a3b8; font-style: italic; font-size: 11px; }
+
+  /* 規則カード */
+  .rule-card {
+    background: white; border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 20px; margin-bottom: 12px;
+  }
+  .rule-card h3 { margin-top: 0; }
+
+  /* 命名規則 */
+  .naming-example {
+    background: var(--code-bg); color: #e2e8f0;
+    padding: 12px 16px; border-radius: 6px; margin: 10px 0;
+    font-family: "SF Mono", Monaco, monospace; font-size: 12px;
+    line-height: 1.6;
+  }
+  .naming-example .date { color: #38bdf8; }
+  .naming-example .category { color: #fbbf24; }
+  .naming-example .menu { color: #4ade80; }
+  .naming-example .keyword { color: #f472b6; }
+  .naming-example .label {
+    display: block; font-size: 10px; color: #94a3b8; margin-top: 6px;
+  }
+
+  .compare-table {
+    width: 100%; border-collapse: collapse; background: white;
+    border-radius: 10px; overflow: hidden; font-size: 13px;
+    margin: 12px 0;
+  }
+  .compare-table th, .compare-table td {
+    border: 1px solid var(--line); padding: 10px 12px; text-align: left;
+  }
+  .compare-table th {
+    background: #f1f5f9; font-size: 11px; color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .compare-table .bad { color: #dc2626; }
+  .compare-table .good { color: #16a34a; font-weight: 600; }
+
+  .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; background: #f1f5f9; color: var(--muted);
+    margin-right: 4px;
+  }
+  .tag.must { background: #fee2e2; color: #991b1b; }
+
+  .tool-box {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px;
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+  }
+  .tool-box h3 {
+    margin: 0 0 6px; color: #1e40af; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .step-list {
+    counter-reset: step;
+    list-style: none; padding: 0;
+  }
+  .step-list li {
+    counter-increment: step;
+    background: white; border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 16px 12px 50px; margin-bottom: 8px;
+    position: relative; font-size: 13px;
+  }
+  .step-list li::before {
+    content: counter(step);
+    position: absolute; left: 14px; top: 12px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--c-primary); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>📂 素材フォルダ設計ガイド</h1>
+    <p>「テーマはあるけど素材がない・見つからない」を解消する整理ルール</p>
+  </header>
+
+  <!-- 現状の問題 -->
+  <div class="rule-card" style="border-left:4px solid #dc2626;">
+    <h3 style="margin-top:0;color:#dc2626;">🚨 現状の問題</h3>
+    <ul style="margin:6px 0;">
+      <li>サロンで撮影していないもの（外部素材）の整理が煩雑</li>
+      <li>「肌が弱い花嫁向けの素材どこ？」と探すのに時間がかかる</li>
+      <li>「施術ごと」「お客様の感想」が混ざって管理されている</li>
+      <li>過去に撮った良い素材を再活用できない</li>
+    </ul>
+  </div>
+
+  <!-- フォルダ構造 -->
+  <h2>🗂 推奨フォルダ構造</h2>
+  <p style="font-size:13px;color:var(--muted);margin-top:-6px;">
+    Google Drive / iCloud / Dropbox など、どのクラウドでも使える構造です。
+  </p>
+
+  <div class="tree">
+<span class="folder">📂 サロン動画素材/</span>
+├── <span class="folder">📁 01_施術別/</span>                          <span class="comment"># 撮影した施術風景</span>
+│   ├── <span class="sub">📁 ブライダルフェイシャル/</span>
+│   │   ├── <span class="sub">📁 肌が弱い方向け/</span>
+│   │   ├── <span class="sub">📁 通常コース/</span>
+│   │   └── <span class="sub">📁 トライアル/</span>
+│   ├── <span class="sub">📁 ブライダルボディ/</span>
+│   ├── <span class="sub">📁 ブライダルシェービング/</span>
+│   ├── <span class="sub">📁 フェイシャル一般/</span>
+│   ├── <span class="sub">📁 ボディ/</span>
+│   └── <span class="sub">📁 脱毛/</span>
+├── <span class="folder">📁 02_お客様の声・感想/</span>                <span class="comment"># 口コミ・体験談・お客様提供素材</span>
+│   ├── <span class="sub">📁 ブライダル/</span>
+│   │   ├── <span class="file">📄 感想テキスト/</span>
+│   │   └── <span class="file">📄 写真・動画/</span>
+│   ├── <span class="sub">📁 リピーター/</span>
+│   └── <span class="sub">📁 スクール卒業生/</span>
+├── <span class="folder">📁 03_店内・スタッフ/</span>                  <span class="comment"># サロンの雰囲気・人</span>
+│   ├── <span class="sub">📁 店内風景/</span>
+│   ├── <span class="sub">📁 スタッフ紹介/</span>
+│   └── <span class="sub">📁 機材・コスメ/</span>
+├── <span class="folder">📁 04_スクール事業/</span>                    <span class="comment"># スクール関連の全素材</span>
+│   ├── <span class="sub">📁 授業風景/</span>
+│   ├── <span class="sub">📁 受講生・卒業生/</span>
+│   └── <span class="sub">📁 教材・技術紹介/</span>
+├── <span class="folder">📁 05_外部素材/</span>                        <span class="comment"># サロン外で取得した素材</span>
+│   ├── <span class="sub">📁 フリー素材_動画/</span>           <span class="comment"># Pexels, Pixabay 等</span>
+│   ├── <span class="sub">📁 フリー素材_画像/</span>
+│   ├── <span class="sub">📁 BGM・音源/</span>
+│   └── <span class="sub">📁 参考動画_他社/</span>             <span class="comment"># 引用しないが企画参考に</span>
+├── <span class="folder">📁 06_完成動画/</span>                        <span class="comment"># 投稿済みの最終データ</span>
+│   ├── <span class="sub">📁 2026年/</span>
+│   │   ├── <span class="sub">📁 01_1月/</span>
+│   │   └── <span class="sub">📁 02_2月/</span>
+│   └── <span class="sub">📁 ハイパフォーマー/</span>           <span class="comment"># 伸びた動画をピックアップ</span>
+└── <span class="folder">📁 99_アーカイブ/</span>                     <span class="comment"># 古い・使わない素材</span>
+  </div>
+
+  <!-- 命名規則 -->
+  <h2>📝 ファイル命名規則</h2>
+
+  <div class="rule-card">
+    <h3>基本フォーマット</h3>
+    <div class="naming-example">
+<span class="date">YYYYMMDD</span>_<span class="category">カテゴリ</span>_<span class="menu">メニュー</span>_<span class="keyword">キーワード</span>.mp4
+      <span class="label">└ 撮影日（または取得日）  カテゴリ略号  メニュー名  特徴・状況</span>
+    </div>
+
+    <h3>実例</h3>
+    <div class="naming-example">
+<span class="date">20260501</span>_<span class="category">施術</span>_<span class="menu">ブライダルフェイシャル</span>_<span class="keyword">肌弱_保湿パック</span>.mp4
+<span class="date">20260501</span>_<span class="category">声</span>_<span class="menu">ブライダル</span>_<span class="keyword">30代花嫁_感想テキスト</span>.txt
+<span class="date">20260315</span>_<span class="category">店内</span>_<span class="menu">スタッフ</span>_<span class="keyword">山田_自己紹介</span>.mp4
+<span class="date">20260420</span>_<span class="category">スクール</span>_<span class="menu">フェイシャルコース</span>_<span class="keyword">第3回授業_クレンジング</span>.mp4
+    </div>
+
+    <h3>カテゴリ略号一覧</h3>
+    <p>
+      <span class="tag">施術</span> サロンで撮った施術風景
+      <span class="tag">声</span> お客様の感想・口コミ
+      <span class="tag">店内</span> 店内・スタッフ・機材
+      <span class="tag">スクール</span> スクール関連全般
+      <span class="tag">外部</span> フリー素材・引用素材
+      <span class="tag">完成</span> 投稿用に編集済み
+    </p>
+  </div>
+
+  <!-- 良い例・悪い例 -->
+  <h2>🆚 良いファイル名・悪いファイル名</h2>
+  <table class="compare-table">
+    <thead>
+      <tr><th style="width:50%;">❌ 悪い例</th><th style="width:50%;">✅ 良い例</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="bad">IMG_4521.mp4</td>
+        <td class="good">20260501_施術_ブライダルフェイシャル_肌弱_保湿.mp4</td>
+      </tr>
+      <tr>
+        <td class="bad">新規プロジェクト.mp4</td>
+        <td class="good">20260315_店内_スタッフ_山田_自己紹介.mp4</td>
+      </tr>
+      <tr>
+        <td class="bad">お客様の声.mp4</td>
+        <td class="good">20260420_声_ブライダル_30代花嫁_式3ヶ月前.mp4</td>
+      </tr>
+      <tr>
+        <td class="bad">test_final2.mp4</td>
+        <td class="good">20260510_完成_リール_ブライダル_肌弱花嫁.mp4</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 検索の威力 -->
+  <h2>🔍 この設計の威力</h2>
+
+  <div class="rule-card">
+    <h3>「肌弱」で検索 → 関連素材が全部出る</h3>
+    <p style="font-size:13px;margin:6px 0;">
+      Mac の Finder / Windows のエクスプローラ / Google Drive の検索で「肌弱」と入力するだけで、
+      <strong>施術動画もお客様の声も全部</strong> ヒットします。
+    </p>
+    <p style="font-size:13px;margin:6px 0;">
+      <span class="tag must">必須</span>
+      ファイル名は <strong>必ず日本語OKなツール</strong> で管理（Google Drive は日本語検索◎）
+    </p>
+  </div>
+
+  <!-- 初期構築の手順 -->
+  <h2>🚀 初期構築の手順</h2>
+  <ol class="step-list">
+    <li><strong>Google Drive にメインフォルダ作成</strong>（10分）<br>
+      <small>上記のフォルダ構造を一気に作る。サロンのGoogleアカウントで作るのが理想</small>
+    </li>
+    <li><strong>過去素材を一度全部ぶち込む</strong>（30分）<br>
+      <small>スマホやPCにある動画を「99_アーカイブ」に一旦集める。整理は後でOK</small>
+    </li>
+    <li><strong>直近1ヶ月分だけ仕分け</strong>（60分）<br>
+      <small>古いものは「99_アーカイブ」のままでOK。最近のものだけ整理する</small>
+    </li>
+    <li><strong>命名規則を統一</strong>（30分）<br>
+      <small>仕分けながらファイル名を上記ルールに変更</small>
+    </li>
+    <li><strong>新規撮影分から命名ルール適用</strong>（運用開始）<br>
+      <small>撮影後すぐにファイル名を付ける習慣をつける</small>
+    </li>
+    <li><strong>月1で整理タイム（30分）</strong><br>
+      <small>月末に未整理ファイルを仕分け・削除</small>
+    </li>
+  </ol>
+
+  <!-- ツール推奨 -->
+  <h2>🛠 おすすめのクラウドストレージ</h2>
+
+  <div class="tool-box">
+    <h3>🥇 Google Drive（おすすめ）</h3>
+    <p style="margin:4px 0;">無料15GB / 100GBで月250円 / 2TBで月1,300円</p>
+    <ul style="margin:6px 0;font-size:12px;">
+      <li>日本語ファイル名・日本語検索◎</li>
+      <li>スマホ・PC・タブレットすべて同期</li>
+      <li>共有が簡単（スタッフ間で共有可）</li>
+      <li>Edits や CapCut から直接アクセス可</li>
+    </ul>
+  </div>
+
+  <div class="tool-box">
+    <h3>🥈 iCloud Drive</h3>
+    <p style="margin:4px 0;">5GB無料 / 50GBで月130円 / 200GBで月400円</p>
+    <ul style="margin:6px 0;font-size:12px;">
+      <li>iPhone ユーザーなら標準で同期されて楽</li>
+      <li>ただし複数人での共有はやや弱い</li>
+    </ul>
+  </div>
+
+  <div class="tool-box">
+    <h3>🥉 Dropbox</h3>
+    <p style="margin:4px 0;">2GB無料 / 2TBで月1,500円</p>
+    <ul style="margin:6px 0;font-size:12px;">
+      <li>大容量プランが安定</li>
+      <li>動画素材の共有に強い</li>
+    </ul>
+  </div>
+
+  <!-- タグ運用 -->
+  <h2>🏷 さらに上級: タグ運用（任意）</h2>
+  <div class="rule-card">
+    <p style="margin:6px 0;font-size:13px;">
+      フォルダ構造だけだと <strong>「2軸で探したい時」が苦手</strong>。
+      例えば「肌弱 × ブライダル × 完成動画」のような複合検索。
+    </p>
+    <p style="margin:6px 0;font-size:13px;">
+      この場合、<strong>Notion か Airtable で素材データベース</strong> を作ると、複数タグで絞り込み可能になります。
+    </p>
+    <ul style="margin:6px 0;font-size:13px;">
+      <li><strong>Notion</strong>: 無料で十分。ファイル名・タグ・サムネ・メモを管理</li>
+      <li><strong>Airtable</strong>: スプレッドシート + データベース。視覚的に管理</li>
+    </ul>
+    <p style="margin:6px 0;font-size:12px;color:var(--muted);">
+      ※ まずはフォルダ構造だけで運用してみて、不便を感じたら導入を検討
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BGM選曲ガイド - サロン用</title>
+<style>
+  :root {
+    --c-bridal: #ec4899;
+    --c-facial: #a78bfa;
+    --c-body: #06b6d4;
+    --c-school: #6366f1;
+    --c-staff: #10b981;
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6; font-size: 14px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+  header {
+    background: linear-gradient(135deg, #ec4899 0%, #a78bfa 50%, #06b6d4 100%);
+    color: white; padding: 24px 28px; border-radius: 12px; margin-bottom: 20px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 22px; }
+  header p { margin: 0; opacity: 0.95; font-size: 13px; }
+
+  .alert {
+    background: #fef3c7; border: 1px solid #fbbf24; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 24px; font-size: 13px;
+  }
+  .alert h3 {
+    margin: 0 0 6px; color: #92400e; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  h2 {
+    font-size: 16px; margin: 28px 0 12px;
+    padding-bottom: 6px; border-bottom: 2px solid var(--c-bridal);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ジャンルカード */
+  .genre-card {
+    background: white; border: 1px solid var(--line); border-radius: 12px;
+    margin-bottom: 18px; overflow: hidden;
+  }
+  .genre-head {
+    padding: 14px 20px; color: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .genre-head.bridal { background: var(--c-bridal); }
+  .genre-head.facial { background: var(--c-facial); }
+  .genre-head.body { background: var(--c-body); }
+  .genre-head.school { background: var(--c-school); }
+  .genre-head.staff { background: var(--c-staff); }
+  .genre-head h3 { margin: 0; font-size: 17px; }
+  .genre-meta { font-size: 12px; opacity: 0.9; }
+
+  .genre-body { padding: 16px 20px; }
+  .genre-attrs {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 14px;
+  }
+  .attr {
+    background: #f8fafc; border: 1px solid var(--line); border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .attr .label {
+    font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 0.05em;
+  }
+  .attr .value {
+    font-size: 12px; margin-top: 2px;
+  }
+
+  .search-tags {
+    margin: 10px 0;
+  }
+  .search-tags .label {
+    font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .tag {
+    display: inline-block; font-size: 11px; padding: 3px 10px;
+    border-radius: 12px; background: #f1f5f9; color: #475569;
+    margin: 2px 3px; font-weight: 500;
+  }
+  .tag.kw { background: #e0e7ff; color: #3730a3; }
+
+  .examples {
+    background: #f8fafc; border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 14px; margin-top: 10px; font-size: 12px;
+  }
+  .examples .label {
+    font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 4px;
+  }
+
+  /* 選曲記入欄 */
+  .picks {
+    margin-top: 12px;
+  }
+  .picks-label {
+    font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .pick-input {
+    width: 100%; padding: 6px 10px; border: 1px solid var(--line);
+    border-radius: 5px; font-size: 13px; margin-bottom: 4px;
+    font-family: inherit;
+  }
+
+  /* 手順ボックス */
+  .step-box {
+    background: white; border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 20px; margin-bottom: 14px;
+  }
+  .step-box h3 { margin: 0 0 8px; font-size: 14px; }
+  .step-box ol { margin: 6px 0 0; padding-left: 20px; font-size: 13px; }
+  .step-box li { margin-bottom: 4px; }
+
+  .tip {
+    background: #ecfdf5; border-left: 4px solid #10b981; border-radius: 6px;
+    padding: 12px 14px; margin: 10px 0; font-size: 12px;
+  }
+  .tip strong { color: #065f46; }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+  }
+  @media (max-width: 720px) {
+    .genre-attrs { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🎵 BGM選曲ガイド</h1>
+    <p>「センスで毎回曲探し」をやめる。メニュー別に決め打ちで選曲時間を 15分 → 30秒 に</p>
+  </header>
+
+  <div class="alert">
+    <h3>💡 このガイドの考え方</h3>
+    <p style="margin:6px 0;">
+      毎回ゼロから曲を探すと、<strong>1本あたり10〜15分</strong>溶ける作業。
+      メニューごとに「使える曲」を5〜10曲ストックしておけば、
+      <strong>「ブライダルだからこの曲群から選ぶ」</strong>と決め打ちできるようになる。
+    </p>
+    <p style="margin:6px 0;">
+      重要なのは <strong>「ぴったり1曲」を探すのではなく、「合う曲群」を準備しておく</strong> こと。
+      候補が10曲あれば、その日の動画の雰囲気に近いものをサッと選べる。
+    </p>
+  </div>
+
+  <!-- 1. ブライダル系 -->
+  <div class="genre-card">
+    <div class="genre-head bridal">
+      <h3>💍 ブライダル系</h3>
+      <span class="genre-meta">月・水・金・日</span>
+    </div>
+    <div class="genre-body">
+      <div class="genre-attrs">
+        <div class="attr"><div class="label">ジャンル</div><div class="value">ピアノ・ストリングス系</div></div>
+        <div class="attr"><div class="label">雰囲気</div><div class="value">華やか・上品・感動</div></div>
+        <div class="attr"><div class="label">テンポ</div><div class="value">スロー〜ミディアム（70〜100BPM）</div></div>
+        <div class="attr"><div class="label">トーン</div><div class="value">明るめ・希望的</div></div>
+      </div>
+      <div class="search-tags">
+        <div class="label">🔍 インスタBGM検索キーワード</div>
+        <span class="tag kw">wedding</span>
+        <span class="tag kw">bride</span>
+        <span class="tag kw">romantic piano</span>
+        <span class="tag kw">elegant</span>
+        <span class="tag kw">happy wedding</span>
+        <span class="tag kw">花嫁</span>
+        <span class="tag kw">ブライダル</span>
+      </div>
+      <div class="examples">
+        <div class="label">合う曲のイメージ</div>
+        ・Ed Sheeran「Perfect」系のしっとり系<br>
+        ・ディズニーや映画の感動シーン系インスト<br>
+        ・カノン・パッヘルベル系のクラシック<br>
+        ・LiSA「炎」のような壮大さがあるバラード
+      </div>
+      <div class="picks">
+        <div class="picks-label">📝 サロン専用ピックリスト（5曲埋める）</div>
+        <input class="pick-input" placeholder="1. ">
+        <input class="pick-input" placeholder="2. ">
+        <input class="pick-input" placeholder="3. ">
+        <input class="pick-input" placeholder="4. ">
+        <input class="pick-input" placeholder="5. ">
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. フェイシャル系 -->
+  <div class="genre-card">
+    <div class="genre-head facial">
+      <h3>✨ フェイシャル・リラクゼーション系</h3>
+      <span class="genre-meta">既存顧客向け汎用</span>
+    </div>
+    <div class="genre-body">
+      <div class="genre-attrs">
+        <div class="attr"><div class="label">ジャンル</div><div class="value">ローファイ・チル系</div></div>
+        <div class="attr"><div class="label">雰囲気</div><div class="value">癒し・落ち着き・上品</div></div>
+        <div class="attr"><div class="label">テンポ</div><div class="value">スロー（60〜90BPM）</div></div>
+        <div class="attr"><div class="label">トーン</div><div class="value">柔らかい・優しい</div></div>
+      </div>
+      <div class="search-tags">
+        <div class="label">🔍 インスタBGM検索キーワード</div>
+        <span class="tag kw">lofi</span>
+        <span class="tag kw">chill</span>
+        <span class="tag kw">spa</span>
+        <span class="tag kw">relax</span>
+        <span class="tag kw">aesthetic</span>
+        <span class="tag kw">soft piano</span>
+        <span class="tag kw">癒し</span>
+      </div>
+      <div class="examples">
+        <div class="label">合う曲のイメージ</div>
+        ・Joji・mxmtoonなどのチルアウト系<br>
+        ・カフェBGM風のジャズピアノ<br>
+        ・スパBGM・アロマセラピー系<br>
+        ・ボサノバ・アコースティックギター
+      </div>
+      <div class="picks">
+        <div class="picks-label">📝 サロン専用ピックリスト（5曲埋める）</div>
+        <input class="pick-input" placeholder="1. ">
+        <input class="pick-input" placeholder="2. ">
+        <input class="pick-input" placeholder="3. ">
+        <input class="pick-input" placeholder="4. ">
+        <input class="pick-input" placeholder="5. ">
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ボディ・脱毛系 -->
+  <div class="genre-card">
+    <div class="genre-head body">
+      <h3>💪 ボディ・脱毛・トーン系</h3>
+      <span class="genre-meta">明るく見せたい施術</span>
+    </div>
+    <div class="genre-body">
+      <div class="genre-attrs">
+        <div class="attr"><div class="label">ジャンル</div><div class="value">ポップ・EDM軽め</div></div>
+        <div class="attr"><div class="label">雰囲気</div><div class="value">明るい・前向き・元気</div></div>
+        <div class="attr"><div class="label">テンポ</div><div class="value">ミディアム（100〜130BPM）</div></div>
+        <div class="attr"><div class="label">トーン</div><div class="value">爽やか・キラキラ</div></div>
+      </div>
+      <div class="search-tags">
+        <div class="label">🔍 インスタBGM検索キーワード</div>
+        <span class="tag kw">upbeat</span>
+        <span class="tag kw">positive</span>
+        <span class="tag kw">aesthetic</span>
+        <span class="tag kw">girly</span>
+        <span class="tag kw">cute pop</span>
+        <span class="tag kw">summer</span>
+        <span class="tag kw">kawaii</span>
+      </div>
+      <div class="examples">
+        <div class="label">合う曲のイメージ</div>
+        ・TWICE・NewJeans系のポップス<br>
+        ・カフェ系の明るいインスト<br>
+        ・夏っぽい爽やかなトロピカルハウス<br>
+        ・ガーリーで可愛い系のシンセポップ
+      </div>
+      <div class="picks">
+        <div class="picks-label">📝 サロン専用ピックリスト（5曲埋める）</div>
+        <input class="pick-input" placeholder="1. ">
+        <input class="pick-input" placeholder="2. ">
+        <input class="pick-input" placeholder="3. ">
+        <input class="pick-input" placeholder="4. ">
+        <input class="pick-input" placeholder="5. ">
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. スクール系 -->
+  <div class="genre-card">
+    <div class="genre-head school">
+      <h3>🎓 スクール・技術紹介系</h3>
+      <span class="genre-meta">受講者獲得</span>
+    </div>
+    <div class="genre-body">
+      <div class="genre-attrs">
+        <div class="attr"><div class="label">ジャンル</div><div class="value">アンビエント・スタイリッシュ</div></div>
+        <div class="attr"><div class="label">雰囲気</div><div class="value">プロフェッショナル・知的</div></div>
+        <div class="attr"><div class="label">テンポ</div><div class="value">ミディアム（90〜110BPM）</div></div>
+        <div class="attr"><div class="label">トーン</div><div class="value">クール・洗練・信頼感</div></div>
+      </div>
+      <div class="search-tags">
+        <div class="label">🔍 インスタBGM検索キーワード</div>
+        <span class="tag kw">corporate</span>
+        <span class="tag kw">stylish</span>
+        <span class="tag kw">minimal</span>
+        <span class="tag kw">tutorial</span>
+        <span class="tag kw">professional</span>
+        <span class="tag kw">modern</span>
+      </div>
+      <div class="examples">
+        <div class="label">合う曲のイメージ</div>
+        ・Apple紹介動画のようなミニマル系<br>
+        ・教育系YouTuber風のクリーンなインスト<br>
+        ・ジャジーで都会的なローファイ<br>
+        ・ハウツー動画でよく使われる明るいピアノ
+      </div>
+      <div class="picks">
+        <div class="picks-label">📝 サロン専用ピックリスト（5曲埋める）</div>
+        <input class="pick-input" placeholder="1. ">
+        <input class="pick-input" placeholder="2. ">
+        <input class="pick-input" placeholder="3. ">
+        <input class="pick-input" placeholder="4. ">
+        <input class="pick-input" placeholder="5. ">
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. スタッフ・店内系 -->
+  <div class="genre-card">
+    <div class="genre-head staff">
+      <h3>🏠 スタッフ・店内紹介系</h3>
+      <span class="genre-meta">親しみやすさ重視</span>
+    </div>
+    <div class="genre-body">
+      <div class="genre-attrs">
+        <div class="attr"><div class="label">ジャンル</div><div class="value">アコースティック・温かみ</div></div>
+        <div class="attr"><div class="label">雰囲気</div><div class="value">親しみやすい・温かい</div></div>
+        <div class="attr"><div class="label">テンポ</div><div class="value">ミディアム（90〜120BPM）</div></div>
+        <div class="attr"><div class="label">トーン</div><div class="value">優しい・日常的</div></div>
+      </div>
+      <div class="search-tags">
+        <div class="label">🔍 インスタBGM検索キーワード</div>
+        <span class="tag kw">acoustic</span>
+        <span class="tag kw">warm</span>
+        <span class="tag kw">happy</span>
+        <span class="tag kw">vlog</span>
+        <span class="tag kw">daily</span>
+        <span class="tag kw">cozy</span>
+        <span class="tag kw">日常</span>
+      </div>
+      <div class="examples">
+        <div class="label">合う曲のイメージ</div>
+        ・Vlog でよく使われるアコギメインの曲<br>
+        ・ウクレレ・口笛入りの可愛い系<br>
+        ・カフェの開店BGM風<br>
+        ・「いつものお店」感のある優しいインスト
+      </div>
+      <div class="picks">
+        <div class="picks-label">📝 サロン専用ピックリスト（5曲埋める）</div>
+        <input class="pick-input" placeholder="1. ">
+        <input class="pick-input" placeholder="2. ">
+        <input class="pick-input" placeholder="3. ">
+        <input class="pick-input" placeholder="4. ">
+        <input class="pick-input" placeholder="5. ">
+      </div>
+    </div>
+  </div>
+
+  <!-- 構築手順 -->
+  <h2>🚀 サロン用プレイリストを作る手順</h2>
+
+  <div class="step-box">
+    <h3>STEP 1: インスタで曲を探す（1〜2時間）</h3>
+    <ol>
+      <li>Instagram → リールを作成 → 「音源を追加」</li>
+      <li>上記のキーワードで検索（例: 「wedding」「lofi」など）</li>
+      <li>気に入った曲が出てきたら <strong>「保存」(ブックマーク)</strong> ボタンをタップ</li>
+      <li>各ジャンル5曲ずつ、合計25曲を保存目標</li>
+    </ol>
+  </div>
+
+  <div class="step-box">
+    <h3>STEP 2: 保存した曲を整理（30分）</h3>
+    <ol>
+      <li>プロフィール → メニュー → 「保存済み」</li>
+      <li>「コレクション」を作成: ブライダル / フェイシャル / ボディ / スクール / スタッフ</li>
+      <li>保存した曲を各コレクションに振り分け</li>
+    </ol>
+  </div>
+
+  <div class="step-box">
+    <h3>STEP 3: 編集時に使う（毎回30秒）</h3>
+    <ol>
+      <li>動画を作るとき、テーマに合うコレクションを開く</li>
+      <li>5〜10曲の中から、その日の動画の雰囲気に合うものを選ぶ</li>
+      <li>使ってみて合わなければ、別のコレクション内の曲を試す</li>
+    </ol>
+  </div>
+
+  <div class="tip">
+    <strong>💡 コツ:</strong>
+    投稿で再生数が良かった動画のBGMは <strong>「殿堂入りプレイリスト」</strong> に追加。
+    同じ曲を別の動画で使い回しても問題ないし、「あのサロンの曲」として認知されると逆にブランドになる。
+  </div>
+
+  <div class="tip">
+    <strong>⚠️ 注意:</strong>
+    Instagram のリール BGM はビジネスアカウントだと使えない曲があります。
+    保存時に「使用できません」と出る曲は別の似た曲を探す。フリー素材BGM（YouTube Audio Library, Epidemic Sound）を併用する手も。
+  </div>
+
+  <!-- 月次更新 -->
+  <h2>🔄 月1の更新ルーティン</h2>
+  <div class="step-box">
+    <h3>毎月10分だけ更新する</h3>
+    <ol>
+      <li>先月よく再生された動画のBGMを「殿堂入り」に追加</li>
+      <li>トレンドの新曲を1〜2曲ずつ各コレクションに追加</li>
+      <li>使わなくなった古い曲を削除</li>
+    </ol>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      ※ プレイリストは「育てていく」もの。最初は粗くてOK、運用しながら磨いていく
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
