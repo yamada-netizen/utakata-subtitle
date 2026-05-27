@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた 曜日テーマカレンダー</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-story: #a8b8a3;
+    --c-reel: #8a9a9b;
+    --c-line-msg: #b89178;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  header {
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
+  }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
+  }
+  .section h2 {
+    margin: 0 0 14px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85;
+    margin-bottom: 16px; color: var(--c-text);
+  }
+
+  /* 投稿配分 */
+  .ratio-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .ratio-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 16px 20px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .ratio-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white;
+    letter-spacing: 0.05em;
+    font-family: "SF Mono", monospace;
+  }
+  .ratio-icon.reel { background: var(--c-reel); }
+  .ratio-icon.story { background: var(--c-story); }
+  .ratio-icon.line { background: var(--c-line-msg); }
+  .ratio-icon.feed { background: var(--c-primary); }
+  .ratio-info .name {
+    font-weight: 600; font-size: 13px; color: var(--c-primary-dark);
+  }
+  .ratio-info .freq {
+    font-size: 11px; color: var(--c-muted); margin-top: 2px;
+  }
+  .ratio-info .purpose {
+    font-size: 11px; color: var(--c-muted); margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* 週間カレンダー */
+  .week {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+  }
+  .day {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; overflow: hidden;
+    border-top: 3px solid var(--c-primary);
+  }
+  .day-head {
+    padding: 8px 10px; text-align: center;
+    background: var(--c-soft);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .day-name {
+    font-size: 13px; font-weight: 700; color: var(--c-text);
+    letter-spacing: 0.05em;
+  }
+  .day-name.sat { color: #4a6b85; }
+  .day-name.sun { color: #8b4a4a; }
+  .day-body { padding: 10px 12px; font-size: 12px; }
+  .day-body .label {
+    font-size: 9px; color: var(--c-muted); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 3px;
+  }
+  .day-body .label:not(:first-child) { margin-top: 8px; }
+  .day-body .theme {
+    font-size: 12px; line-height: 1.4;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  .day-body .formats {
+    margin-top: 6px; display: flex; gap: 3px; flex-wrap: wrap;
+  }
+  .fmt-tag {
+    font-size: 9px; padding: 2px 6px; border-radius: 2px;
+    color: white; letter-spacing: 0.05em; font-weight: 600;
+  }
+  .fmt-tag.story { background: var(--c-story); }
+  .fmt-tag.reel { background: var(--c-reel); }
+  .fmt-tag.line { background: var(--c-line-msg); }
+  .fmt-tag.feed { background: var(--c-primary); }
+
+  /* 月のテーマ */
+  .monthly {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .month-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 14px 18px;
+    border-left: 3px solid var(--c-accent);
+  }
+  .month-card .num {
+    font-size: 11px; color: var(--c-accent); letter-spacing: 0.1em;
+    font-weight: 700; font-family: "SF Mono", monospace;
+  }
+  .month-card .theme {
+    margin: 4px 0 6px; font-size: 14px; font-weight: 600;
+    color: var(--c-primary-dark);
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  .month-card .keywords {
+    font-size: 11px; color: var(--c-muted); line-height: 1.6;
+  }
+
+  /* テーマストック */
+  .stock-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .stock-col {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; overflow: hidden;
+  }
+  .stock-head {
+    padding: 12px 16px; background: var(--c-soft);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .stock-head h3 {
+    margin: 0; font-size: 13px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .stock-head .sub {
+    font-size: 10px; color: var(--c-muted); margin-top: 2px;
+    letter-spacing: 0.1em;
+  }
+  .stock-body { padding: 14px 18px; }
+  .stock-body ul {
+    list-style: none; padding: 0; margin: 0;
+    font-size: 13px; line-height: 1.9;
+  }
+  .stock-body li {
+    padding: 3px 0;
+    font-family: "Hiragino Mincho ProN", serif;
+    color: var(--c-text);
+    border-bottom: 1px dotted var(--c-line);
+  }
+  .stock-body li:last-child { border-bottom: none; }
+
+  /* 月間プランナー */
+  .monthly-table {
+    width: 100%; border-collapse: collapse; background: var(--c-card);
+    border-radius: 4px; overflow: hidden; font-size: 11px;
+    border: 1px solid var(--c-line);
+  }
+  .monthly-table th, .monthly-table td {
+    border: 1px solid var(--c-line); padding: 6px 8px; text-align: left;
+    vertical-align: top;
+  }
+  .monthly-table th {
+    background: var(--c-soft); font-size: 10px; color: var(--c-muted);
+    letter-spacing: 0.1em; font-weight: 600;
+  }
+  .monthly-table td input {
+    width: 100%; border: none; background: transparent;
+    font-family: inherit; font-size: 11px; padding: 1px;
+  }
+  .monthly-table .week-label {
+    font-weight: 700; background: var(--c-soft) !important;
+    font-size: 10px; color: var(--c-muted);
+    text-align: center;
+  }
+
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 16px 0; font-size: 13px;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
+
+  @media print {
+    body { background: white; font-size: 10px; }
+    .container { padding: 0; }
+    @page { size: A4 landscape; margin: 8mm; }
+  }
+  @media (max-width: 900px) {
+    .week { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — 個人エステサロン</div>
+    <h1>曜日テーマカレンダー</h1>
+    <p>「今日何投稿しよう」をゼロにするための、うたかた専用テーマ配分とストック</p>
+  </header>
+
+  <!-- 投稿配分 -->
+  <div class="section">
+    <div class="section-title">01　投稿フォーマット配分</div>
+    <h2>うたかたペースの目安</h2>
+    <p class="lead">
+      毎日全力で投稿する必要はありません。
+      <strong>ストーリーズで日常の気配を、リールで月のテーマを、LINEで丁寧な配信を</strong>。
+      フォーマットごとに役割を分けることで、無理なく続けられます。
+    </p>
+
+    <div class="ratio-grid">
+      <div class="ratio-card">
+        <div class="ratio-icon story">毎日</div>
+        <div class="ratio-info">
+          <div class="name">ストーリーズ</div>
+          <div class="freq">週6〜7本（ほぼ毎日）</div>
+          <div class="purpose">日常の気配を共有・既存客との接点</div>
+        </div>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-icon reel">週1</div>
+        <div class="ratio-info">
+          <div class="name">リール</div>
+          <div class="freq">週1本（月3〜4本）</div>
+          <div class="purpose">月のテーマを伝える・新規が見つける</div>
+        </div>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-icon feed">月2</div>
+        <div class="ratio-info">
+          <div class="name">フィード（画像）</div>
+          <div class="freq">月2本</div>
+          <div class="purpose">うたかたの考え方・世界観を残す</div>
+        </div>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-icon line">週1</div>
+        <div class="ratio-info">
+          <div class="name">LINE配信</div>
+          <div class="freq">週1回</div>
+          <div class="purpose">既存客との丁寧な対話</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 曜日テーマ -->
+  <div class="section">
+    <div class="section-title">02　曜日別テーマ配分</div>
+    <h2>曜日ごとに「型」を決めておく</h2>
+    <p class="lead">
+      曜日とテーマを固定しておくと、「今日は何を撮ろう」と毎日考えなくて済みます。
+      下記は<strong>テンプレ</strong>。実際の運用ではその時の状態・季節に合わせて柔軟に。
+    </p>
+
+    <div class="week">
+      <div class="day">
+        <div class="day-head"><div class="day-name">月</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">月のテーマ共有</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag story">ストーリー</span>
+            <span class="fmt-tag line">LINE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name">火</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">状態への気づき</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name">水</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">施術の様子</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag reel">リール</span>
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name">木</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">店内・空間の気配</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name">金</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">お客様の声・声のシェア</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag feed">フィード</span>
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name sat">土</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">季節・自宅でできるひとこと</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><div class="day-name sun">日</div></div>
+        <div class="day-body">
+          <div class="label">テーマ</div>
+          <div class="theme">うたかたの考え方</div>
+          <div class="label">フォーマット</div>
+          <div class="formats">
+            <span class="fmt-tag feed">フィード</span>
+            <span class="fmt-tag story">ストーリー</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>このテンプレの考え方:</strong>
+      平日（火・木・土）は軽め、週末（金・日）はじっくり考え方を伝える、水曜にリールで月のテーマを動画化、月曜は週の始まりに月のテーマを共有。
+      無理に7日埋めず、撮影できない日はお休みでOK。
+    </div>
+  </div>
+
+  <!-- 月のテーマ12ヶ月 -->
+  <div class="section">
+    <div class="section-title">03　月のテーマ（12ヶ月分の提案）</div>
+    <h2>季節と「うたかたらしさ」を組み合わせた年間テーマ</h2>
+    <p class="lead">
+      月初に1ヶ月の柱を決めると、週次・日次のテーマがブレなくなります。
+      下記は提案。年ごとに少しずつ調整して、うたかた専用のテーマ集に育てていく。
+    </p>
+
+    <div class="monthly">
+      <div class="month-card">
+        <div class="num">JANUARY</div>
+        <div class="theme">静かに、始まる月</div>
+        <div class="keywords">年明けの緊張・新しい呼吸・整えて始める</div>
+      </div>
+      <div class="month-card">
+        <div class="num">FEBRUARY</div>
+        <div class="theme">冷えと向き合う月</div>
+        <div class="keywords">冷え・こわばり・温める時間・ホットストーン</div>
+      </div>
+      <div class="month-card">
+        <div class="num">MARCH</div>
+        <div class="theme">季節の変わり目を整える月</div>
+        <div class="keywords">花粉・乱れ・揺らぐ肌・自律神経</div>
+      </div>
+      <div class="month-card">
+        <div class="num">APRIL</div>
+        <div class="theme">新しい環境の疲れに気づく月</div>
+        <div class="keywords">緊張・力み・5月病の前に・呼吸を取り戻す</div>
+      </div>
+      <div class="month-card">
+        <div class="num">MAY</div>
+        <div class="theme">自分のペースに戻る月</div>
+        <div class="keywords">疲労の蓄積・休息の取り方・ひと息つく</div>
+      </div>
+      <div class="month-card">
+        <div class="num">JUNE</div>
+        <div class="theme">重さをほどく月</div>
+        <div class="keywords">梅雨・むくみ・気圧・体の重さ・整える</div>
+      </div>
+      <div class="month-card">
+        <div class="num">JULY</div>
+        <div class="theme">夏のはじまり、整える月</div>
+        <div class="keywords">冷房疲れ・夏バテ前・呼吸を深く</div>
+      </div>
+      <div class="month-card">
+        <div class="num">AUGUST</div>
+        <div class="theme">夏の疲れを残さない月</div>
+        <div class="keywords">睡眠の浅さ・体力低下・水分の巡り</div>
+      </div>
+      <div class="month-card">
+        <div class="num">SEPTEMBER</div>
+        <div class="theme">季節の境目を丁寧に過ごす月</div>
+        <div class="keywords">夏疲れの蓄積・秋の入り口・肌の揺らぎ</div>
+      </div>
+      <div class="month-card">
+        <div class="num">OCTOBER</div>
+        <div class="theme">深く呼吸する月</div>
+        <div class="keywords">空気の変化・心の落ち着き・ホットストーン</div>
+      </div>
+      <div class="month-card">
+        <div class="num">NOVEMBER</div>
+        <div class="theme">立ち止まる月</div>
+        <div class="keywords">年末前の疲労・先取りで整える・自分を見る</div>
+      </div>
+      <div class="month-card">
+        <div class="num">DECEMBER</div>
+        <div class="theme">がんばる前にひと息つく月</div>
+        <div class="keywords">年末の慌ただしさ・キャンドルアロマ・自分に戻る</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- テーマストック -->
+  <div class="section">
+    <div class="section-title">04　テーマストック</div>
+    <h2>投稿に迷ったら、ここから選ぶ</h2>
+    <p class="lead">
+      日次の投稿で「何にしよう」と迷ったら、下記のストックから選んでください。
+      全てうたかたの言葉で書かれているので、選んだテーマをそのままプロンプトに入れて使えます。
+    </p>
+
+    <div class="stock-grid">
+
+      <div class="stock-col">
+        <div class="stock-head">
+          <h3>状態への気づき</h3>
+          <div class="sub">FOR DAILY POSTS</div>
+        </div>
+        <div class="stock-body">
+          <ul>
+            <li>呼吸が浅い日に</li>
+            <li>肩の力が抜けにくい時に</li>
+            <li>眠りが浅い夜が続く時に</li>
+            <li>顔がこわばっていませんか</li>
+            <li>自分のこと、後回しになっていませんか</li>
+            <li>気づけば疲れていませんか</li>
+            <li>首の重さに気づいた日</li>
+            <li>体が冷えている朝に</li>
+            <li>呼吸を忘れていた一日の終わりに</li>
+            <li>言葉にできない不調がある時</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stock-col">
+        <div class="stock-head">
+          <h3>施術・サロンの様子</h3>
+          <div class="sub">FOR REEL / STORY</div>
+        </div>
+        <div class="stock-body">
+          <ul>
+            <li>オイルマッサージで肩の力を抜く時間</li>
+            <li>ホットストーンの重みで深く呼吸する</li>
+            <li>キャンドルアロマで空間ごと整える</li>
+            <li>フェイシャルで顔の緊張をほどく</li>
+            <li>その日の状態を見るカウンセリング</li>
+            <li>サロンの灯りが整える静けさ</li>
+            <li>整える、ということ</li>
+            <li>無理に変えない、減らしていく</li>
+            <li>手のぬくもりの伝わり方</li>
+            <li>静けさの中にあるケア</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stock-col">
+        <div class="stock-head">
+          <h3>うたかたの考え方</h3>
+          <div class="sub">FOR FEED / WEEKEND</div>
+        </div>
+        <div class="stock-body">
+          <ul>
+            <li>感情を煽らない発信について</li>
+            <li>その日の状態に合わせる、ということ</li>
+            <li>押し売りしない理由</li>
+            <li>在庫を持たない、という選択</li>
+            <li>「整える」という言葉を選ぶ理由</li>
+            <li>劇的変化を強調しない</li>
+            <li>お客様を焦らせない</li>
+            <li>無理に変えず、不快を減らす</li>
+            <li>ここなら雑に扱われない、という安心</li>
+            <li>静かに続けるということ</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 月間プランナー -->
+  <div class="section">
+    <div class="section-title">05　月間プランナー（記入用）</div>
+    <h2>今月の予定を書き込む</h2>
+
+    <table class="monthly-table">
+      <thead>
+        <tr>
+          <th style="width:80px;">週</th>
+          <th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="week-label">第1週</td>
+          <td><input placeholder="月テーマ"></td>
+          <td><input placeholder="気づき"></td>
+          <td><input placeholder="リール"></td>
+          <td><input placeholder="店内"></td>
+          <td><input placeholder="お客様"></td>
+          <td><input placeholder="季節"></td>
+          <td><input placeholder="考え方"></td>
+        </tr>
+        <tr>
+          <td class="week-label">第2週</td>
+          <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td>
+        </tr>
+        <tr>
+          <td class="week-label">第3週</td>
+          <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td>
+        </tr>
+        <tr>
+          <td class="week-label">第4週</td>
+          <td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 運用のコツ -->
+  <div class="section">
+    <div class="section-title">06　運用のコツ</div>
+
+    <div class="tip">
+      <strong>月初のルーティン:</strong> 月初の30分で「今月のテーマ」と「4週分のテーマ配分」を一気に決める。
+      これで1ヶ月、「何投稿するか」で迷う時間がゼロに。
+    </div>
+
+    <div class="tip">
+      <strong>撮影日のまとめ撮り:</strong> 週1の撮影日に、リール用＋ストーリー用素材を一気に5〜10本撮る。
+      ストーリーは毎日上げるが、撮影は週1で済む。
+    </div>
+
+    <div class="tip">
+      <strong>テーマは変更OK:</strong> その日の気分・季節・時事に合わせて変更可。
+      テンプレはあくまで「迷った時の戻る場所」。
+    </div>
+
+    <div class="tip">
+      <strong>無理な日はお休み:</strong> 1週間に1日は「お休み or 予備日」を入れる。
+      毎日100%を目指さない方が、長く続けられる。
+    </div>
+  </div>
+
+  <footer>
+    UTAKATA — Weekly Theme Calendar
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた BGM選曲ガイド</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-ok: #6b8b6e;
+    --c-danger: #b56565;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+  header {
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
+  }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
+  }
+  .section h2 {
+    margin: 0 0 14px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85;
+    margin-bottom: 16px; color: var(--c-text);
+  }
+
+  /* 大原則 */
+  .principles {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .principle-box {
+    padding: 16px 20px; border-radius: 4px;
+  }
+  .principle-box.ok {
+    background: #f0f3ef; border-left: 3px solid var(--c-ok);
+  }
+  .principle-box.ng {
+    background: #f7f0ef; border-left: 3px solid var(--c-danger);
+  }
+  .principle-box h3 {
+    margin: 0 0 10px; font-size: 13px; letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .principle-box.ok h3 { color: #4a6d4d; }
+  .principle-box.ng h3 { color: #8b4a4a; }
+  .principle-box ul {
+    margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.8;
+  }
+
+  /* メニュー別 */
+  .menu-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; margin-bottom: 16px; overflow: hidden;
+  }
+  .menu-head {
+    padding: 14px 22px; background: var(--c-soft);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .menu-head h3 {
+    margin: 0; font-size: 15px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.03em;
+  }
+  .menu-head .sub {
+    font-size: 11px; color: var(--c-muted); margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+  .menu-body {
+    padding: 18px 22px;
+  }
+
+  .attrs {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-bottom: 14px;
+  }
+  .attr {
+    background: var(--c-bg); padding: 8px 10px; border-radius: 4px;
+  }
+  .attr .label {
+    font-size: 9px; color: var(--c-muted); font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .attr .value {
+    font-size: 12px; margin-top: 2px; color: var(--c-text);
+  }
+
+  .search-block {
+    margin: 12px 0;
+  }
+  .search-block .blocklabel {
+    font-size: 10px; color: var(--c-accent); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 6px;
+  }
+  .kw-tags {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .kw-tag {
+    font-size: 11px; padding: 3px 10px; border-radius: 2px;
+    background: #f1f1f1; color: var(--c-text);
+    font-family: "SF Mono", Monaco, monospace;
+  }
+
+  .image-block {
+    background: var(--c-soft); padding: 10px 14px;
+    border-radius: 4px; margin: 10px 0;
+    font-size: 12px; line-height: 1.7;
+  }
+  .image-block .label {
+    font-size: 10px; color: var(--c-muted); font-weight: 700;
+    letter-spacing: 0.1em; margin-bottom: 4px;
+  }
+
+  /* ピックリスト */
+  .picks-block {
+    margin-top: 14px;
+  }
+  .picks-block .label {
+    font-size: 10px; color: var(--c-muted); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 6px;
+  }
+  .pick-input {
+    width: 100%; padding: 6px 10px; border: 1px solid var(--c-line);
+    border-radius: 3px; font-size: 13px; margin-bottom: 4px;
+    font-family: inherit;
+    background: var(--c-bg);
+  }
+
+  /* 手順 */
+  .steps {
+    counter-reset: step;
+    list-style: none; padding: 0;
+  }
+  .steps li {
+    counter-increment: step;
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 14px 16px 14px 50px;
+    margin-bottom: 8px; position: relative; font-size: 13px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 14px; top: 14px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--c-primary); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; font-family: "SF Mono", monospace;
+  }
+  .steps li strong { color: var(--c-primary-dark); }
+
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+  }
+  @media (max-width: 720px) {
+    .attrs { grid-template-columns: repeat(2, 1fr); }
+    .principles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — 個人エステサロン</div>
+    <h1>BGM選曲ガイド</h1>
+    <p>毎回センスで曲を探すのをやめて、うたかた専用の「合う曲群」を5カテゴリで準備しておく</p>
+  </header>
+
+  <!-- うたかたBGMの大原則 -->
+  <div class="section">
+    <div class="section-title">01　うたかたBGMの大原則</div>
+    <h2>合う曲と合わない曲の判断軸</h2>
+    <p class="lead">
+      うたかたの世界観は「静か・整える・呼吸」。BGMもこの世界観を支える役割。
+      派手な曲を選ぶと、せっかくの落ち着いた施術風景の温度が一気に下がります。
+    </p>
+
+    <div class="principles">
+      <div class="principle-box ok">
+        <h3>○ うたかたに合う曲調</h3>
+        <ul>
+          <li>テンポは遅め〜中（60〜100BPM）</li>
+          <li>ピアノ・アコギ・ストリングス中心</li>
+          <li>環境音・チル・アンビエント系</li>
+          <li>ボーカルなし、または控えめ</li>
+          <li>音量の変化が穏やか</li>
+          <li>「間」がある</li>
+          <li>呼吸を整えるような音</li>
+        </ul>
+      </div>
+      <div class="principle-box ng">
+        <h3>× うたかたに合わない曲調</h3>
+        <ul>
+          <li>EDM・激しいビート系</li>
+          <li>K-POP・J-POPのアップテンポ</li>
+          <li>ラップ・ヒップホップ</li>
+          <li>サビが派手なバラード</li>
+          <li>「キラキラ」「ドラマチック」系</li>
+          <li>歌詞が前面に出る曲</li>
+          <li>感情を急かす曲</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>判断のコツ:</strong>
+      「この曲、サロンで施術中に流れていても違和感がないか？」を基準に。
+      お客様がリラックスしている空間で流せない曲は、動画にも合わない。
+    </div>
+  </div>
+
+  <!-- メニュー別 -->
+  <div class="section">
+    <div class="section-title">02　メニュー別 BGM カテゴリ</div>
+    <h2>5つのカテゴリに分けてストック</h2>
+    <p class="lead">
+      メニューごとに「使える曲」を5曲ずつ保存しておけば、
+      編集時は<strong>「ホットストーンだからこの群から選ぶ」</strong>と決め打ちできます。
+      毎回ゼロから探す時間（15分）が、選ぶだけ（30秒）になります。
+    </p>
+
+    <!-- 1. オイルマッサージ -->
+    <div class="menu-card">
+      <div class="menu-head">
+        <h3>① オイルマッサージ — 肩・首の力を抜く時間</h3>
+        <div class="sub">SLOW PIANO / AMBIENT</div>
+      </div>
+      <div class="menu-body">
+        <div class="attrs">
+          <div class="attr"><div class="label">ジャンル</div><div class="value">スローピアノ・ストリングス</div></div>
+          <div class="attr"><div class="label">雰囲気</div><div class="value">穏やか・呼吸が深まる</div></div>
+          <div class="attr"><div class="label">テンポ</div><div class="value">60〜80 BPM</div></div>
+          <div class="attr"><div class="label">トーン</div><div class="value">やわらか・暖かい</div></div>
+        </div>
+
+        <div class="search-block">
+          <div class="blocklabel">🔍 Instagram BGM 検索キーワード</div>
+          <div class="kw-tags">
+            <span class="kw-tag">slow piano</span>
+            <span class="kw-tag">soft piano</span>
+            <span class="kw-tag">calm</span>
+            <span class="kw-tag">healing</span>
+            <span class="kw-tag">peaceful</span>
+            <span class="kw-tag">癒し</span>
+            <span class="kw-tag">ヒーリング</span>
+          </div>
+        </div>
+
+        <div class="image-block">
+          <div class="label">合う曲のイメージ</div>
+          ・坂本龍一・久石譲のような静かなピアノソロ<br>
+          ・カフェの朝に流れる、ゆったりしたインスト<br>
+          ・スパBGM／アロマセラピー系の音源<br>
+          ・Joep Beving・Ólafur Arnaldsのような現代クラシック
+        </div>
+
+        <div class="picks-block">
+          <div class="label">📝 うたかた専用ピックリスト（5曲）</div>
+          <input class="pick-input" placeholder="1. ">
+          <input class="pick-input" placeholder="2. ">
+          <input class="pick-input" placeholder="3. ">
+          <input class="pick-input" placeholder="4. ">
+          <input class="pick-input" placeholder="5. ">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ホットストーン -->
+    <div class="menu-card">
+      <div class="menu-head">
+        <h3>② ホットストーン — 深く整える時間</h3>
+        <div class="sub">DEEP AMBIENT / WARM TONES</div>
+      </div>
+      <div class="menu-body">
+        <div class="attrs">
+          <div class="attr"><div class="label">ジャンル</div><div class="value">アンビエント・ドローン</div></div>
+          <div class="attr"><div class="label">雰囲気</div><div class="value">深い・温かい・包まれる</div></div>
+          <div class="attr"><div class="label">テンポ</div><div class="value">60 BPM以下（テンポレス）</div></div>
+          <div class="attr"><div class="label">トーン</div><div class="value">深く落ち着いた音色</div></div>
+        </div>
+
+        <div class="search-block">
+          <div class="blocklabel">🔍 Instagram BGM 検索キーワード</div>
+          <div class="kw-tags">
+            <span class="kw-tag">ambient</span>
+            <span class="kw-tag">deep meditation</span>
+            <span class="kw-tag">warm sounds</span>
+            <span class="kw-tag">zen</span>
+            <span class="kw-tag">spa music</span>
+            <span class="kw-tag">瞑想</span>
+          </div>
+        </div>
+
+        <div class="image-block">
+          <div class="label">合う曲のイメージ</div>
+          ・Brian Eno・Nils Frahmのアンビエント<br>
+          ・温泉・サウナ・スパで流れるBGM<br>
+          ・Tibetan bowl（チベタンボウル）の響き<br>
+          ・低音域中心の落ち着いた音源
+        </div>
+
+        <div class="picks-block">
+          <div class="label">📝 うたかた専用ピックリスト（5曲）</div>
+          <input class="pick-input" placeholder="1. ">
+          <input class="pick-input" placeholder="2. ">
+          <input class="pick-input" placeholder="3. ">
+          <input class="pick-input" placeholder="4. ">
+          <input class="pick-input" placeholder="5. ">
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. フェイシャル -->
+    <div class="menu-card">
+      <div class="menu-head">
+        <h3>③ フェイシャル — 顔の緊張をほどく時間</h3>
+        <div class="sub">LIGHT ACOUSTIC / SOFT INSTRUMENTAL</div>
+      </div>
+      <div class="menu-body">
+        <div class="attrs">
+          <div class="attr"><div class="label">ジャンル</div><div class="value">アコギ・ライトピアノ</div></div>
+          <div class="attr"><div class="label">雰囲気</div><div class="value">繊細・清潔・整う</div></div>
+          <div class="attr"><div class="label">テンポ</div><div class="value">70〜90 BPM</div></div>
+          <div class="attr"><div class="label">トーン</div><div class="value">明るすぎず暗すぎず</div></div>
+        </div>
+
+        <div class="search-block">
+          <div class="blocklabel">🔍 Instagram BGM 検索キーワード</div>
+          <div class="kw-tags">
+            <span class="kw-tag">soft acoustic</span>
+            <span class="kw-tag">gentle</span>
+            <span class="kw-tag">aesthetic</span>
+            <span class="kw-tag">minimal piano</span>
+            <span class="kw-tag">light instrumental</span>
+            <span class="kw-tag">繊細</span>
+          </div>
+        </div>
+
+        <div class="image-block">
+          <div class="label">合う曲のイメージ</div>
+          ・Sigur Rós・Ólafur Arnalds系の繊細な曲<br>
+          ・小説の朗読BGMのような落ち着き<br>
+          ・夜カフェ・読書BGM系<br>
+          ・木の温もりを感じさせるアコギソロ
+        </div>
+
+        <div class="picks-block">
+          <div class="label">📝 うたかた専用ピックリスト（5曲）</div>
+          <input class="pick-input" placeholder="1. ">
+          <input class="pick-input" placeholder="2. ">
+          <input class="pick-input" placeholder="3. ">
+          <input class="pick-input" placeholder="4. ">
+          <input class="pick-input" placeholder="5. ">
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. キャンドルアロマ -->
+    <div class="menu-card">
+      <div class="menu-head">
+        <h3>④ キャンドルアロママッサージ — 静かに呼吸を整える時間</h3>
+        <div class="sub">ETHEREAL / NATURE SOUNDS</div>
+      </div>
+      <div class="menu-body">
+        <div class="attrs">
+          <div class="attr"><div class="label">ジャンル</div><div class="value">エセリアル・自然音入り</div></div>
+          <div class="attr"><div class="label">雰囲気</div><div class="value">幻想的・幽玄・静寂</div></div>
+          <div class="attr"><div class="label">テンポ</div><div class="value">50〜70 BPM</div></div>
+          <div class="attr"><div class="label">トーン</div><div class="value">空気感のある音</div></div>
+        </div>
+
+        <div class="search-block">
+          <div class="blocklabel">🔍 Instagram BGM 検索キーワード</div>
+          <div class="kw-tags">
+            <span class="kw-tag">ethereal</span>
+            <span class="kw-tag">candle ambient</span>
+            <span class="kw-tag">forest sounds</span>
+            <span class="kw-tag">rain</span>
+            <span class="kw-tag">cinematic calm</span>
+            <span class="kw-tag">夜</span>
+          </div>
+        </div>
+
+        <div class="image-block">
+          <div class="label">合う曲のイメージ</div>
+          ・雨音・暖炉・キャンドルの揺らぎが似合う音<br>
+          ・映画のしっとりしたBGM（特に夜のシーン系）<br>
+          ・コーラスや空気感のあるシンセ<br>
+          ・吐息や呼吸音が混ざるアンビエント
+        </div>
+
+        <div class="picks-block">
+          <div class="label">📝 うたかた専用ピックリスト（5曲）</div>
+          <input class="pick-input" placeholder="1. ">
+          <input class="pick-input" placeholder="2. ">
+          <input class="pick-input" placeholder="3. ">
+          <input class="pick-input" placeholder="4. ">
+          <input class="pick-input" placeholder="5. ">
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. うたかた全体 / サロン紹介 -->
+    <div class="menu-card">
+      <div class="menu-head">
+        <h3>⑤ うたかた紹介・トータル — 全体の世界観を伝える時間</h3>
+        <div class="sub">SIGNATURE SOUND</div>
+      </div>
+      <div class="menu-body">
+        <div class="attrs">
+          <div class="attr"><div class="label">ジャンル</div><div class="value">うたかたを象徴する音</div></div>
+          <div class="attr"><div class="label">雰囲気</div><div class="value">うたかた以外で使わない</div></div>
+          <div class="attr"><div class="label">テンポ</div><div class="value">どれでも（世界観優先）</div></div>
+          <div class="attr"><div class="label">トーン</div><div class="value">「うたかたの曲」と認知される</div></div>
+        </div>
+
+        <div class="search-block">
+          <div class="blocklabel">🔍 Instagram BGM 検索キーワード</div>
+          <div class="kw-tags">
+            <span class="kw-tag">signature</span>
+            <span class="kw-tag">brand sound</span>
+            <span class="kw-tag">cinematic minimal</span>
+            <span class="kw-tag">storytelling</span>
+          </div>
+        </div>
+
+        <div class="image-block">
+          <div class="label">「これがうたかたの曲」と決める1〜2曲</div>
+          ・店舗紹介・月のテーマ・ブランド系投稿で必ずこの曲を使う<br>
+          ・継続して使うことで「あのサロンの曲」とお客様に印象付く<br>
+          ・歌詞のないインスト、世界観の強い1曲を厳選
+        </div>
+
+        <div class="picks-block">
+          <div class="label">📝 うたかたの「定番曲」（1〜2曲）</div>
+          <input class="pick-input" placeholder="1. メイン定番曲">
+          <input class="pick-input" placeholder="2. サブ定番曲">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 構築手順 -->
+  <div class="section">
+    <div class="section-title">03　プレイリスト構築の手順</div>
+    <h2>1〜2時間で完成する初期構築</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>Instagram でリール作成画面を開き、「音源を追加」をタップ</strong><br>
+        上記の検索キーワードでカテゴリ別に探す。
+      </li>
+      <li>
+        <strong>気に入った曲を「保存（ブックマーク）」</strong><br>
+        各メニューカテゴリ5曲ずつ、計25〜30曲を目標。
+      </li>
+      <li>
+        <strong>プロフィール → 「保存済み」 → コレクション作成</strong><br>
+        「オイル」「ホットストーン」「フェイシャル」「キャンドル」「うたかた定番」の5コレクション。
+      </li>
+      <li>
+        <strong>保存した曲を各コレクションに振り分け</strong><br>
+        後で見返した時にメニュー別に探せる状態に。
+      </li>
+      <li>
+        <strong>編集時は該当コレクションから選ぶだけ</strong><br>
+        その日の動画の雰囲気に近い1曲を5〜10曲の中から30秒で選ぶ。
+      </li>
+    </ol>
+
+    <div class="tip">
+      <strong>注意:</strong>
+      Instagram のリール BGM はビジネスアカウントだと使えない曲があります。
+      保存時に「使用できません」と出る曲は別の似た曲を探す。
+      フリー素材BGM（YouTube Audio Library、Epidemic Sound、Artlist）を併用する手も。
+    </div>
+  </div>
+
+  <!-- 月次更新 -->
+  <div class="section">
+    <div class="section-title">04　月1の更新ルーティン</div>
+    <h2>毎月10分だけプレイリストを育てる</h2>
+
+    <div class="tip">
+      <strong>月末にやること:</strong>
+      ・先月よく反応された動画のBGMを「うたかた定番」に追加<br>
+      ・トレンドの新曲を1〜2曲ずつ各コレクションに追加<br>
+      ・使わなくなった曲を整理
+    </div>
+
+    <p style="font-size:13px;color:var(--c-muted);">
+      プレイリストは「最初に完璧」を目指さず、運用しながら磨いていく。
+      半年もすれば「うたかたの音」が自然と固まります。
+    </p>
+  </div>
+
+  <footer>
+    UTAKATA — BGM Selection Guide
+  </footer>
+
+</div>
+</body>
+</html>

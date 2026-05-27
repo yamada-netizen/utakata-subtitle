@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた 素材フォルダ設計ガイド</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-code-bg: #2d3838;
+    --c-code-text: #e8e2d8;
+    --c-ok: #6b8b6e;
+    --c-danger: #b56565;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+  header {
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
+  }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
+  }
+  .section h2 {
+    margin: 0 0 14px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85;
+    margin-bottom: 16px; color: var(--c-text);
+  }
+
+  /* 問題ボックス */
+  .problem-card {
+    background: #f7f3ee; border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-danger);
+    border-radius: 4px; padding: 16px 20px; margin-bottom: 16px;
+  }
+  .problem-card h3 {
+    margin: 0 0 8px; font-size: 14px; color: #8b4a4a;
+    font-weight: 600;
+  }
+  .problem-card ul {
+    margin: 6px 0 0; padding-left: 18px; font-size: 13px;
+  }
+
+  /* ツリー表示 */
+  .tree {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 20px 24px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 12px; line-height: 1.75; overflow-x: auto;
+  }
+  .tree .folder { color: var(--c-primary-dark); font-weight: 700; }
+  .tree .sub { color: var(--c-accent); }
+  .tree .file { color: var(--c-muted); }
+  .tree .comment {
+    color: #94a3a3; font-style: italic; font-size: 11px;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  .tree .new { color: #6b8b6e; font-weight: 700; }
+
+  /* 命名規則 */
+  .rule-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 18px 22px; margin-bottom: 12px;
+  }
+  .rule-card h3 {
+    margin: 0 0 10px; font-size: 14px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+
+  .naming-example {
+    background: var(--c-code-bg); color: var(--c-code-text);
+    padding: 12px 16px; border-radius: 4px; margin: 10px 0;
+    font-family: "SF Mono", Monaco, monospace; font-size: 12px;
+    line-height: 1.7;
+  }
+  .naming-example .date { color: #88c0d0; }
+  .naming-example .category { color: #ebcb8b; }
+  .naming-example .menu { color: #a3be8c; }
+  .naming-example .keyword { color: #d08770; }
+  .naming-example .label {
+    display: block; font-size: 10px; color: #94a3a3;
+    margin-top: 6px; font-style: italic;
+  }
+
+  /* タグ */
+  .cat-tag {
+    display: inline-block; font-size: 11px; padding: 3px 10px;
+    border-radius: 2px; background: var(--c-soft); color: var(--c-text);
+    margin: 2px; font-family: "SF Mono", monospace;
+  }
+
+  /* 比較表 */
+  .compare-table {
+    width: 100%; border-collapse: collapse; background: var(--c-card);
+    border: 1px solid var(--c-line); border-radius: 4px;
+    overflow: hidden; font-size: 12px; margin: 12px 0;
+  }
+  .compare-table th, .compare-table td {
+    border: 1px solid var(--c-line); padding: 10px 12px; text-align: left;
+  }
+  .compare-table th {
+    background: var(--c-soft); font-size: 10px; color: var(--c-muted);
+    letter-spacing: 0.1em; font-weight: 600;
+  }
+  .compare-table .bad {
+    color: #8b4a4a; font-family: "SF Mono", monospace;
+  }
+  .compare-table .good {
+    color: #4a6d4d; font-weight: 600; font-family: "SF Mono", monospace;
+  }
+
+  /* 手順 */
+  .steps {
+    counter-reset: step;
+    list-style: none; padding: 0;
+  }
+  .steps li {
+    counter-increment: step;
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 14px 18px 14px 52px;
+    margin-bottom: 8px; position: relative; font-size: 13px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 16px; top: 14px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--c-primary); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; font-family: "SF Mono", monospace;
+  }
+  .steps li strong { color: var(--c-primary-dark); }
+  .steps li .note {
+    font-size: 11px; color: var(--c-muted); margin-top: 4px;
+    display: block;
+  }
+
+  /* ツール推奨 */
+  .tool-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 14px 20px; margin-bottom: 8px;
+    display: grid; grid-template-columns: auto 1fr; gap: 14px;
+    align-items: start;
+  }
+  .tool-badge {
+    background: var(--c-primary); color: white;
+    padding: 4px 10px; border-radius: 2px;
+    font-size: 10px; font-weight: 700;
+    font-family: "SF Mono", monospace; letter-spacing: 0.05em;
+  }
+  .tool-card h3 {
+    margin: 0 0 6px; font-size: 13px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .tool-card p { margin: 4px 0; font-size: 12px; }
+  .tool-card ul {
+    margin: 4px 0; padding-left: 18px; font-size: 11px;
+    color: var(--c-muted);
+  }
+
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — 個人エステサロン</div>
+    <h1>素材フォルダ設計ガイド</h1>
+    <p>「テーマはあるけど素材がない・見つからない」を解消する整理ルール。<br>既存長尺動画も活かせる構造に。</p>
+  </header>
+
+  <!-- 現状の問題 -->
+  <div class="section">
+    <div class="section-title">01　なぜフォルダ設計が必要か</div>
+
+    <div class="problem-card">
+      <h3>現状ありがちな問題</h3>
+      <ul>
+        <li>サロンで撮影した動画と、外部素材が混ざっている</li>
+        <li>「ホットストーンの素材どこ？」と探すのに10分かかる</li>
+        <li>長尺動画の中の使えるシーンを覚えていない</li>
+        <li>過去に撮った良い素材を再活用できていない</li>
+        <li>お客様の声・写真と施術風景が同じフォルダに入っている</li>
+      </ul>
+    </div>
+    <p class="lead">
+      フォルダ構造と命名規則を最初に整えておくと、
+      <strong>「素材を探す時間」が10分→30秒</strong>になります。
+      さらに「シーン素材」として分割保存しておくことで、既存長尺も再利用可能な資産になります。
+    </p>
+  </div>
+
+  <!-- フォルダ構造 -->
+  <div class="section">
+    <div class="section-title">02　推奨フォルダ構造</div>
+    <h2>うたかた専用の整理ルール</h2>
+    <p class="lead">
+      Google Drive / iCloud / Dropbox など、どのクラウドストレージでも使える構造。
+      特に <strong>「06_シーン素材ライブラリ」</strong> がポイント — 既存長尺から切り出した使い回し用クリップを保管します。
+    </p>
+
+    <div class="tree">
+<span class="folder">📂 UTAKATA動画素材/</span>
+├── <span class="folder">📁 01_施術別/</span>                          <span class="comment"># 撮影した施術風景</span>
+│   ├── <span class="sub">📁 オイルマッサージ/</span>
+│   ├── <span class="sub">📁 フェイシャル/</span>
+│   ├── <span class="sub">📁 ホットストーン/</span>
+│   ├── <span class="sub">📁 キャンドルアロママッサージ/</span>
+│   └── <span class="sub">📁 トータル（組み合わせ）/</span>
+├── <span class="folder">📁 02_お客様の声/</span>                     <span class="comment"># 感想・口コミ・お客様提供素材</span>
+│   ├── <span class="sub">📁 テキスト感想/</span>
+│   ├── <span class="sub">📁 写真・動画/</span>
+│   └── <span class="sub">📁 許可済み（投稿OK）/</span>
+├── <span class="folder">📁 03_店内・空間/</span>                     <span class="comment"># サロンの世界観を映す素材</span>
+│   ├── <span class="sub">📁 店内全景/</span>
+│   ├── <span class="sub">📁 カウンセリングスペース/</span>
+│   ├── <span class="sub">📁 キャンドル・灯り/</span>
+│   ├── <span class="sub">📁 オイル・道具/</span>
+│   └── <span class="sub">📁 季節の設え/</span>
+├── <span class="folder">📁 04_うたかたの世界観/</span>               <span class="comment"># ブランド系・抽象的な素材</span>
+│   ├── <span class="sub">📁 手のぬくもり/</span>
+│   ├── <span class="sub">📁 呼吸・静けさ/</span>
+│   └── <span class="sub">📁 時間の流れ/</span>
+├── <span class="folder">📁 05_外部素材/</span>                       <span class="comment"># サロン外で取得した素材</span>
+│   ├── <span class="sub">📁 フリー素材_動画/</span>           <span class="comment"># Pexels, Pixabay 等</span>
+│   ├── <span class="sub">📁 フリー素材_画像/</span>
+│   ├── <span class="sub">📁 BGM・音源/</span>
+│   └── <span class="sub">📁 参考動画_他サロン/</span>          <span class="comment"># 引用しないが企画参考に</span>
+├── <span class="folder">📁 <span class="new">06_シーン素材ライブラリ</span>/</span>            <span class="comment"># ★既存長尺から切り出した使い回し用</span>
+│   ├── <span class="sub">📁 施術_手元アップ/</span>
+│   ├── <span class="sub">📁 施術_広めの画/</span>
+│   ├── <span class="sub">📁 お客様の表情・呼吸/</span>
+│   ├── <span class="sub">📁 BGM空間・サロンの灯り/</span>
+│   └── <span class="sub">📁 サロン情報・CTA/</span>
+├── <span class="folder">📁 07_完成動画/</span>                       <span class="comment"># 投稿済みの最終データ</span>
+│   ├── <span class="sub">📁 2026年/</span>
+│   │   ├── <span class="sub">📁 01_1月/</span>
+│   │   └── <span class="sub">📁 02_2月/</span>
+│   └── <span class="sub">📁 反応がよかった動画/</span>          <span class="comment"># 後で見返す用</span>
+└── <span class="folder">📁 99_アーカイブ/</span>                     <span class="comment"># 古い・使わない素材</span>
+    </div>
+
+    <div class="tip">
+      <strong>このフォルダ設計の3つのポイント:</strong><br>
+      ① <strong>うたかたの4メニュー</strong> で施術を分ける<br>
+      ② <strong>「うたかたの世界観」</strong> フォルダで抽象的な素材（手・呼吸・時間）を別管理<br>
+      ③ <strong>「シーン素材ライブラリ」</strong> で既存長尺を再利用可能な状態に
+    </div>
+  </div>
+
+  <!-- 命名規則 -->
+  <div class="section">
+    <div class="section-title">03　ファイル命名規則</div>
+    <h2>3秒で意味が分かるファイル名</h2>
+
+    <div class="rule-card">
+      <h3>基本フォーマット</h3>
+      <div class="naming-example">
+<span class="date">YYYYMMDD</span>_<span class="category">カテゴリ</span>_<span class="menu">メニュー</span>_<span class="keyword">キーワード</span>.mp4
+        <span class="label">└ 撮影日（または取得日）  カテゴリ略号  メニュー名  特徴・状況</span>
+      </div>
+
+      <h3>うたかた実例</h3>
+      <div class="naming-example">
+<span class="date">20260601</span>_<span class="category">施術</span>_<span class="menu">オイル</span>_<span class="keyword">肩への手元</span>.mp4
+<span class="date">20260601</span>_<span class="category">施術</span>_<span class="menu">ホットストーン</span>_<span class="keyword">背中に置く瞬間</span>.mp4
+<span class="date">20260601</span>_<span class="category">声</span>_<span class="menu">フェイシャル</span>_<span class="keyword">30代_呼吸が楽になった</span>.txt
+<span class="date">20260315</span>_<span class="category">空間</span>_<span class="menu">店内</span>_<span class="keyword">キャンドルの灯り</span>.mp4
+<span class="date">20260420</span>_<span class="category">世界観</span>_<span class="menu">なし</span>_<span class="keyword">手のぬくもり.</span>mp4
+<span class="date">20260510</span>_<span class="category">シーン</span>_<span class="menu">手元</span>_<span class="keyword">クリーム塗布5秒</span>.mp4
+      </div>
+
+      <h3>カテゴリ略号一覧</h3>
+      <p style="margin:6px 0;">
+        <span class="cat-tag">施術</span> サロンで撮った施術風景<br>
+        <span class="cat-tag">声</span> お客様の感想・口コミ<br>
+        <span class="cat-tag">空間</span> 店内・道具・設え<br>
+        <span class="cat-tag">世界観</span> 抽象素材（手・呼吸・時間）<br>
+        <span class="cat-tag">外部</span> フリー素材・引用素材<br>
+        <span class="cat-tag">シーン</span> 既存長尺から切り出した素材<br>
+        <span class="cat-tag">完成</span> 投稿用に編集済み
+      </p>
+
+      <h3>メニュー略号</h3>
+      <p style="margin:6px 0;">
+        <span class="cat-tag">オイル</span>
+        <span class="cat-tag">ホットストーン</span>
+        <span class="cat-tag">フェイシャル</span>
+        <span class="cat-tag">キャンドル</span>
+        <span class="cat-tag">トータル</span>
+        <span class="cat-tag">店内</span>
+        <span class="cat-tag">なし</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- 良い例・悪い例 -->
+  <div class="section">
+    <div class="section-title">04　良いファイル名・悪いファイル名</div>
+    <table class="compare-table">
+      <thead>
+        <tr><th style="width:50%;">× 悪い例</th><th style="width:50%;">○ 良い例</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="bad">IMG_4521.mp4</td>
+          <td class="good">20260601_施術_オイル_肩への手元.mp4</td>
+        </tr>
+        <tr>
+          <td class="bad">新規プロジェクト.mp4</td>
+          <td class="good">20260315_空間_店内_キャンドルの灯り.mp4</td>
+        </tr>
+        <tr>
+          <td class="bad">お客様の声.txt</td>
+          <td class="good">20260420_声_ホットストーン_40代_呼吸が深くなった.txt</td>
+        </tr>
+        <tr>
+          <td class="bad">test_final2.mp4</td>
+          <td class="good">20260510_完成_リール_呼吸が浅い日に.mp4</td>
+        </tr>
+        <tr>
+          <td class="bad">長い施術.mp4</td>
+          <td class="good">20260620_シーン_手元_クレンジング5秒.mp4</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 既存長尺の取り扱い -->
+  <div class="section">
+    <div class="section-title">05　既存長尺動画の取り扱い</div>
+    <h2>「シーン素材ライブラリ」を育てる</h2>
+    <p class="lead">
+      既に撮影済みの長尺動画は、CapCutのシーン検出機能で <strong>5〜10秒のクリップ単位に分割</strong>して、
+      <code>06_シーン素材ライブラリ</code> フォルダに保存します。
+      一度分割しておけば、後で別の投稿の素材として何度でも使い回せます。
+    </p>
+
+    <ol class="steps">
+      <li>
+        <strong>CapCut で長尺動画を開く</strong>
+        <span class="note">5分〜30分の既存動画。スマホで撮ったものをそのまま使う。</span>
+      </li>
+      <li>
+        <strong>「シーン検出」or「自動分割」を実行</strong>
+        <span class="note">長尺がカメラ切り替わり・動きの変化で自動的に分割される。</span>
+      </li>
+      <li>
+        <strong>各クリップのサムネを確認し、使えそうなものだけ書き出し</strong>
+        <span class="note">10分の動画 → 使えるシーン10本前後。</span>
+      </li>
+      <li>
+        <strong>命名規則に沿って 06_シーン素材ライブラリ に保存</strong>
+        <span class="note">例: <code>20260601_シーン_手元_クリーム塗布5秒.mp4</code></span>
+      </li>
+      <li>
+        <strong>月末整理で長尺1本→ミニ素材10本に変換する習慣を作る</strong>
+        <span class="note">半年で数百本の即使えるクリップが溜まる。</span>
+      </li>
+    </ol>
+
+    <div class="tip">
+      <strong>これがあると何が変わるか:</strong>
+      新しい投稿を作る時に「サロンの灯り素材を入れたい」「手元アップが欲しい」と思った瞬間に、
+      <code>06_シーン素材ライブラリ</code> から検索 → 即配置。撮影し直す必要がなくなる。
+    </div>
+  </div>
+
+  <!-- 初期構築 -->
+  <div class="section">
+    <div class="section-title">06　初期構築の手順</div>
+    <h2>2時間で立ち上げる</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>Google Drive にメインフォルダ作成</strong>
+        <span class="note">10分。<code>UTAKATA動画素材</code> として、上記のフォルダ構造を一気に作る。</span>
+      </li>
+      <li>
+        <strong>過去素材を一度全部「99_アーカイブ」に集める</strong>
+        <span class="note">30分。スマホやPCにある動画を一旦全部ぶち込む。整理はあとで。</span>
+      </li>
+      <li>
+        <strong>直近1ヶ月分だけ仕分け</strong>
+        <span class="note">30分。古いものは99_アーカイブのままでOK。最近のものだけ整理する。</span>
+      </li>
+      <li>
+        <strong>命名規則を統一</strong>
+        <span class="note">30分。仕分けながらファイル名を上記ルールに変更。</span>
+      </li>
+      <li>
+        <strong>長尺1本だけCapCutでシーン分割を試す</strong>
+        <span class="note">20分。06_シーン素材ライブラリの初期データになる。</span>
+      </li>
+      <li>
+        <strong>新規撮影分から命名ルール適用（運用開始）</strong>
+        <span class="note">撮影後すぐにファイル名を変える習慣をつける。</span>
+      </li>
+    </ol>
+
+    <div class="tip">
+      <strong>完璧を目指さない:</strong>
+      最初から全部整理しなくてOK。直近1ヶ月+新規撮影だけ命名ルール適用、過去はアーカイブのままで十分。
+    </div>
+  </div>
+
+  <!-- ツール推奨 -->
+  <div class="section">
+    <div class="section-title">07　推奨クラウドストレージ</div>
+
+    <div class="tool-card">
+      <span class="tool-badge">推奨</span>
+      <div>
+        <h3>Google Drive</h3>
+        <p>無料15GB / 100GBで月250円 / 2TBで月1,300円</p>
+        <ul>
+          <li>日本語ファイル名・日本語検索◎</li>
+          <li>スマホ・PC・タブレット全て同期</li>
+          <li>Edits や CapCut から直接アクセス可</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-badge">代替</span>
+      <div>
+        <h3>iCloud Drive</h3>
+        <p>5GB無料 / 50GBで月130円 / 200GBで月400円</p>
+        <ul>
+          <li>iPhoneユーザーなら標準で同期されて楽</li>
+          <li>複数人共有は弱め</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-badge">大容量</span>
+      <div>
+        <h3>Dropbox</h3>
+        <p>2GB無料 / 2TBで月1,500円</p>
+        <ul>
+          <li>大容量プランが安定</li>
+          <li>動画素材の共有に強い</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- タグ運用 -->
+  <div class="section">
+    <div class="section-title">08　さらに上級：タグ運用（任意）</div>
+    <p class="lead">
+      フォルダ構造だけだと「2軸で探したい時」が苦手。
+      例えば「ホットストーン × 手元アップ × 完成動画」のような複合検索。
+      この場合は <strong>Notion か Airtable</strong> で素材データベースを作ると、複数タグで絞り込めるようになります。
+    </p>
+
+    <div class="rule-card">
+      <p style="margin:6px 0;font-size:13px;">
+        <strong>Notion</strong>: 無料で十分。ファイル名・タグ・サムネ・メモを管理。<br>
+        <strong>Airtable</strong>: スプレッドシート + データベース。視覚的に管理可能。
+      </p>
+      <p style="margin:6px 0;font-size:12px;color:var(--c-muted);">
+        ※ まずはフォルダ構造だけで運用してみて、不便を感じたら導入を検討する程度でOK。
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    UTAKATA — Material Folder Design Guide
+  </footer>
+
+</div>
+</body>
+</html>

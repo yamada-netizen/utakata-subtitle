@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた SNSプロジェクト用プロンプト集</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-code-bg: #1e2a2a;
+    --c-code-text: #e8e2d8;
+    --c-ok: #6b8b6e;
+    --c-step: #d4a574;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .container { max-width: 920px; margin: 0 auto; padding: 32px 24px; }
+
+  header {
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
+  }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 540px; margin: 0 auto;
+  }
+
+  /* セクション */
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 14px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
+  }
+  .section h2 {
+    margin: 0 0 14px; font-size: 19px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85; margin-bottom: 16px;
+  }
+
+  /* フロー2ステップ */
+  .flow {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin-bottom: 24px;
+  }
+  .flow-step {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 20px 24px;
+    border-left: 3px solid var(--c-primary);
+  }
+  .flow-step.daily { border-left-color: var(--c-accent); }
+  .flow-step .label {
+    font-size: 11px; color: var(--c-accent); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 6px;
+  }
+  .flow-step h3 {
+    margin: 0 0 8px; font-size: 16px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .flow-step .time {
+    display: inline-block; padding: 2px 8px; border-radius: 3px;
+    background: var(--c-soft); font-size: 11px; color: var(--c-muted);
+    margin-bottom: 8px; letter-spacing: 0.05em;
+  }
+  .flow-step p { margin: 6px 0; font-size: 13px; }
+
+  /* 設定方法カード */
+  .platforms {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; margin-top: 14px;
+  }
+  .platform {
+    background: var(--c-soft); padding: 14px 16px;
+    border-radius: 6px;
+  }
+  .platform h4 {
+    margin: 0 0 6px; font-size: 13px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .platform ol {
+    margin: 6px 0 0; padding-left: 18px; font-size: 12px;
+    line-height: 1.7;
+  }
+
+  /* 大型プロンプトボックス */
+  .big-prompt {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 8px; overflow: hidden; margin: 16px 0 24px;
+  }
+  .big-prompt-head {
+    padding: 14px 20px; background: var(--c-primary);
+    color: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .big-prompt-head .label {
+    font-size: 11px; letter-spacing: 0.2em; font-weight: 600;
+  }
+  .big-prompt-head .copy-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white; padding: 6px 14px; border-radius: 4px;
+    font-size: 11px; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.1em;
+    transition: all 0.15s;
+  }
+  .big-prompt-head .copy-btn:hover {
+    background: rgba(255,255,255,0.25);
+  }
+  .big-prompt-head .copy-btn.copied {
+    background: var(--c-ok); border-color: var(--c-ok);
+  }
+  .code-block {
+    background: var(--c-code-bg); color: var(--c-code-text);
+    padding: 20px 24px; font-family: "SF Mono", Monaco, monospace;
+    font-size: 12px; line-height: 1.75;
+    white-space: pre-wrap; word-wrap: break-word;
+    max-height: 480px; overflow-y: auto;
+  }
+
+  /* トリガー早見表 */
+  .triggers-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; overflow: hidden;
+    font-size: 12px;
+  }
+  .triggers-table th, .triggers-table td {
+    border-bottom: 1px solid var(--c-line);
+    padding: 10px 14px; text-align: left; vertical-align: top;
+  }
+  .triggers-table th {
+    background: var(--c-soft); font-size: 10px;
+    color: var(--c-muted); letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+  .triggers-table .no {
+    color: var(--c-accent); font-weight: 700; width: 36px;
+    font-family: "SF Mono", monospace; font-size: 11px;
+  }
+  .triggers-table .trigger {
+    width: 30%; font-family: "SF Mono", Monaco, monospace;
+    color: var(--c-primary-dark); font-size: 12px;
+    background: var(--c-soft);
+  }
+  .triggers-table .trigger a {
+    color: inherit; text-decoration: none;
+    border-bottom: 1px dotted var(--c-primary);
+  }
+  .triggers-table .desc { color: var(--c-text); font-size: 12px; }
+
+  /* トリガー詳細カード */
+  .trigger-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 18px 22px; margin-bottom: 12px;
+    scroll-margin-top: 20px;
+  }
+  .trigger-card .num {
+    font-size: 11px; color: var(--c-accent); letter-spacing: 0.15em;
+    font-weight: 600; font-family: "SF Mono", monospace;
+  }
+  .trigger-card h3 {
+    margin: 4px 0 8px; font-size: 15px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .trigger-syntax {
+    background: var(--c-code-bg); color: var(--c-code-text);
+    padding: 10px 14px; border-radius: 4px; margin: 8px 0;
+    font-family: "SF Mono", Monaco, monospace; font-size: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .trigger-syntax .copy-small {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white; padding: 3px 10px; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.1em;
+  }
+  .trigger-syntax .copy-small.copied {
+    background: var(--c-ok); border-color: var(--c-ok);
+  }
+  .trigger-meta {
+    margin-top: 8px; font-size: 12px;
+  }
+  .trigger-meta dl {
+    margin: 0; display: grid;
+    grid-template-columns: 80px 1fr; gap: 4px 12px;
+  }
+  .trigger-meta dt {
+    color: var(--c-muted); font-weight: 600; font-size: 10px;
+    letter-spacing: 0.1em; padding-top: 3px;
+  }
+  .trigger-meta dd { margin: 0; font-size: 12px; line-height: 1.6; }
+
+  /* チェックリスト */
+  .checklist-section {
+    background: var(--c-card); border: 2px solid var(--c-primary);
+    border-radius: 6px; padding: 24px 28px; margin-top: 32px;
+  }
+  .checklist-section h2 {
+    margin: 0 0 6px; font-size: 17px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .checklist-section .sub {
+    font-size: 12px; color: var(--c-muted); margin-bottom: 16px;
+  }
+  .checklist {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .checklist li {
+    padding: 10px 0 10px 28px; position: relative; font-size: 13px;
+    border-bottom: 1px dashed var(--c-line);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐'; position: absolute; left: 4px; top: 10px;
+    font-size: 16px; color: var(--c-primary);
+  }
+  .checklist .desc {
+    display: block; font-size: 11px; color: var(--c-muted);
+    margin-top: 2px;
+  }
+
+  /* 折りたたみ（従来版） */
+  details {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 16px 22px; margin-top: 20px;
+  }
+  details summary {
+    cursor: pointer; font-size: 13px; color: var(--c-muted);
+    font-weight: 600; letter-spacing: 0.05em;
+    user-select: none;
+  }
+  details[open] summary { margin-bottom: 12px; }
+  details p { font-size: 12px; color: var(--c-muted); }
+
+  /* 注釈 */
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+    .code-block { max-height: none; overflow: visible; }
+    .copy-btn, .copy-small { display: none; }
+  }
+  @media (max-width: 720px) {
+    .flow { grid-template-columns: 1fr; }
+    .platforms { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — SNS PROJECT</div>
+    <h1>プロジェクト用プロンプト集</h1>
+    <p>1回セットアップ + 1行で全機能呼び出し。ChatGPT/Claude/Gemini のプロジェクト機能で使う運用版</p>
+  </header>
+
+  <!-- 使い方の流れ -->
+  <div class="section">
+    <div class="section-title">使い方の流れ</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="label">STEP A</div>
+        <h3>事前準備</h3>
+        <div class="time">5分・1回だけ</div>
+        <p>下記の「プロジェクト設定用プロンプト」をコピーして、ChatGPT/Claudeのプロジェクトに貼り付けます。</p>
+      </div>
+      <div class="flow-step daily">
+        <div class="label">STEP B</div>
+        <h3>毎日の使用</h3>
+        <div class="time">30秒</div>
+        <p>「リール5本: 呼吸が浅い日に」のように、トリガー語を1行打つだけで、台本やキャプションが出てきます。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 0: プロジェクト設定 -->
+  <div class="section">
+    <div class="section-title">STEP 0　プロジェクト設定用プロンプト</div>
+    <h2>これをコピーしてプロジェクトに貼り付け</h2>
+    <p class="lead">
+      ChatGPT・Claude・Gemini のいずれかで「プロジェクト」or「カスタム指示」機能を使い、
+      下記の大型プロンプトを <strong>1回だけ</strong> 設定します。
+      これでうたかたのブランド情報・NG/OK表現・15種類のトリガー語が記憶されます。
+    </p>
+
+    <div class="platforms">
+      <div class="platform">
+        <h4>ChatGPT（無料版OK）</h4>
+        <ol>
+          <li>右上アイコン → 「設定」 → 「カスタマイズ」</li>
+          <li>「ChatGPTにどう応答してほしいか」に貼り付け</li>
+          <li>保存</li>
+        </ol>
+      </div>
+      <div class="platform">
+        <h4>ChatGPT Plus / Projects</h4>
+        <ol>
+          <li>「Projects」を新規作成「うたかた」</li>
+          <li>「Add instructions」に貼り付け</li>
+          <li>このプロジェクトで会話開始</li>
+        </ol>
+      </div>
+      <div class="platform">
+        <h4>Claude Pro / Projects</h4>
+        <ol>
+          <li>「Projects」を新規作成「うたかた」</li>
+          <li>「Set custom instructions」に貼り付け</li>
+          <li>このプロジェクトで会話開始</li>
+        </ol>
+      </div>
+      <div class="platform">
+        <h4>Gemini Gems</h4>
+        <ol>
+          <li>「Gems」管理画面で「カスタムGem作成」</li>
+          <li>指示欄に貼り付け</li>
+          <li>保存・公開（非公開でOK）</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="big-prompt">
+      <div class="big-prompt-head">
+        <span class="label">PROJECT SETUP PROMPT</span>
+        <button class="copy-btn" data-target="setup-prompt">コピー</button>
+      </div>
+      <div class="code-block" id="setup-prompt">あなたは個人エステサロン「うたかた」のSNS発信を支える編集者です。
+押し売りせず、感情を煽らず、安心感のある言葉で発信することを大切にしています。
+
+# サロン情報
+- サロン名: うたかた
+- 種類: オイルマッサージ、フェイシャル、ホットストーン、キャンドルアロママッサージなどを組み合わせた個人エステサロン
+- 対象: 疲れを感じている大人、自分のケアを後回しにしがちな方
+- 強み: 丁寧な施術、押し売りしない接客、その日の状態に合わせるケア、落ち着いた空間
+- 大切にしている: 感情を煽らない / 正解を押しつけない / キラキラ訴求しない / 劇的変化を強調しない / お客様を焦らせない
+- 予約方法: Instagram DM または LINE
+
+# 言葉のルール（出力時に必ず守る）
+
+○ 使う言葉:
+整える / 少し軽くなる / 呼吸がしやすくなる / 今の状態に気づく / 自分に戻る / 不快を減らす / 無理なく続ける / その日の状態に合わせる / 疲れ切る前に整える / がんばる前にひと息つく
+
+× 絶対に使わない言葉:
+劇的変化 / 絶対 / 必ず改善 / 老廃物 / 痩せる / 治る / 若返る / 一瞬で / 今すぐ / 損 / 殺到 / 残りわずか / 人生変わる / 放置すると危険 / 知らないと損
+
+# 出力前の必須チェック（毎回内部で実行してから出力）
+1. 感情を煽っていないか
+2. 不安を強く刺激していないか
+3. 売り込み感が強くないか
+4. 施術メニューの羅列になっていないか
+5. お客様の状態を丁寧に言語化できているか
+6. うたかたの考え方が伝わっているか
+7. 予約を急かしていないか
+8. 見た人が安心できる表現になっているか
+
+# CTA（予約案内）の書き方
+- ❌「今すぐ」「お早めに」「残りわずか」「殺到」など焦らせる言葉は使わない
+- ⭕「気になる方は」「もしよければ」など、選択肢を残す
+- 例: 「気になる方はDMください」「もしよければ、お話しから」
+
+# トリガー語の使い方
+私が以下の形式で送ったら、対応するタスクを実行してください。
+{ } 内が空欄の場合は、まずうたかたの方針に合う候補を3つ提案してから本題に進んでください。
+
+---
+
+## 1. リール5本: {テーマ}
+Instagramリール用30秒台本を5パターン作成。
+各パターンに以下を含める:
+- タイトル（15文字以内）
+- 30秒構成（秒数 / シーン / テロップ・ナレーション の表）
+- テロップ文言（5〜7個、各15文字以内）
+- キャプション（150〜200文字、改行を入れて読みやすく）
+- ハッシュタグ（10〜15個）
+
+## 2. フィード3本: {テーマ}
+Instagramフィード投稿（画像/カルーセル）の構成を3パターン。
+- 1枚目（表紙）の文言（20文字以内）
+- 各ページの文言（1ページ30〜80文字）
+- キャプション（200〜300文字）
+- ハッシュタグ（10〜15個）
+
+## 3. キャプション: {動画内容や状況}
+動画/画像に添えるキャプションを3バージョン:
+- 短め版（80〜120文字）
+- 標準版（150〜200文字）
+- 長め版（250〜350文字）
+最後に「どれがうたかたらしいか」を一言。
+
+## 4. ストーリーズ5本: {目的}
+ストーリーズ用の投稿アイデアを5本:
+- 1枚目テキスト（20文字以内）
+- 重ねるスタンプ/質問機能（使うなら案内）
+- 画像/動画の指示
+- リンク先・誘導（DM/LINE/なし）
+
+## 5. 月次テーマ: {月}
+月の発信全体のテーマとサブテーマ5つ:
+- 月のテーマ（一文）
+- テーマの背景（200文字程度）
+- サブテーマ5つ
+- おすすめ施術メニュー
+- この月に避けたい話題
+
+## 6. 週次テーマ: {月のテーマ}
+1週間分の投稿テーマを月〜日で7本:
+- 各曜日: 投稿フォーマット / テーマ / 一言コメント / 所要時間目安
+
+## 7. 部位別投稿: {部位}
+施術部位/メニューにフォーカスした投稿案を3パターン:
+- お客様の状態への問いかけ（20〜40文字）
+- 部位の特徴の説明（専門用語に頼らない）
+- 施術での向き合い方
+- やわらかなCTA
+
+## 8. 悩み言語化: {テーマ}
+お客様の「もやっとした不調」を言語化する投稿を3パターン:
+- 問いかけ（押しつけない）
+- 状態の言語化（選択肢として）
+- サロンができること（控えめに）
+- CTA（やわらかく、なくてもOK）
+
+## 9. 考え方を伝える: {テーマ}
+うたかたの考え方を伝える投稿を3パターン:
+- タイトル（静かに惹きつける、20文字以内）
+- 本文（150〜250文字）
+- CTA（なくてもOK、あるなら控えめに）
+
+## 10. 予約導線: {文脈}
+売り込み感のない予約案内を5パターン:
+- 文言（1〜3行）
+- なぜこの言い回しを選んだか（補足）
+
+## 11. LINE配信: {目的}
+既存客向けLINE配信文を3パターン（短め/標準/丁寧）:
+- 本文（150〜400文字、改行入り）
+- 末尾のひとこと
+- 送信時間の目安（朝/昼/夜）
+
+## 12. お客様の声: {原文}
+お客様の感想をSNS投稿に整える:
+- 原文を尊重した整え版（言葉の温度を残す）
+- 短いキャプション案（100文字程度）
+- ハッシュタグ案（5〜10個）
+※ 原文を盛らない / 効果的表現に書き換えない / 個人特定情報は外す
+
+## 13. 季節投稿: {季節+状態}
+季節や生活習慣をテーマにした投稿案を5パターン:
+- タイトル（季節感、20文字以内）
+- 本文構成（状態への気づき → 整え方 → サロンでできること）
+- 自宅でできるひとこと（1つ、押し付けず）
+- CTA（やわらかく、なくてもOK）
+
+## 14. NGチェック: {文章}
+うたかたNG表現のチェック:
+- NG表現の有無（あり/なし）
+- 該当箇所（あれば抜粋）
+- 理由
+- 修正提案（うたかたの言葉に）
+- 全体の点数（5点満点）
+
+## 15. 整える: {文章}
+文章をうたかたらしい言葉に書き直す:
+- 整え版（短め 80〜120字 / 標準 150〜200字 / 丁寧 250字以上の3パターン）
+- どこを変えたか（簡単な説明）
+- まだ気になる表現（あれば指摘）
+
+---
+
+# 出力スタイル
+- マークダウンで整理して読みやすく
+- 改行・スペースを丁寧に
+- 売り込み感を出さない
+- お客様の状態を主語にする
+- 「ここなら雑に扱われない」と感じてもらえる温度感
+
+それでは、私の指示を待っています。</div>
+    </div>
+  </div>
+
+  <!-- トリガー早見表 -->
+  <div class="section">
+    <div class="section-title">トリガー早見表</div>
+    <h2>15種類のトリガー語</h2>
+    <p class="lead">
+      設定後は、下記のトリガーを打つだけ。クリックで詳細にジャンプ。
+    </p>
+
+    <table class="triggers-table">
+      <thead>
+        <tr>
+          <th class="no">No.</th>
+          <th>トリガー語</th>
+          <th>何ができるか</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="no">01</td>
+          <td class="trigger"><a href="#t-01">リール5本: {テーマ}</a></td>
+          <td class="desc">リール台本を5パターン</td>
+        </tr>
+        <tr>
+          <td class="no">02</td>
+          <td class="trigger"><a href="#t-02">フィード3本: {テーマ}</a></td>
+          <td class="desc">フィード投稿構成3パターン</td>
+        </tr>
+        <tr>
+          <td class="no">03</td>
+          <td class="trigger"><a href="#t-03">キャプション: {動画内容}</a></td>
+          <td class="desc">短/標準/長の3バージョン</td>
+        </tr>
+        <tr>
+          <td class="no">04</td>
+          <td class="trigger"><a href="#t-04">ストーリーズ5本: {目的}</a></td>
+          <td class="desc">ストーリーズアイデア5本</td>
+        </tr>
+        <tr>
+          <td class="no">05</td>
+          <td class="trigger"><a href="#t-05">月次テーマ: {月}</a></td>
+          <td class="desc">月のテーマ+サブ5つ</td>
+        </tr>
+        <tr>
+          <td class="no">06</td>
+          <td class="trigger"><a href="#t-06">週次テーマ: {月のテーマ}</a></td>
+          <td class="desc">月〜日の7本分</td>
+        </tr>
+        <tr>
+          <td class="no">07</td>
+          <td class="trigger"><a href="#t-07">部位別投稿: {部位}</a></td>
+          <td class="desc">部位フォーカス3パターン</td>
+        </tr>
+        <tr>
+          <td class="no">08</td>
+          <td class="trigger"><a href="#t-08">悩み言語化: {テーマ}</a></td>
+          <td class="desc">もやもや不調の言語化3パターン</td>
+        </tr>
+        <tr>
+          <td class="no">09</td>
+          <td class="trigger"><a href="#t-09">考え方を伝える: {テーマ}</a></td>
+          <td class="desc">ブランド軸投稿3パターン</td>
+        </tr>
+        <tr>
+          <td class="no">10</td>
+          <td class="trigger"><a href="#t-10">予約導線: {文脈}</a></td>
+          <td class="desc">売り込まない案内5パターン</td>
+        </tr>
+        <tr>
+          <td class="no">11</td>
+          <td class="trigger"><a href="#t-11">LINE配信: {目的}</a></td>
+          <td class="desc">既存客向け配信文3パターン</td>
+        </tr>
+        <tr>
+          <td class="no">12</td>
+          <td class="trigger"><a href="#t-12">お客様の声: {原文}</a></td>
+          <td class="desc">感想を投稿用に整える</td>
+        </tr>
+        <tr>
+          <td class="no">13</td>
+          <td class="trigger"><a href="#t-13">季節投稿: {季節+状態}</a></td>
+          <td class="desc">季節絡みの投稿5パターン</td>
+        </tr>
+        <tr>
+          <td class="no">14</td>
+          <td class="trigger"><a href="#t-14">NGチェック: {文章}</a></td>
+          <td class="desc">NG表現の有無チェック</td>
+        </tr>
+        <tr>
+          <td class="no">15</td>
+          <td class="trigger"><a href="#t-15">整える: {文章}</a></td>
+          <td class="desc">うたかたらしさに書き直す</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- トリガー詳細 -->
+  <div class="section">
+    <div class="section-title">トリガー詳細</div>
+    <h2>各トリガーの使い方</h2>
+
+    <div class="trigger-card" id="t-01">
+      <div class="num">TRIGGER 01</div>
+      <h3>リール5本</h3>
+      <div class="trigger-syntax">
+        <span>リール5本: 呼吸が浅い日に</span>
+        <button class="copy-small" data-text="リール5本: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>週1のリール投稿の台本が必要なとき</dd>
+          <dt>出力</dt><dd>30秒台本×5パターン（タイトル/構成表/テロップ/キャプション/ハッシュタグ）</dd>
+          <dt>空欄時</dt><dd>うたかたに合うテーマを3つ提案してから台本作成</dd>
+          <dt>コツ</dt><dd>テーマは「今日の気分」を素直に。「もう少し静かに」と追加指示で調整可能</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-02">
+      <div class="num">TRIGGER 02</div>
+      <h3>フィード3本</h3>
+      <div class="trigger-syntax">
+        <span>フィード3本: お客様の声</span>
+        <button class="copy-small" data-text="フィード3本: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>月2回のフィード投稿（画像/カルーセル）構成を考えるとき</dd>
+          <dt>出力</dt><dd>3パターン（表紙文言/各ページ文言/キャプション/ハッシュタグ）</dd>
+          <dt>コツ</dt><dd>最後のページに予約案内を入れすぎないのがうたかたらしい</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-03">
+      <div class="num">TRIGGER 03</div>
+      <h3>キャプション</h3>
+      <div class="trigger-syntax">
+        <span>キャプション: ホットストーンを背中に置いている手元</span>
+        <button class="copy-small" data-text="キャプション: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>動画や写真はすでにあって、添える文章だけ欲しいとき</dd>
+          <dt>出力</dt><dd>短め/標準/長めの3バージョン + おすすめ</dd>
+          <dt>コツ</dt><dd>動画の内容は「自分が見ているもの」を素直に書けばOK</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-04">
+      <div class="num">TRIGGER 04</div>
+      <h3>ストーリーズ5本</h3>
+      <div class="trigger-syntax">
+        <span>ストーリーズ5本: 空き枠案内</span>
+        <button class="copy-small" data-text="ストーリーズ5本: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>毎日のストーリーズで「今日何にしよう」と迷ったとき</dd>
+          <dt>出力</dt><dd>5本のアイデア（テキスト/スタンプ/素材指示/リンク）</dd>
+          <dt>空欄時</dt><dd>時間帯・季節に合うアイデアを5本自動提案</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-05">
+      <div class="num">TRIGGER 05</div>
+      <h3>月次テーマ</h3>
+      <div class="trigger-syntax">
+        <span>月次テーマ: 6月</span>
+        <button class="copy-small" data-text="月次テーマ: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>月初に1ヶ月の発信の柱を決めるとき</dd>
+          <dt>出力</dt><dd>月のテーマ/背景/サブテーマ5/おすすめメニュー/避ける話題</dd>
+          <dt>空欄時</dt><dd>現在の月から推測して翌月分を提案</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-06">
+      <div class="num">TRIGGER 06</div>
+      <h3>週次テーマ</h3>
+      <div class="trigger-syntax">
+        <span>週次テーマ: 呼吸を整える月</span>
+        <button class="copy-small" data-text="週次テーマ: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>月のテーマが決まった後、1週間分の予定を組むとき</dd>
+          <dt>出力</dt><dd>月〜日の7本分（フォーマット/テーマ/コメント/所要時間）</dd>
+          <dt>コツ</dt><dd>日曜夜に来週分を組むのがおすすめ</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-07">
+      <div class="num">TRIGGER 07</div>
+      <h3>部位別投稿</h3>
+      <div class="trigger-syntax">
+        <span>部位別投稿: 首肩</span>
+        <button class="copy-small" data-text="部位別投稿: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>特定の部位/メニューにフォーカスした投稿が必要なとき</dd>
+          <dt>出力</dt><dd>3パターン（問いかけ/特徴説明/向き合い方/CTA）</dd>
+          <dt>空欄時</dt><dd>気づきにくい部位を3つ自動提案</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-08">
+      <div class="num">TRIGGER 08</div>
+      <h3>悩み言語化</h3>
+      <div class="trigger-syntax">
+        <span>悩み言語化: 自分のことが後回し</span>
+        <button class="copy-small" data-text="悩み言語化: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>「もやっとした不調」を言語化する共感型投稿を作るとき</dd>
+          <dt>出力</dt><dd>3パターン（問いかけ/言語化/サロンができること/CTA）</dd>
+          <dt>コツ</dt><dd>代表自身が日常で感じたことをテーマにすると刺さりやすい</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-09">
+      <div class="num">TRIGGER 09</div>
+      <h3>考え方を伝える</h3>
+      <div class="trigger-syntax">
+        <span>考え方を伝える: 押し売りしない理由</span>
+        <button class="copy-small" data-text="考え方を伝える: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>うたかたの考え方を伝えるブランド軸投稿を作るとき</dd>
+          <dt>出力</dt><dd>3パターン（タイトル/本文/CTA）</dd>
+          <dt>コツ</dt><dd>月1〜2回でファン化に直結する</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-10">
+      <div class="num">TRIGGER 10</div>
+      <h3>予約導線</h3>
+      <div class="trigger-syntax">
+        <span>予約導線: 投稿の最後</span>
+        <button class="copy-small" data-text="予約導線: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>投稿末・ストーリーズで予約案内を入れたいとき</dd>
+          <dt>出力</dt><dd>5パターン（文言と選んだ理由）</dd>
+          <dt>コツ</dt><dd>気に入った文言は定型化してメモに保存</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-11">
+      <div class="num">TRIGGER 11</div>
+      <h3>LINE配信</h3>
+      <div class="trigger-syntax">
+        <span>LINE配信: 月のテーマ共有</span>
+        <button class="copy-small" data-text="LINE配信: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>既存客向けのLINE配信文が必要なとき</dd>
+          <dt>出力</dt><dd>3パターン（短め/標準/丁寧）+ 送信時間目安</dd>
+          <dt>コツ</dt><dd>200〜300文字目安、配信頻度は週1まで</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-12">
+      <div class="num">TRIGGER 12</div>
+      <h3>お客様の声</h3>
+      <div class="trigger-syntax">
+        <span>お客様の声: [感想を貼り付け]</span>
+        <button class="copy-small" data-text="お客様の声: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>お客様からいただいた感想を投稿用に整えたいとき</dd>
+          <dt>出力</dt><dd>整え版/キャプション案/ハッシュタグ</dd>
+          <dt>注意</dt><dd>投稿前に必ずお客様にもう一度確認を</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-13">
+      <div class="num">TRIGGER 13</div>
+      <h3>季節投稿</h3>
+      <div class="trigger-syntax">
+        <span>季節投稿: 梅雨入り前 / 体の重さ</span>
+        <button class="copy-small" data-text="季節投稿: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>季節絡みの共感投稿を作るとき</dd>
+          <dt>出力</dt><dd>5パターン（タイトル/本文構成/自宅ケア/CTA）</dd>
+          <dt>空欄時</dt><dd>現在月から状態を推測</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-14">
+      <div class="num">TRIGGER 14</div>
+      <h3>NGチェック</h3>
+      <div class="trigger-syntax">
+        <span>NGチェック: [文章を貼り付け]</span>
+        <button class="copy-small" data-text="NGチェック: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>投稿前の最終チェック</dd>
+          <dt>出力</dt><dd>NG有無/該当箇所/理由/修正提案/5点満点評価</dd>
+          <dt>コツ</dt><dd>必ず通すとトーンのブレが防げる</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="trigger-card" id="t-15">
+      <div class="num">TRIGGER 15</div>
+      <h3>整える</h3>
+      <div class="trigger-syntax">
+        <span>整える: [文章を貼り付け]</span>
+        <button class="copy-small" data-text="整える: ">コピー</button>
+      </div>
+      <div class="trigger-meta">
+        <dl>
+          <dt>使う場面</dt><dd>AI出力や過去の文章をうたかたらしさに整え直したいとき</dd>
+          <dt>出力</dt><dd>3バージョン（短/標準/丁寧）+ 変更点 + 気になる表現</dd>
+          <dt>コツ</dt><dd>「下書き作成 → 整え」の2段階運用が安定</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- 発信チェックリスト -->
+  <div class="checklist-section">
+    <h2>うたかた発信チェックリスト</h2>
+    <p class="sub">投稿前にこの8項目に目を通し、すべて☐にチェックが入ってから投稿します。</p>
+    <ul class="checklist">
+      <li>感情を煽っていないか
+        <span class="desc">「驚き」「焦り」「不安」を強く揺さぶる表現になっていないか</span></li>
+      <li>不安を強く刺激していないか
+        <span class="desc">「放置すると危険」「知らないと損」のような恐怖訴求になっていないか</span></li>
+      <li>売り込み感が強くないか
+        <span class="desc">「ぜひご予約を」「お早めに」「キャンペーン」が前面に出すぎていないか</span></li>
+      <li>施術メニューの羅列になっていないか
+        <span class="desc">メニュー名・料金・効果の列挙ではなく、お客様の状態を起点に書けているか</span></li>
+      <li>お客様の状態を丁寧に言語化できているか
+        <span class="desc">「もやっとした不調」を選択肢として提示できているか</span></li>
+      <li>うたかたの考え方が伝わっているか
+        <span class="desc">「整える」「自分に戻る」「無理なく」というトーンが感じられるか</span></li>
+      <li>予約を急かしていないか
+        <span class="desc">「今すぐ」「残りわずか」など、お客様の主導権を奪う言葉がないか</span></li>
+      <li>見た人が安心できる表現になっているか
+        <span class="desc">「ここなら雑に扱われない」「自分のペースで選べる」と感じられるか</span></li>
+    </ul>
+  </div>
+
+  <!-- 補足 -->
+  <div class="tip" style="margin-top:24px;">
+    <strong>ヒント:</strong>
+    トリガー語は「リール5本」「リール: 」など若干の表記揺れも受け付けます。
+    指示の最後に「もう少し短く」「キーワード変えて」など追加すれば、何度でも再生成できます。
+  </div>
+
+  <!-- 折りたたみ: 従来版プロンプト集 -->
+  <details>
+    <summary>＋ 従来版プロンプト集（プロジェクト機能を使わない場合）</summary>
+    <p>プロジェクト機能を使わずに、毎回フルプロンプトをコピペしたい場合の旧バージョンは下記URLからアクセスできます。</p>
+    <p style="margin-top:8px;">
+      → <a href="./salon-prompts-legacy.html" style="color: var(--c-primary); text-decoration: none; border-bottom: 1px dotted var(--c-primary);">salon-prompts-legacy.html</a>
+      <br>
+      <span style="font-size:11px;color:var(--c-muted);">※ 同じ内容を15個の独立したプロンプトとして提供</span>
+    </p>
+  </details>
+
+  <footer>
+    UTAKATA — Project Prompt Collection / for ChatGPT &amp; Claude &amp; Gemini
+  </footer>
+
+</div>
+
+<script>
+  // 大型コピーボタン
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '✓ COPIED';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+  });
+
+  // 小型コピーボタン（トリガー語）
+  document.querySelectorAll('.copy-small').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.dataset.text;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

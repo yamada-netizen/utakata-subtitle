@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ショート動画 投稿工程ヒアリングシート</title>
+<style>
+  :root {
+    --c-plan: #6366f1;
+    --c-shoot: #ec4899;
+    --c-edit: #f59e0b;
+    --c-post: #10b981;
+    --c-ops: #06b6d4;
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --card-bg: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+  header {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; }
+  header .sub { opacity: 0.9; font-size: 13px; }
+  .meta-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-row label {
+    flex: 1;
+    min-width: 200px;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+  .meta-row input {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .meta-row input::placeholder { color: rgba(255,255,255,0.6); }
+
+  /* 全体フロー図 */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .flow-phase {
+    padding: 16px 12px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    position: relative;
+  }
+  .flow-phase .num {
+    font-size: 11px;
+    opacity: 0.85;
+    letter-spacing: 0.1em;
+  }
+  .flow-phase .name { font-size: 16px; font-weight: 700; margin: 4px 0; }
+  .flow-phase .count { font-size: 11px; opacity: 0.9; }
+  .flow-phase.plan { background: var(--c-plan); }
+  .flow-phase.shoot { background: var(--c-shoot); }
+  .flow-phase.edit { background: var(--c-edit); }
+  .flow-phase.post { background: var(--c-post); }
+  .flow-phase.ops { background: var(--c-ops); }
+
+  /* フェーズセクション */
+  .phase-section { margin-bottom: 36px; }
+  .phase-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 14px;
+  }
+  .phase-title .badge {
+    background: rgba(255,255,255,0.25);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .phase-title h2 { margin: 0; font-size: 18px; }
+  .phase-title.plan { background: var(--c-plan); }
+  .phase-title.shoot { background: var(--c-shoot); }
+  .phase-title.edit { background: var(--c-edit); }
+  .phase-title.post { background: var(--c-post); }
+  .phase-title.ops { background: var(--c-ops); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .step {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+  }
+  .step-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .step-num {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .step-title {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .step-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: var(--muted);
+  }
+  .tag.auto { background: #dcfce7; color: #166534; }
+  .tag.semi { background: #fef3c7; color: #92400e; }
+  .tag.manual { background: #fee2e2; color: #991b1b; }
+  .tag.tool { background: #e0e7ff; color: #3730a3; }
+
+  .step-inputs {
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .input-row label {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .input-row input,
+  .input-row textarea {
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-family: inherit;
+    width: 100%;
+  }
+  .input-row.full { grid-column: 1 / -1; }
+  .input-row textarea { resize: vertical; min-height: 32px; }
+
+  .bottleneck {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .bottleneck-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .bottleneck-dot:hover { transform: scale(1.1); }
+  .bottleneck-dot.lv1 { background: #fef9c3; border-color: #fde047; }
+  .bottleneck-dot.lv2 { background: #fed7aa; border-color: #fb923c; }
+  .bottleneck-dot.lv3 { background: #fecaca; border-color: #ef4444; }
+
+  /* まとめセクション */
+  .summary {
+    background: white;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 32px;
+  }
+  .summary h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    border-bottom: 2px solid var(--c-plan);
+    padding-bottom: 8px;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .summary-block label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .summary-block textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+
+  /* 凡例 */
+  .legend {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border: 1px solid var(--line);
+    font-size: 12px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .legend-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .legend-label {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* 印刷用 */
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; max-width: 100%; }
+    .step { break-inside: avoid; }
+    .phase-section { break-inside: avoid; page-break-inside: avoid; }
+    header { break-after: avoid; }
+    input, textarea { background: white !important; }
+  }
+
+  @media (max-width: 720px) {
+    .flow { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>📱 ショート動画 投稿工程ヒアリングシート</h1>
+    <div class="sub">どこがボトルネックか、どこが自動化できるかを一緒に洗い出すための資料</div>
+    <div class="meta-row">
+      <label>サロン名<input type="text" placeholder="例: 〇〇エステ"></label>
+      <label>ヒアリング日<input type="text" placeholder="2026/05/22"></label>
+      <label>担当者<input type="text" placeholder="お名前"></label>
+      <label>現状の投稿頻度<input type="text" placeholder="例: ストーリー毎日 / リール月1"></label>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div class="legend-group">
+      <span class="legend-label">自動化余地:</span>
+      <span class="tag auto">高</span>
+      <span class="tag semi">中</span>
+      <span class="tag manual">低</span>
+    </div>
+    <div class="legend-group">
+      <span class="legend-label">ボトルネック度:</span>
+      <span class="bottleneck-dot lv1"></span>少し
+      <span class="bottleneck-dot lv2"></span>けっこう
+      <span class="bottleneck-dot lv3"></span>とても
+    </div>
+  </div>
+
+  <!-- 全体フロー -->
+  <div class="flow">
+    <div class="flow-phase plan">
+      <div class="num">PHASE 1</div>
+      <div class="name">企画・準備</div>
+      <div class="count">4工程</div>
+    </div>
+    <div class="flow-phase shoot">
+      <div class="num">PHASE 2</div>
+      <div class="name">撮影</div>
+      <div class="count">3工程</div>
+    </div>
+    <div class="flow-phase edit">
+      <div class="num">PHASE 3</div>
+      <div class="name">編集</div>
+      <div class="count">7工程</div>
+    </div>
+    <div class="flow-phase post">
+      <div class="num">PHASE 4</div>
+      <div class="name">投稿準備</div>
+      <div class="count">4工程</div>
+    </div>
+    <div class="flow-phase ops">
+      <div class="num">PHASE 5</div>
+      <div class="name">投稿・運用</div>
+      <div class="count">4工程</div>
+    </div>
+  </div>
+
+  <!-- PHASE 1: 企画・準備 -->
+  <section class="phase-section">
+    <div class="phase-title plan">
+      <span class="badge">PHASE 1</span>
+      <h2>企画・準備</h2>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1-1</span>
+          <span class="step-title">投稿テーマ決定</span>
+        </div>
+        <div class="step-desc">「今日は何を撮るか」「どのメニューを紹介するか」を決める</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">ChatGPT</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text" placeholder="例: 15分"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="ネタ切れする？ 誰が決める？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1-2</span>
+          <span class="step-title">構成・台本考案</span>
+        </div>
+        <div class="step-desc">フック→施術→ビフォーアフター→CTA など、動画の流れを設計</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag tool">テンプレ化</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="型は決まっている？ 毎回ゼロから？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1-3</span>
+          <span class="step-title">テロップ文言考案</span>
+        </div>
+        <div class="step-desc">動画に乗せる文字（メニュー名・効果・料金・CTA）の文言を考える</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">文言テンプレ</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="毎回考えてる？ よく使う文言はある？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1-4</span>
+          <span class="step-title">撮影スケジュール調整</span>
+        </div>
+        <div class="step-desc">撮影日・撮影時間・必要な人員の確保</div>
+        <div class="step-meta">
+          <span class="tag manual">自動化:低</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="まとめ撮りしている？ 頻度は？"></textarea></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PHASE 2: 撮影 -->
+  <section class="phase-section">
+    <div class="phase-title shoot">
+      <span class="badge">PHASE 2</span>
+      <h2>撮影</h2>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">2-1</span>
+          <span class="step-title">機材・環境セッティング</span>
+        </div>
+        <div class="step-desc">スマホ・三脚・ライト・背景の準備</div>
+        <div class="step-meta">
+          <span class="tag manual">自動化:低</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="毎回セット？ 固定スタジオ？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">2-2</span>
+          <span class="step-title">撮影実施</span>
+        </div>
+        <div class="step-desc">施術風景・スタッフ紹介・店内・ビフォーアフターなどを撮影</div>
+        <div class="step-meta">
+          <span class="tag manual">自動化:低</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="誰が撮影？ お客様の許可は？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">2-3</span>
+          <span class="step-title">素材整理・保管</span>
+        </div>
+        <div class="step-desc">撮影データの確認・選別・クラウド保存</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">クラウド自動同期</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="ファイル名は？ どこに保存？"></textarea></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PHASE 3: 編集 -->
+  <section class="phase-section">
+    <div class="phase-title edit">
+      <span class="badge">PHASE 3</span>
+      <h2>編集（Edits / CapCut など）</h2>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-1</span>
+          <span class="step-title">素材取り込み・素材選び</span>
+        </div>
+        <div class="step-desc">長尺の撮影素材から使う部分を抽出</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">自動ハイライト</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="どこを使うか迷う？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-2</span>
+          <span class="step-title">テンプレ選択</span>
+        </div>
+        <div class="step-desc">Edits / CapCut のテンプレを選ぶ or 新規作成を選ぶ</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">専用テンプレ</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="テンプレ使ってる？ 新規作成？ 合うのがない？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-3</span>
+          <span class="step-title">カット・並び替え</span>
+        </div>
+        <div class="step-desc">不要部分のカット、順番調整、尺の調整</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">無音自動カット</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-4</span>
+          <span class="step-title">テロップ入れ</span>
+        </div>
+        <div class="step-desc">文字を打ち込み、位置・色・フォント・タイミング調整</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">自動字幕</span>
+          <span class="tag tool">スタイル保存</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="ここが一番重い？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-5</span>
+          <span class="step-title">BGM・効果音</span>
+        </div>
+        <div class="step-desc">楽曲の選定、音量調整、タイミング合わせ</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">ビート自動同期</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="毎回探してる？ お気に入り使い回し？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-6</span>
+          <span class="step-title">エフェクト・トランジション</span>
+        </div>
+        <div class="step-desc">ズーム、シャレ、Before/After 合成、矢印など</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3-7</span>
+          <span class="step-title">プレビュー・書き出し</span>
+        </div>
+        <div class="step-desc">最終確認、修正、Reels用フォーマットで書き出し</div>
+        <div class="step-meta">
+          <span class="tag manual">自動化:低</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="何度も書き出し直す？"></textarea></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PHASE 4: 投稿準備 -->
+  <section class="phase-section">
+    <div class="phase-title post">
+      <span class="badge">PHASE 4</span>
+      <h2>投稿準備</h2>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">4-1</span>
+          <span class="step-title">キャプション作成</span>
+        </div>
+        <div class="step-desc">投稿文の作成（紹介文・誘導文）</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">ChatGPT</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">4-2</span>
+          <span class="step-title">ハッシュタグ選定</span>
+        </div>
+        <div class="step-desc">関連ハッシュタグの選定（10〜30個）</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag tool">タグ管理アプリ</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="使い回し？ 毎回考えてる？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">4-3</span>
+          <span class="step-title">カバー画像作成</span>
+        </div>
+        <div class="step-desc">Reels のサムネ・グリッドに表示される画像作成</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">Canva テンプレ</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="そもそも作っている？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">4-4</span>
+          <span class="step-title">投稿予約 or 即時投稿</span>
+        </div>
+        <div class="step-desc">Meta Business Suite で予約 or その場で投稿</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">Meta Business Suite</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="毎回手動アップ？ 予約使ってる？"></textarea></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PHASE 5: 投稿・運用 -->
+  <section class="phase-section">
+    <div class="phase-title ops">
+      <span class="badge">PHASE 5</span>
+      <h2>投稿後・運用</h2>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">5-1</span>
+          <span class="step-title">ストーリー連携</span>
+        </div>
+        <div class="step-desc">リール投稿をストーリーでもシェア</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">5-2</span>
+          <span class="step-title">コメント・DM対応</span>
+        </div>
+        <div class="step-desc">コメント返信、DM での予約対応</div>
+        <div class="step-meta">
+          <span class="tag semi">自動化:中</span>
+          <span class="tag tool">ManyChat</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="返信スピードは？ よくある質問は？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">5-3</span>
+          <span class="step-title">効果測定・分析</span>
+        </div>
+        <div class="step-desc">再生数・保存・予約 CV の確認</div>
+        <div class="step-meta">
+          <span class="tag auto">自動化:高</span>
+          <span class="tag tool">Insights</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea placeholder="そもそも見てる？"></textarea></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">5-4</span>
+          <span class="step-title">改善・次回への反映</span>
+        </div>
+        <div class="step-desc">伸びた動画の要素を次に活かす</div>
+        <div class="step-meta">
+          <span class="tag manual">自動化:低</span>
+        </div>
+        <div class="step-inputs">
+          <div class="input-row"><label>所要時間</label><input type="text"></div>
+          <div class="input-row">
+            <label>ボトルネック度</label>
+            <div class="bottleneck">
+              <span class="bottleneck-dot lv1"></span>
+              <span class="bottleneck-dot lv2"></span>
+              <span class="bottleneck-dot lv3"></span>
+            </div>
+          </div>
+          <div class="input-row full"><label>メモ</label><textarea></textarea></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- まとめ -->
+  <div class="summary">
+    <h2>📝 ヒアリングまとめ</h2>
+    <div class="summary-grid">
+      <div class="summary-block">
+        <label>🚨 最大のボトルネック工程（番号と理由）</label>
+        <textarea placeholder="例: 3-4 テロップ入れ。1本60分のうち35分かかる"></textarea>
+      </div>
+      <div class="summary-block">
+        <label>⏱ 1本あたりの合計時間（推定）</label>
+        <textarea placeholder="企画◯分 + 撮影◯分 + 編集◯分 + 投稿準備◯分 = 合計◯分"></textarea>
+      </div>
+      <div class="summary-block">
+        <label>💡 サロン側の希望・本音</label>
+        <textarea placeholder="リール頻度を上げたい？ クオリティ重視？ 自動化への抵抗感は？"></textarea>
+      </div>
+      <div class="summary-block">
+        <label>💰 自動化に使える予算感</label>
+        <textarea placeholder="月◯円まで / 初期費用◯円まで"></textarea>
+      </div>
+      <div class="summary-block">
+        <label>🎯 優先度1: まず手を付けるべき自動化</label>
+        <textarea></textarea>
+      </div>
+      <div class="summary-block">
+        <label>🎯 優先度2: 次に手を付ける自動化</label>
+        <textarea></textarea>
+      </div>
+      <div class="summary-block">
+        <label>❓ 追加で確認したいこと</label>
+        <textarea></textarea>
+      </div>
+      <div class="summary-block">
+        <label>📌 次のアクション</label>
+        <textarea placeholder="提案資料作成 / テンプレ作成 / トライアル設定 など"></textarea>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ボトルネックドットのトグル機能
+  document.querySelectorAll('.bottleneck-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      // legend のドットは対象外
+      if (e.target.closest('.legend')) return;
+      const isActive = dot.dataset.active === 'true';
+      // 同じグループの他のドットをリセット
+      const group = dot.parentElement;
+      if (group.classList.contains('bottleneck')) {
+        group.querySelectorAll('.bottleneck-dot').forEach(d => {
+          d.dataset.active = 'false';
+          d.style.opacity = '0.3';
+        });
+        if (!isActive) {
+          // クリックしたドットと、それ以下のレベルを active に
+          const dots = Array.from(group.querySelectorAll('.bottleneck-dot'));
+          const idx = dots.indexOf(dot);
+          for (let i = 0; i <= idx; i++) {
+            dots[i].dataset.active = 'true';
+            dots[i].style.opacity = '1';
+            dots[i].style.transform = 'scale(1.15)';
+          }
+          for (let i = idx + 1; i < dots.length; i++) {
+            dots[i].style.transform = 'scale(1)';
+          }
+        } else {
+          dots.forEach(d => d.style.transform = 'scale(1)');
+        }
+      }
+    });
+  });
+
+  // 初期状態：全ドットを薄く
+  document.querySelectorAll('.step .bottleneck-dot').forEach(d => {
+    d.style.opacity = '0.3';
+  });
+</script>
+
+</body>
+</html>
