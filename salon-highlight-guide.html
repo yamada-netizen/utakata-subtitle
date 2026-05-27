@@ -522,47 +522,153 @@
     </div>
   </div>
 
-  <!-- セクション5: 編集ツール -->
+  <!-- セクション5: 既存素材活用 -->
   <div class="section">
-    <div class="section-title">05　編集ツールの自動ハイライト機能</div>
-    <h2>長尺で撮らざるを得ない時の保険</h2>
+    <div class="section-title">05　既存の長尺動画を活かす（CapCut活用編）</div>
+    <h2>撮影済みの動画から自動でハイライト抽出</h2>
     <p class="lead">
-      基本は分割撮影。ただし、施術全体の雰囲気を残したい場合や、撮影を分割できない時もある。
-      その時はAIに任せる手も。
+      分割撮影は<strong>これから撮るもの</strong>に効きます。
+      では、すでに撮影済みの長尺動画はどうするか。<br>
+      <strong>CapCut の自動編集・シーン検出機能</strong>を使えば、
+      手で全部見直さなくても、AIが「使えるシーン」を抽出してくれます。
     </p>
 
-    <div class="tool-card">
-      <div class="tool-icon">A</div>
-      <div class="tool-info">
-        <div class="name">Edits（標準アプリ）の自動編集</div>
-        <div class="desc">複数素材をAIが自動で並べてくれる。試す価値あり</div>
-      </div>
-      <div class="tool-rating">★★</div>
+    <!-- 4つのアプローチ -->
+    <div class="tech-card">
+      <h3>既存素材を扱う4つのアプローチ</h3>
+      <table class="scene-table" style="margin-top:8px;">
+        <thead>
+          <tr><th>アプローチ</th><th>時短効果</th><th>うたかたとの相性</th><th>学習コスト</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A. CapCut 自動編集</strong></td>
+            <td>★★★</td>
+            <td>★★</td>
+            <td>低</td>
+          </tr>
+          <tr>
+            <td><strong>B. CapCut シーン検出</strong></td>
+            <td>★★</td>
+            <td>★★★</td>
+            <td>低</td>
+          </tr>
+          <tr>
+            <td><strong>C. 2倍速見直し+メモ</strong></td>
+            <td>★★</td>
+            <td>★★★</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <td><strong>D. ChatGPT逆算</strong></td>
+            <td>★★</td>
+            <td>★★★</td>
+            <td>中</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:var(--c-muted);margin-top:8px;">
+        ※ うたかたの場合、A だけに頼らず B+C+D を組み合わせるのが現実的
+      </p>
     </div>
 
-    <div class="tool-card">
-      <div class="tool-icon">C</div>
-      <div class="tool-info">
-        <div class="name">CapCut の「自動ハイライト」</div>
-        <div class="desc">長尺素材から見どころを自動抽出。動きや変化を検出。無料</div>
-      </div>
-      <div class="tool-rating">★★★</div>
+    <!-- A. CapCut 自動編集 -->
+    <div class="tech-card">
+      <h3>A. CapCut 自動編集 (Auto Cut) — 一発で30秒動画化</h3>
+      <p>長尺動画を放り込むと、AIがBGMに合わせて自動でカットし、30秒前後の動画にまとめてくれる機能。</p>
+      <ol class="checklist">
+        <li>CapCut アプリ起動 → 「新規プロジェクト」</li>
+        <li>既存の長尺動画（5〜30分）を選択</li>
+        <li>下部メニューの「自動編集」or「テンプレ自動適用」を選ぶ</li>
+        <li>編集スタイルを選択 → うたかたなら「ミニマル」「シネマティック」「ヴィンテージ」系</li>
+        <li>BGMの自動選択を確認（後で差し替え可）</li>
+        <li>AIが自動で素材を分析・カット・並び替え（30秒〜2分待つ）</li>
+        <li>完成プレビューを確認 → 不要部分を手動で外す</li>
+      </ol>
+      <p class="note">
+        ※ AIは「動きが大きい瞬間」を優先抽出する傾向あり。
+        うたかたの静かな施術風景だと「使ってほしくないシーン」が選ばれることも。
+        最後の手動チェックは必須。
+      </p>
     </div>
 
-    <div class="tool-card">
-      <div class="tool-icon">O</div>
-      <div class="tool-info">
-        <div class="name">Opus Clip / Vizard（AIハイライトツール）</div>
-        <div class="desc">月10〜30 USD。喋りベースなので無音BGM動画には弱い</div>
+    <!-- B. CapCut シーン検出 -->
+    <div class="tech-card">
+      <h3>B. CapCut シーン検出 — 長尺を自動でカット分割</h3>
+      <p><strong>うたかたに一番おすすめの使い方</strong>。AIに「ハイライトを選ばせる」のではなく、「シーンの切り替わり目だけ自動で分けてもらう」。あとは自分で選ぶ。</p>
+      <ol class="checklist">
+        <li>CapCut アプリで長尺動画を取り込む</li>
+        <li>クリップを長押し → 「分割」メニュー → 「シーン検出」or「自動分割」</li>
+        <li>AIがカメラの切り替わり・大きな動きを検出し、自動でクリップを分割</li>
+        <li>10分の動画が、自動的に20〜30個の短いクリップに</li>
+        <li>各クリップのサムネを見て、使えるものだけタイムラインに残す</li>
+        <li>並び替えて完成</li>
+      </ol>
+      <p class="note">
+        ※ 「全部見直す」が「サムネを見るだけ」になる。視聴時間が10分→1分に短縮。
+        うたかたの世界観を壊さないので一番おすすめ。
+      </p>
+    </div>
+
+    <!-- C. 2倍速見直し -->
+    <div class="tech-card">
+      <h3>C. 2倍速見直し＋タイムスタンプメモ法</h3>
+      <p>ツールなし、スマホだけで完結する方法。CapCutが使えない時や、まず素材の全体感を掴みたい時に。</p>
+      <ol class="checklist">
+        <li>スマホで動画を2倍速再生（写真アプリの再生コントロール）</li>
+        <li>スマホメモアプリを開いておく</li>
+        <li>使えそうな瞬間が来たら「1:23 / 肩への手元」のように秒数とメモ</li>
+        <li>5分の動画なら2.5分で全体把握 + 使えるシーン10個ピックアップ</li>
+        <li>編集時はそのメモを見ながら CapCut で該当箇所だけ切り出す</li>
+      </ol>
+      <p class="note">
+        ※ シンプルだが効果絶大。10分のフラット視聴 → 3分の能動的視聴に。
+      </p>
+    </div>
+
+    <!-- D. ChatGPT逆算 -->
+    <div class="tech-card">
+      <h3>D. ChatGPT で「この素材から何が作れる？」を逆算</h3>
+      <p>素材ありき → 台本作成、の逆順アプローチ。撮影済みの素材内容を言葉で説明して、何が作れるか提案してもらう。</p>
+
+      <div class="tip" style="margin-top:8px;">
+        <strong>使うプロンプト:</strong><br>
+        <code style="display:block;background:#2d3838;color:#e8e2d8;padding:10px 14px;border-radius:4px;margin-top:6px;font-size:11px;line-height:1.7;">
+あなたはうたかた（個人エステサロン）のSNS発信を支える編集者です。<br><br>
+以下の素材があります。この素材を活かして作れるリール台本を3パターン提案してください。<br><br>
+【素材の内容】<br>
+- {例: ホットストーンを背中に置く手元の動画。5分間}<br>
+- {例: お客様が深呼吸する顔のアップ。30秒}<br>
+- {例: キャンドルが灯った空間。3分間}<br><br>
+うたかたの方針：感情を煽らない / 押し売りしない / 静かに整える<br>
+○ 良い言葉：整える、軽くなる、呼吸、自分に戻る<br>
+× 避ける言葉：劇的、絶対、必ず、痩せる、若返る
+        </code>
       </div>
-      <div class="tool-rating">★★</div>
+
+      <p class="note" style="margin-top:8px;">
+        ※ 既存素材を「使い回す」のではなく「再解釈」する発想。1つの素材から複数の投稿が生まれる。
+      </p>
+    </div>
+
+    <!-- 補足: 既存素材を未来資産化 -->
+    <div class="tech-card">
+      <h3>＋α: 既存長尺を「シーン素材ライブラリ」に変換しておく（中長期）</h3>
+      <p>CapCutのシーン検出で分割した後、<strong>「使えるシーンだけ別ファイルとして書き出して保存」</strong>しておくと、後で別の投稿に流用できる。</p>
+      <ul style="font-size:13px;">
+        <li>長尺1本 → 使えるシーン10本のミニ素材に変換</li>
+        <li>素材フォルダ設計ガイドの「定番素材」フォルダに保管</li>
+        <li>次回以降「あの素材使えるかも」と検索で見つけられる状態に</li>
+      </ul>
+      <p class="note">
+        ※ 月1の整理タイムで、長尺1本を10本に分割保存する習慣をつけると、半年後には数百本の即使えるクリップが溜まる。
+      </p>
     </div>
 
     <div class="tip">
-      <strong>注意:</strong>
-      AIハイライト系ツールは「動きの激しい動画」「喋りのある動画」を想定して設計されている。
-      うたかたのような <strong>静かな施術風景</strong> では、AIが「ハイライト＝動きの大きい瞬間」と誤判定して、
-      派手なカットを優先しがち。<strong>分割撮影＋スクリプトのほうが確実</strong>です。
+      <strong>結論:</strong>
+      AI に「ハイライトを選ばせる」のではなく、AI に「素材を整理させる」のがうたかたに合うアプローチ。
+      <strong>CapCutシーン検出（B）＋手動選別（C）＋ChatGPT逆算（D）</strong> の組み合わせが、静かな世界観を保ちながら時短になります。
     </div>
   </div>
 
