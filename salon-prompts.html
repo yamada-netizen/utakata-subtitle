@@ -49,50 +49,53 @@
     max-width: 540px; margin: 0 auto;
   }
 
-  /* ブランド情報パネル */
-  .brand-panel {
+  /* 目次パネル */
+  .toc-panel {
     background: var(--c-card); border: 1px solid var(--c-line);
     border-radius: 4px; padding: 24px 28px; margin-bottom: 32px;
   }
-  .brand-panel h2 {
+  .toc-panel h2 {
     margin: 0 0 16px; font-size: 14px; color: var(--c-primary-dark);
     letter-spacing: 0.1em; padding-bottom: 8px;
     border-bottom: 1px solid var(--c-line); font-weight: 500;
   }
-  .brand-panel dl {
-    margin: 0; display: grid; grid-template-columns: 100px 1fr;
-    gap: 8px 16px; font-size: 13px;
+  .toc-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
   }
-  .brand-panel dt {
-    color: var(--c-muted); font-size: 11px; padding-top: 3px;
-    letter-spacing: 0.05em;
+  .toc-table th, .toc-table td {
+    border-bottom: 1px solid var(--c-line); padding: 10px 12px;
+    text-align: left; vertical-align: top;
   }
-  .brand-panel dd { margin: 0; }
-
-  /* 言葉のリスト */
-  .words {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-    margin-top: 20px;
+  .toc-table th {
+    background: #f5f1ea; font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.15em; font-weight: 600;
   }
-  .words-box {
-    padding: 14px 18px; border-radius: 4px;
+  .toc-table .no {
+    color: var(--c-accent); font-weight: 700; width: 44px;
+    font-family: "SF Mono", Monaco, monospace; font-size: 11px;
   }
-  .words-box.good {
-    background: #f0f3ef; border-left: 3px solid var(--c-ok);
+  .toc-table .name {
+    font-weight: 600; width: 23%; color: var(--c-primary-dark);
+    font-size: 13px;
   }
-  .words-box.bad {
-    background: #f7f0ef; border-left: 3px solid var(--c-danger);
+  .toc-table .name a {
+    color: inherit; text-decoration: none;
+    border-bottom: 1px dotted var(--c-primary);
+    padding-bottom: 1px;
   }
-  .words-box h3 {
-    margin: 0 0 8px; font-size: 12px; letter-spacing: 0.1em;
-    font-weight: 600;
+  .toc-table .name a:hover {
+    border-bottom-style: solid; color: var(--c-primary);
   }
-  .words-box.good h3 { color: #4a6d4d; }
-  .words-box.bad h3 { color: #8b4a4a; }
-  .words-box ul {
-    margin: 0; padding-left: 16px; font-size: 12px; line-height: 1.8;
+  .toc-table .scene { width: 27%; color: var(--c-text); }
+  .toc-table .tip {
+    width: 36%; color: var(--c-muted);
+    font-size: 11px; line-height: 1.6;
   }
-  .words-box li { margin-bottom: 2px; }
+  .toc-table .cat-row td {
+    background: #faf7f2; font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.25em; font-weight: 600;
+    padding: 8px 12px; border-bottom: 1px solid var(--c-line);
+  }
 
   /* 使い方ボックス */
   .howto {
@@ -223,48 +226,118 @@
     <p>うたかた代表が「自分らしい発信」を続けるための、ChatGPT／Claude で使える実用プロンプト</p>
   </header>
 
-  <!-- ブランド情報 -->
-  <div class="brand-panel">
-    <h2>うたかたについて</h2>
-    <dl>
-      <dt>サロン名</dt><dd>うたかた</dd>
-      <dt>種類</dt><dd>オイルマッサージ、フェイシャル、ホットストーン、キャンドルアロママッサージなどを組み合わせた個人エステサロン</dd>
-      <dt>対象</dt><dd>疲れを感じている大人。自分のケアを後回しにしがちな方。「なんとなく疲れている」「呼吸が浅い」「自分の状態を見てもらいたい」と感じている方</dd>
-      <dt>強み</dt><dd>丁寧な施術 / 押し売りしない接客 / 落ち着いた空間 / その日の状態に合わせるケア / 「整える時間」を提供</dd>
-      <dt>大切にしている</dt><dd>感情を煽らない / 正解を押しつけない / キラキラ訴求しない / 劇的変化を強調しない / お客様を焦らせない / 「ここなら雑に扱われない」という安心感</dd>
-      <dt>予約方法</dt><dd>Instagram DM または LINE</dd>
-    </dl>
+  <!-- 目次 / 早見表 -->
+  <div class="toc-panel">
+    <h2>目次 / 早見表</h2>
+    <table class="toc-table">
+      <thead>
+        <tr>
+          <th class="no">No.</th>
+          <th>プロンプト</th>
+          <th>使う場面</th>
+          <th>コツ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="4">投稿を作る</td></tr>
+        <tr>
+          <td class="no">01</td>
+          <td class="name"><a href="#prompt-01">リール台本作成</a></td>
+          <td class="scene">30秒前後の動画台本がほしい</td>
+          <td class="tip">5パターン出るのでその日の気分に近いものを選ぶ</td>
+        </tr>
+        <tr>
+          <td class="no">02</td>
+          <td class="name"><a href="#prompt-02">フィード投稿作成</a></td>
+          <td class="scene">画像1枚またはカルーセル投稿</td>
+          <td class="tip">最後のページに予約案内を入れすぎない</td>
+        </tr>
+        <tr>
+          <td class="no">03</td>
+          <td class="name"><a href="#prompt-03">キャプション作成</a></td>
+          <td class="scene">動画・写真に添える文章だけ</td>
+          <td class="tip">長め版は月のテーマと連動させたい時に</td>
+        </tr>
+        <tr>
+          <td class="no">04</td>
+          <td class="name"><a href="#prompt-04">ストーリーズ投稿</a></td>
+          <td class="scene">24時間で消える日常投稿</td>
+          <td class="tip">ネタが思いつかない日にも使える</td>
+        </tr>
 
-    <div class="words">
-      <div class="words-box good">
-        <h3>○ 使いたい言葉</h3>
-        <ul>
-          <li>整える</li>
-          <li>少し軽くなる</li>
-          <li>呼吸がしやすくなる</li>
-          <li>今の状態に気づく</li>
-          <li>自分に戻る</li>
-          <li>不快を減らす</li>
-          <li>無理なく続ける</li>
-          <li>その日の状態に合わせる</li>
-          <li>疲れ切る前に整える</li>
-          <li>がんばる前に、ひと息つく</li>
-        </ul>
-      </div>
-      <div class="words-box bad">
-        <h3>× 避けたい言葉</h3>
-        <ul>
-          <li>劇的変化 / 絶対変わる / 必ず改善</li>
-          <li>老廃物が流れる</li>
-          <li>痩せる / 治る / 若返る</li>
-          <li>一瞬で変わる</li>
-          <li>今すぐ来ないと損</li>
-          <li>放置すると危険</li>
-          <li>予約殺到 / 残りわずか</li>
-          <li>知らないと損 / 人生変わる</li>
-        </ul>
-      </div>
-    </div>
+        <tr class="cat-row"><td colspan="4">テーマと企画を立てる</td></tr>
+        <tr>
+          <td class="no">05</td>
+          <td class="name"><a href="#prompt-05">月次テーマ作成</a></td>
+          <td class="scene">月初に1ヶ月の柱を決める</td>
+          <td class="tip">月初の30分で来月分を決めると楽</td>
+        </tr>
+        <tr>
+          <td class="no">06</td>
+          <td class="name"><a href="#prompt-06">週次テーマ作成</a></td>
+          <td class="scene">1週間分の投稿予定を組む</td>
+          <td class="tip">日曜夜に来週分を組むのがおすすめ</td>
+        </tr>
+        <tr>
+          <td class="no">07</td>
+          <td class="name"><a href="#prompt-07">部位別投稿</a></td>
+          <td class="scene">背中・首肩などにフォーカス</td>
+          <td class="tip">「見えにくい疲れの場所」を選ぶと刺さりやすい</td>
+        </tr>
+
+        <tr class="cat-row"><td colspan="4">うたかたの考え方を伝える</td></tr>
+        <tr>
+          <td class="no">08</td>
+          <td class="name"><a href="#prompt-08">悩みを言語化</a></td>
+          <td class="scene">共感型投稿の核を作る</td>
+          <td class="tip">代表自身が日常で感じたことをテーマに</td>
+        </tr>
+        <tr>
+          <td class="no">09</td>
+          <td class="name"><a href="#prompt-09">考え方を伝える</a></td>
+          <td class="scene">ブランドの軸を見せる投稿</td>
+          <td class="tip">月1〜2回でファン化に直結する</td>
+        </tr>
+        <tr>
+          <td class="no">10</td>
+          <td class="name"><a href="#prompt-10">売り込まない予約導線</a></td>
+          <td class="scene">投稿末の予約案内</td>
+          <td class="tip">気に入った文言は定型化してメモに保存</td>
+        </tr>
+
+        <tr class="cat-row"><td colspan="4">特定の場面で使う</td></tr>
+        <tr>
+          <td class="no">11</td>
+          <td class="name"><a href="#prompt-11">LINE配信文章</a></td>
+          <td class="scene">既存客への一斉配信文</td>
+          <td class="tip">200〜300文字目安、配信頻度は週1まで</td>
+        </tr>
+        <tr>
+          <td class="no">12</td>
+          <td class="name"><a href="#prompt-12">お客様の声を投稿化</a></td>
+          <td class="scene">いただいた感想をSNS用に整える</td>
+          <td class="tip">投稿前に必ずお客様に再確認</td>
+        </tr>
+        <tr>
+          <td class="no">13</td>
+          <td class="name"><a href="#prompt-13">季節・生活習慣</a></td>
+          <td class="scene">季節絡みの共感投稿</td>
+          <td class="tip">自宅でできることを1つ添えると保存されやすい</td>
+        </tr>
+        <tr>
+          <td class="no">14</td>
+          <td class="name"><a href="#prompt-14">NG表現チェック</a></td>
+          <td class="scene">投稿前の最終確認</td>
+          <td class="tip">必ず通すとトーンのブレが防げる</td>
+        </tr>
+        <tr>
+          <td class="no">15</td>
+          <td class="name"><a href="#prompt-15">うたかたらしさに修正</a></td>
+          <td class="scene">AI出力や過去の文章を整え直す</td>
+          <td class="tip">「下書き作成 → 整え」の2段階運用が安定</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- 使い方 -->
@@ -285,7 +358,7 @@
   <div class="section-title">投稿を作る</div>
 
   <!-- 1. リール台本 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-01">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 01</div>
       <h3 class="prompt-title">Instagramリール台本作成プロンプト</h3>
@@ -341,7 +414,7 @@ CTAは「気になる方はDMください」「もしよければ」など、選
   </div>
 
   <!-- 2. フィード投稿 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-02">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 02</div>
       <h3 class="prompt-title">Instagramフィード投稿作成プロンプト</h3>
@@ -385,7 +458,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 3. キャプション -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-03">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 03</div>
       <h3 class="prompt-title">キャプション作成プロンプト</h3>
@@ -423,7 +496,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 4. ストーリーズ -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-04">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 04</div>
       <h3 class="prompt-title">ストーリーズ投稿作成プロンプト</h3>
@@ -470,7 +543,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   <div class="section-title">テーマと企画を立てる</div>
 
   <!-- 5. 月次テーマ -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-05">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 05</div>
       <h3 class="prompt-title">月次テーマ作成プロンプト</h3>
@@ -513,7 +586,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 6. 週次テーマ -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-06">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 06</div>
       <h3 class="prompt-title">週ごとの投稿テーマ作成プロンプト</h3>
@@ -562,7 +635,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 7. 部位別投稿 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-07">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 07</div>
       <h3 class="prompt-title">施術部位ごとの投稿作成プロンプト</h3>
@@ -608,7 +681,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   <div class="section-title">うたかたの考え方を伝える</div>
 
   <!-- 8. 悩みを言語化 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-08">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 08</div>
       <h3 class="prompt-title">お客様の悩みを言語化する投稿プロンプト</h3>
@@ -651,7 +724,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 9. 考え方を伝える -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-09">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 09</div>
       <h3 class="prompt-title">うたかたの考え方を伝える投稿プロンプト</h3>
@@ -698,7 +771,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   </div>
 
   <!-- 10. 予約導線 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-10">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 10</div>
       <h3 class="prompt-title">売り込み感のない予約導線を作るプロンプト</h3>
@@ -745,7 +818,7 @@ CTAは無くてもよい。あるなら「気になる方はDMから」など控
   <div class="section-title">特定の場面で使う</div>
 
   <!-- 11. LINE配信 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-11">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 11</div>
       <h3 class="prompt-title">LINE配信用の文章作成プロンプト</h3>
@@ -789,7 +862,7 @@ LINE配信用の文章を3パターン提案してください。
   </div>
 
   <!-- 12. お客様の声 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-12">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 12</div>
       <h3 class="prompt-title">お客様の声を投稿化するプロンプト</h3>
@@ -835,7 +908,7 @@ LINE配信用の文章を3パターン提案してください。
   </div>
 
   <!-- 13. 季節・生活習慣 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-13">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 13</div>
       <h3 class="prompt-title">季節テーマ・生活習慣テーマの投稿プロンプト</h3>
@@ -878,7 +951,7 @@ LINE配信用の文章を3パターン提案してください。
   </div>
 
   <!-- 14. NGチェック -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-14">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 14</div>
       <h3 class="prompt-title">NG表現チェック用プロンプト</h3>
@@ -929,7 +1002,7 @@ LINE配信用の文章を3パターン提案してください。
   </div>
 
   <!-- 15. うたかたらしい表現に修正 -->
-  <div class="prompt-card">
+  <div class="prompt-card" id="prompt-15">
     <div class="prompt-header">
       <div class="prompt-num">PROMPT 15</div>
       <h3 class="prompt-title">「うたかたらしい表現」に修正するプロンプト</h3>
