@@ -3,96 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChatGPT プロンプトテンプレ集 - サロン用</title>
+<title>うたかた SNS・販促用プロンプト集</title>
 <style>
   :root {
-    --c-bridal: #ec4899;
-    --c-regular: #10b981;
-    --c-school: #6366f1;
-    --bg: #f8fafc;
-    --text: #0f172a;
-    --muted: #64748b;
-    --line: #e2e8f0;
-    --code-bg: #1e293b;
-    --code-text: #e2e8f0;
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-code-bg: #2d3838;
+    --c-code-text: #e8e2d8;
+    --c-warning: #c9a06b;
+    --c-danger: #b56565;
+    --c-ok: #6b8b6e;
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
-    background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
-    line-height: 1.6; font-size: 14px;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
   }
-  .container { max-width: 980px; margin: 0 auto; padding: 24px; }
+  .container { max-width: 920px; margin: 0 auto; padding: 32px 24px; }
 
   header {
-    background: linear-gradient(135deg, #ec4899 0%, #6366f1 100%);
-    color: white; padding: 24px 28px; border-radius: 12px; margin-bottom: 20px;
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
   }
-  header h1 { margin: 0 0 6px; font-size: 22px; }
-  header p { margin: 0; opacity: 0.95; font-size: 13px; }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 540px; margin: 0 auto;
+  }
 
+  /* ブランド情報パネル */
+  .brand-panel {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 24px 28px; margin-bottom: 32px;
+  }
+  .brand-panel h2 {
+    margin: 0 0 16px; font-size: 14px; color: var(--c-primary-dark);
+    letter-spacing: 0.1em; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 500;
+  }
+  .brand-panel dl {
+    margin: 0; display: grid; grid-template-columns: 100px 1fr;
+    gap: 8px 16px; font-size: 13px;
+  }
+  .brand-panel dt {
+    color: var(--c-muted); font-size: 11px; padding-top: 3px;
+    letter-spacing: 0.05em;
+  }
+  .brand-panel dd { margin: 0; }
+
+  /* 言葉のリスト */
+  .words {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-top: 20px;
+  }
+  .words-box {
+    padding: 14px 18px; border-radius: 4px;
+  }
+  .words-box.good {
+    background: #f0f3ef; border-left: 3px solid var(--c-ok);
+  }
+  .words-box.bad {
+    background: #f7f0ef; border-left: 3px solid var(--c-danger);
+  }
+  .words-box h3 {
+    margin: 0 0 8px; font-size: 12px; letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .words-box.good h3 { color: #4a6d4d; }
+  .words-box.bad h3 { color: #8b4a4a; }
+  .words-box ul {
+    margin: 0; padding-left: 16px; font-size: 12px; line-height: 1.8;
+  }
+  .words-box li { margin-bottom: 2px; }
+
+  /* 使い方ボックス */
   .howto {
-    background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
-    padding: 14px 18px; margin-bottom: 24px; font-size: 13px;
+    background: #f5f1ea; border-radius: 4px; padding: 18px 22px;
+    margin-bottom: 32px; font-size: 13px;
   }
   .howto h2 {
-    margin: 0 0 8px; font-size: 14px; color: #92400e;
-    display: flex; align-items: center; gap: 6px;
+    margin: 0 0 10px; font-size: 13px; color: var(--c-accent);
+    letter-spacing: 0.1em; font-weight: 600;
   }
   .howto ol { margin: 6px 0 0; padding-left: 20px; }
-  .howto li { margin-bottom: 4px; }
+  .howto li { margin-bottom: 3px; }
 
-  .prompt-section { margin-bottom: 28px; }
-  .prompt-head {
-    padding: 14px 18px; border-radius: 10px 10px 0 0; color: white;
-    display: flex; justify-content: space-between; align-items: center;
+  /* セクションタイトル */
+  .section-title {
+    font-size: 14px; color: var(--c-muted); letter-spacing: 0.2em;
+    margin: 40px 0 14px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--c-line); font-weight: 500;
   }
-  .prompt-head.bridal { background: var(--c-bridal); }
-  .prompt-head.regular { background: var(--c-regular); }
-  .prompt-head.school { background: var(--c-school); }
-  .prompt-head h2 { margin: 0; font-size: 18px; }
-  .prompt-head .tag { font-size: 11px; opacity: 0.9; }
 
-  .prompt-body {
-    background: white; border: 1px solid var(--line); border-top: none;
-    border-radius: 0 0 10px 10px; overflow: hidden;
+  /* プロンプトカード */
+  .prompt-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; margin-bottom: 24px; overflow: hidden;
   }
-  .prompt-meta { padding: 14px 18px; border-bottom: 1px solid var(--line); }
-  .prompt-meta dt { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 8px; }
-  .prompt-meta dt:first-child { margin-top: 0; }
-  .prompt-meta dd { margin: 4px 0 0; font-size: 13px; }
+  .prompt-header {
+    padding: 16px 22px; background: #f5f1ea;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .prompt-num {
+    font-size: 11px; color: var(--c-accent); letter-spacing: 0.2em;
+    font-weight: 600;
+  }
+  .prompt-title {
+    margin: 4px 0 0; font-size: 17px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.03em;
+  }
+
+  .prompt-meta {
+    padding: 16px 22px; font-size: 13px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .prompt-meta .label {
+    font-size: 10px; color: var(--c-muted); letter-spacing: 0.15em;
+    font-weight: 600; margin-bottom: 4px;
+  }
 
   .code-block {
-    position: relative; background: var(--code-bg); color: var(--code-text);
-    padding: 16px 18px; font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
-    font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-wrap: break-word;
-    max-height: 480px; overflow-y: auto;
+    position: relative; background: var(--c-code-bg); color: var(--c-code-text);
+    padding: 18px 22px 22px; font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 12px; line-height: 1.7; white-space: pre-wrap; word-wrap: break-word;
+    max-height: 520px; overflow-y: auto;
   }
   .copy-btn {
     position: absolute; top: 12px; right: 12px;
-    background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3);
-    padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    background: rgba(255,255,255,0.1); color: white;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 12px; border-radius: 3px; font-size: 11px; cursor: pointer;
     font-family: inherit; transition: all 0.15s;
+    letter-spacing: 0.1em;
   }
-  .copy-btn:hover { background: rgba(255,255,255,0.25); }
-  .copy-btn.copied { background: #10b981; border-color: #10b981; }
+  .copy-btn:hover { background: rgba(255,255,255,0.18); }
+  .copy-btn.copied { background: var(--c-ok); border-color: var(--c-ok); }
 
-  .placeholder { color: #fbbf24; font-weight: 700; }
-  .comment { color: #94a3b8; font-style: italic; }
+  .placeholder { color: #d4a574; font-weight: 600; }
 
-  .example-box {
-    padding: 14px 18px; background: #f0fdf4; border-top: 1px solid var(--line);
-    font-size: 12px;
+  .prompt-tip {
+    padding: 14px 22px; background: #f5f1ea; font-size: 12px;
+    line-height: 1.7;
   }
-  .example-box h3 { margin: 0 0 6px; font-size: 12px; color: #166534; }
+  .prompt-tip .label {
+    font-size: 10px; color: var(--c-accent); letter-spacing: 0.15em;
+    font-weight: 600; margin-bottom: 4px;
+  }
+
+  /* チェックリスト */
+  .checklist-section {
+    background: var(--c-card); border: 2px solid var(--c-primary);
+    border-radius: 4px; padding: 28px 32px; margin-top: 48px;
+  }
+  .checklist-section h2 {
+    margin: 0 0 8px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .checklist-section .sub {
+    font-size: 12px; color: var(--c-muted); margin-bottom: 20px;
+  }
+  .checklist {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .checklist li {
+    padding: 12px 0 12px 32px; position: relative; font-size: 14px;
+    border-bottom: 1px dashed var(--c-line);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐'; position: absolute; left: 6px; top: 11px;
+    font-size: 18px; color: var(--c-primary);
+  }
+  .checklist .desc {
+    display: block; font-size: 11px; color: var(--c-muted); margin-top: 2px;
+  }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
 
   @media print {
     body { background: white; font-size: 11px; }
     .container { padding: 0; }
     .code-block { max-height: none; overflow: visible; }
     .copy-btn { display: none; }
+    .prompt-card { page-break-inside: avoid; }
+  }
+  @media (max-width: 640px) {
+    .brand-panel dl { grid-template-columns: 1fr; }
+    .words { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -100,227 +218,812 @@
 <div class="container">
 
   <header>
-    <h1>🤖 ChatGPT プロンプトテンプレ集</h1>
-    <p>ブライダル / 既存顧客 / スクール の3カテゴリ別。30秒台本・テロップ・キャプション・ハッシュタグまで一発生成</p>
+    <div class="brand">UTAKATA — 個人エステサロン</div>
+    <h1>SNS・販促用プロンプト集</h1>
+    <p>うたかた代表が「自分らしい発信」を続けるための、ChatGPT／Claude で使える実用プロンプト</p>
   </header>
 
+  <!-- ブランド情報 -->
+  <div class="brand-panel">
+    <h2>うたかたについて</h2>
+    <dl>
+      <dt>サロン名</dt><dd>うたかた</dd>
+      <dt>種類</dt><dd>オイルマッサージ、フェイシャル、ホットストーン、キャンドルアロママッサージなどを組み合わせた個人エステサロン</dd>
+      <dt>対象</dt><dd>疲れを感じている大人。自分のケアを後回しにしがちな方。「なんとなく疲れている」「呼吸が浅い」「自分の状態を見てもらいたい」と感じている方</dd>
+      <dt>強み</dt><dd>丁寧な施術 / 押し売りしない接客 / 落ち着いた空間 / その日の状態に合わせるケア / 「整える時間」を提供</dd>
+      <dt>大切にしている</dt><dd>感情を煽らない / 正解を押しつけない / キラキラ訴求しない / 劇的変化を強調しない / お客様を焦らせない / 「ここなら雑に扱われない」という安心感</dd>
+      <dt>予約方法</dt><dd>Instagram DM または LINE</dd>
+    </dl>
+
+    <div class="words">
+      <div class="words-box good">
+        <h3>○ 使いたい言葉</h3>
+        <ul>
+          <li>整える</li>
+          <li>少し軽くなる</li>
+          <li>呼吸がしやすくなる</li>
+          <li>今の状態に気づく</li>
+          <li>自分に戻る</li>
+          <li>不快を減らす</li>
+          <li>無理なく続ける</li>
+          <li>その日の状態に合わせる</li>
+          <li>疲れ切る前に整える</li>
+          <li>がんばる前に、ひと息つく</li>
+        </ul>
+      </div>
+      <div class="words-box bad">
+        <h3>× 避けたい言葉</h3>
+        <ul>
+          <li>劇的変化 / 絶対変わる / 必ず改善</li>
+          <li>老廃物が流れる</li>
+          <li>痩せる / 治る / 若返る</li>
+          <li>一瞬で変わる</li>
+          <li>今すぐ来ないと損</li>
+          <li>放置すると危険</li>
+          <li>予約殺到 / 残りわずか</li>
+          <li>知らないと損 / 人生変わる</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使い方 -->
   <div class="howto">
-    <h2>📖 使い方</h2>
+    <h2>このプロンプト集の使い方</h2>
     <ol>
-      <li>下記から該当カテゴリのプロンプトをコピー</li>
-      <li>ChatGPT（無料版でもOK）に貼り付け</li>
-      <li>「{ }」の部分を実際のテーマ・店名・URLに置き換える</li>
-      <li>出力された5案から好きなものを選んで使う</li>
-      <li>気に入った設定は「ChatGPT のカスタム指示」に保存しておくと毎回貼らなくてOK</li>
+      <li>下記から目的にあったプロンプトを選び、「コピー」ボタンでコピー</li>
+      <li>ChatGPT または Claude に貼り付ける</li>
+      <li>「{ }」の中（黄色文字）を、その時の具体的なテーマや情報に書き換える</li>
+      <li>出力された内容をそのまま使うのではなく、うたかたの言葉として読み返して調整</li>
+      <li>違和感があれば、「うたかたらしい表現に修正するプロンプト（No.15）」で整え直す</li>
     </ol>
   </div>
 
-  <!-- 1. ブライダル -->
-  <div class="prompt-section">
-    <div class="prompt-head bridal">
-      <h2>💍 ブライダル新規獲得用</h2>
-      <span class="tag">週4本想定</span>
+  <!-- ===================================================== -->
+  <!-- セクション1: 投稿作成 -->
+  <!-- ===================================================== -->
+  <div class="section-title">投稿を作る</div>
+
+  <!-- 1. リール台本 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 01</div>
+      <h3 class="prompt-title">Instagramリール台本作成プロンプト</h3>
     </div>
-    <div class="prompt-body">
-      <div class="prompt-meta">
-        <dl>
-          <dt>目的</dt><dd>結婚式を控えた20〜30代女性の新規予約獲得</dd>
-          <dt>使用シーン</dt><dd>月・水・金・日のリール投稿（曜日カレンダー参照）</dd>
-        </dl>
-      </div>
-      <div class="code-block">
-<button class="copy-btn" data-target="prompt-bridal">コピー</button><span id="prompt-bridal">あなたはブライダルエステサロンのSNSマーケターです。
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      30秒前後の動画台本が必要なとき。施術紹介・状態への気づき・季節の話題など、どんなテーマでも使える基本プロンプト。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p01">コピー</button><span id="p01">あなたは、個人エステサロン「うたかた」のSNS発信を支える編集者です。
+押し売りせず、感情を煽らず、安心感のある言葉で発信することを大切にしています。
 
 # サロン情報
-- サロン名: <span class="placeholder">{サロン名を記入}</span>
-- 種類: ブライダル特化のエステサロン
-- 対象: 結婚式を3〜6ヶ月後に控えた20代〜30代の花嫁
-- 強み: <span class="placeholder">{例: 肌が弱い方向けの安心施術、ブライダル専門技術歴◯年}</span>
-- 立地: <span class="placeholder">{例: ◯◯駅徒歩5分}</span>
-- 予約方法: <span class="placeholder">{例: Instagram DM / LINE / 公式サイト}</span>
-- 目標: 新規予約の獲得
+- サロン名：うたかた
+- 種類：オイルマッサージ、フェイシャル、ホットストーン、キャンドルアロママッサージを組み合わせた個人エステサロン
+- 対象：疲れを感じている大人。自分のケアを後回しにしがちな方
+- 強み：丁寧な施術、押し売りしない接客、その日の状態に合わせるケア
+- 大切にしている：感情を煽らない / キラキラ訴求しない / 劇的変化を強調しない / お客様を焦らせない
+- 予約方法：Instagram DM または LINE
 
 # 依頼内容
-以下のテーマで、Instagram Reels用の30秒台本を <span class="placeholder">5パターン</span> 提案してください。
+以下のテーマで、Instagramリール用の30秒台本を5パターン作成してください。
 
-【テーマ】<span class="placeholder">「{ここにテーマを入力。例: 肌が弱い花嫁様のブライダルフェイシャル}」</span>
-
-# 出力形式（各パターンごとに以下を出力）
-
-## パターン◯
-**タイトル**: フック重視・15文字以内
-
-**30秒台本**:
-| 秒数 | 内容 | ナレーション/字幕 |
-|------|------|------------------|
-| 0〜3秒 | フック | ◯◯ |
-| 3〜15秒 | 課題提起・共感 | ◯◯ |
-| 15〜25秒 | 解決策・施術紹介 | ◯◯ |
-| 25〜30秒 | CTA | ◯◯ |
-
-**テロップ文言**: 5〜7個、各15文字以内、画面表示順に
-
-**キャプション**: 200文字程度、絵文字適度に、改行を入れて読みやすく
-
-**ハッシュタグ**: 15個（#ブライダルエステ、#花嫁準備 などブライダル関連必須、地域タグも含む）
-
-# 重要なルール
-- 花嫁の不安（肌荒れ・式までの時間・費用など）に寄り添う言葉づかい
-- 専門用語は最小限に、誰でもわかる表現
-- 売り込み感を出しすぎない
-- 信頼感・安心感を醸成する
-- 「式まで◯ヶ月でも間に合う」など具体的な数字を使う
-- CTAは「DMで『ブライダル相談』とお送りください」など明確に</span>
-      </div>
-      <div class="example-box">
-        <h3>💡 入れると効くテーマ例</h3>
-        肌が弱い花嫁さま向けエステ / 式3ヶ月前の肌準備 / ドレス映えする背中ケア / 結婚式当日朝のメイクのり / ブライダルシェービング / 当日疲れない肌づくり
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. 既存顧客向け -->
-  <div class="prompt-section">
-    <div class="prompt-head regular">
-      <h2>💚 既存顧客向け（リピート促進）</h2>
-      <span class="tag">週6本想定</span>
-    </div>
-    <div class="prompt-body">
-      <div class="prompt-meta">
-        <dl>
-          <dt>目的</dt><dd>既存のお客様のリピート促進・関係維持・口コミ拡散</dd>
-          <dt>使用シーン</dt><dd>火・木・土・日のストーリー、月1のリール</dd>
-        </dl>
-      </div>
-      <div class="code-block">
-<button class="copy-btn" data-target="prompt-regular">コピー</button><span id="prompt-regular">あなたはエステサロンのリピート促進・ファン化担当者です。
-
-# サロン情報
-- サロン名: <span class="placeholder">{サロン名}</span>
-- 種類: ブライダル + 一般エステ + 美容スクール
-- 対象: 既存のお客様（月1〜2回来店のリピーター中心）
-- 雰囲気: <span class="placeholder">{例: アットホーム / 高級感 / カジュアル}</span>
-- スタッフ構成: <span class="placeholder">{例: オーナー1人 / セラピスト◯人}</span>
-- 目標: リピート率向上・LTV向上・友人紹介の促進
-
-# 依頼内容
-以下のテーマで、Instagram Reels または Story 用の30秒以内の構成を <span class="placeholder">5パターン</span> 提案してください。
-
-【テーマ】<span class="placeholder">「{ここにテーマを入力。例: 季節の変わり目の肌トラブル予防}」</span>
+【今日のテーマ】<span class="placeholder">{ここに入力。例：呼吸が浅くなる季節の変わり目}</span>
+【伝えたいこと】<span class="placeholder">{あれば入力。なければ空欄で}</span>
+【お客様の状態・季節など】<span class="placeholder">{あれば入力}</span>
 
 # 出力形式（各パターンごと）
-
 ## パターン◯
-**タイトル**: 既存客が「分かる！」と共感するもの
-
-**動画構成（30秒以内）**:
-- どんなシーンを見せるか
-- どんな順番で見せるか
-- 30秒以内の時間配分
+**タイトル**: 静かに目を引く、15文字以内
+**30秒構成**:
+| 秒数 | シーン | テロップ・ナレーション |
+|------|------|------|
+| 0〜3秒 | 静かなフック | ◯◯ |
+| 3〜15秒 | 状態への気づき | ◯◯ |
+| 15〜25秒 | サロンでの整え方 | ◯◯ |
+| 25〜30秒 | やわらかな案内 | ◯◯ |
 
 **テロップ文言**: 5〜7個、各15文字以内
+**キャプション案**: 150〜200文字、改行を入れて読みやすく
+**ハッシュタグ**: 10〜15個
 
-**キャプション**: 150〜200文字。既存客向けに親しみのある言葉づかい。
-- 季節感や時事ネタを織り込む
-- 「いつも来てくださっている◯◯さん」感を出す
-- 次回予約を促す自然なフック
+# 必須ルール
+○ 使う言葉：整える / 少し軽くなる / 呼吸がしやすくなる / 今の状態に気づく / 自分に戻る / 無理なく続ける
+× 使わない言葉：劇的変化 / 絶対 / 必ず改善 / 老廃物 / 痩せる / 治る / 若返る / 今すぐ / 予約殺到 / 知らないと損 / 人生変わる
 
-**ハッシュタグ**: 10個（コアファン向け、店舗タグ、地域タグ重視）
-
-# 重要なルール
-- 既に来店経験のあるお客様の視点で書く
-- スタッフの人柄・店内の雰囲気が伝わる構成
-- 「裏側を見せる」「日常を見せる」スタイルOK
-- 季節感・トレンド感を意識
-- 売り込みより「思い出してもらう」感覚
-- スタッフの名前を使った台本もOK（例: 「セラピストの〇〇です」）</span>
-      </div>
-      <div class="example-box">
-        <h3>💡 入れると効くテーマ例</h3>
-        季節メニュー紹介 / スタッフの自己紹介 / お客様の声 / サロンの裏側 / 自宅ケアアドバイス / 季節の肌トラブル予防 / 新メニュー予告 / よくある質問
-      </div>
+CTAは「気になる方はDMください」「もしよければ」など、選択肢を残す。急かさない。</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      テーマは「今日撮影したい雰囲気」を素直に入れるだけでOK。5パターン出るので、その日の気分に近いものを選ぶ。出てきた台本に違和感があれば、そのまま会話で「もう少し静かに」「もっと短く」と追加で言うと整えられる。
     </div>
   </div>
 
-  <!-- 3. スクール用 -->
-  <div class="prompt-section">
-    <div class="prompt-head school">
-      <h2>🎓 スクール事業用（受講者獲得）</h2>
-      <span class="tag">必要に応じて</span>
+  <!-- 2. フィード投稿 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 02</div>
+      <h3 class="prompt-title">Instagramフィード投稿作成プロンプト</h3>
     </div>
-    <div class="prompt-body">
-      <div class="prompt-meta">
-        <dl>
-          <dt>目的</dt><dd>美容スクール事業の体験入学・受講申込の獲得</dd>
-          <dt>使用シーン</dt><dd>月1〜2本、スクール紹介・卒業生事例など</dd>
-        </dl>
-      </div>
-      <div class="code-block">
-<button class="copy-btn" data-target="prompt-school">コピー</button><span id="prompt-school">あなたは美容スクールのSNS担当者です。
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      画像1枚または2〜5枚のカルーセル投稿を作るとき。プロフィールのグリッドに残る「うたかたの世界観」を伝える投稿に。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p02">コピー</button><span id="p02">あなたは、個人エステサロン「うたかた」のSNS発信を支える編集者です。
 
-# スクール情報
-- スクール名: <span class="placeholder">{スクール名}</span>
-- 運営: <span class="placeholder">{サロン名} が運営</span>
-- 対象: 美容業界に興味のある女性、開業希望者、副業で技術習得したい人
-- 提供コース: <span class="placeholder">{例: フェイシャルコース / ボディコース / 開業準備コース}</span>
-- 受講形態: <span class="placeholder">{例: 平日夜・土日コースあり / オンライン併用}</span>
-- 強み: <span class="placeholder">{例: 現役サロンオーナーが直接指導 / 卒業後の開業サポート / 少人数制}</span>
-- 目標: 体験入学申込・受講契約の獲得
+# サロン情報（簡略）
+うたかた / 個人エステサロン / オイル・フェイシャル・ホットストーン
+対象：疲れを感じている大人、自分のケアを後回しにしがちな方
+発信方針：感情を煽らない / キラキラしない / 売り込まない / 焦らせない
 
 # 依頼内容
-以下のテーマで、Instagram Reels用の30秒台本を <span class="placeholder">5パターン</span> 提案してください。
+以下のテーマで、Instagramフィード投稿の構成を3パターン提案してください。
 
-【テーマ】<span class="placeholder">「{ここにテーマを入力。例: 主婦でも開業できる美容スクール}」</span>
+【今日のテーマ】<span class="placeholder">{ここに入力}</span>
+【投稿の目的】<span class="placeholder">{例：状態への気づき / お知らせ / 考え方の共有}</span>
+【枚数】<span class="placeholder">{1枚 / 2〜5枚カルーセル}</span>
 
-# 出力形式（各パターンごと）
-
+# 出力形式（各パターン）
 ## パターン◯
-**タイトル**: 受講検討者の興味を引く（15文字以内）
+**1枚目（表紙）の文言**: 目を止めるが煽らない、20文字以内
+**各ページの文言**: 1ページにつき30〜80文字
+**キャプション**: 200〜300文字
+**ハッシュタグ**: 10〜15個
 
-**30秒台本**:
-| 秒数 | 内容 | ナレーション/字幕 |
-|------|------|------------------|
-| 0〜3秒 | ターゲットへの問いかけフック | ◯◯ |
-| 3〜10秒 | 共感・課題提起 | ◯◯ |
-| 10〜22秒 | スクールの特徴・解決策 | ◯◯ |
-| 22〜30秒 | 体験入学への誘導 | ◯◯ |
+# 必須ルール
+○ 使う言葉：整える / 軽くなる / 呼吸 / 今の状態 / 自分に戻る / その日の状態
+× 使わない言葉：劇的 / 絶対 / 必ず / 老廃物 / 痩せる / 若返る / 今すぐ / 損 / 殺到
 
-**テロップ文言**: 5〜7個、技術名・受講メリット・期間など具体的に
-
-**キャプション**: 200文字程度
-- 受講検討者の不安に寄り添う
-- 体験入学・無料相談への誘導
-- 具体的な開講日や料金感も含めると効果的
-
-**ハッシュタグ**: 15個（#エステスクール、#美容師の卵、#副業エステ、地域+スクールタグ）
-
-# 重要なルール
-- 「これなら自分にもできるかも」と思える構成
-- 技術の価値・将来性を具体的に伝える
-- 在校生や卒業生の成功例を交える（仮の事例でもOK）
-- 料金より「価値」を先に伝える
-- 体験入学への自然な誘導
-- 「忙しくても」「未経験でも」というハードルの低さを強調</span>
-      </div>
-      <div class="example-box">
-        <h3>💡 入れると効くテーマ例</h3>
-        主婦でも開業できる / 未経験から3ヶ月で技術習得 / 副業で月◯万円 / 卒業生の開業事例 / 体験入学の流れ / 受講中の1日 / よくある質問
-      </div>
+CTAは無くてもよい。あるなら「気になる方はDMから」など控えめに。</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      カルーセルは「読み物」として機能するので、1ページ目で立ち止まり、2ページ目以降でゆっくり伝える構成にする。最後のページに予約案内を入れすぎないのがうたかたらしい。
     </div>
   </div>
 
-  <!-- カスタム指示への保存方法 -->
-  <div class="howto" style="background:#eff6ff;border-color:#bfdbfe;">
-    <h2 style="color:#1e40af;">💎 さらに楽にする：ChatGPTカスタム指示に保存</h2>
-    <p style="margin:6px 0 8px;">毎回プロンプトを貼り付けるのが面倒なら、ChatGPTの「カスタム指示（Custom Instructions）」に保存すると、毎回「テーマ：◯◯」と一行打つだけで台本が出てきます。</p>
-    <ol>
-      <li>ChatGPTの画面で右上のプロフィール → 「カスタマイズ」or「Custom instructions」</li>
-      <li>上の3つのプロンプトのうち、よく使うもの（ブライダルなど）を貼り付け</li>
-      <li>保存すると、新しいチャットで自動的にこの設定で動く</li>
-      <li>あとは「テーマ：肌が弱い花嫁向けフェイシャル」と打つだけ</li>
-    </ol>
-    <p style="margin:8px 0 0;font-size:12px;color:#1e40af;"><strong>有料版（ChatGPT Plus）なら「GPTs」機能で3種類のGPTを作っておくと、用途別に切り替え可能。</strong></p>
+  <!-- 3. キャプション -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 03</div>
+      <h3 class="prompt-title">キャプション作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      動画や写真はすでにあって、それに添える文章だけ作りたいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p03">コピー</button><span id="p03">あなたは、個人エステサロン「うたかた」のSNS発信を支える編集者です。
+
+# サロン情報（簡略）
+うたかた / 個人エステサロン / 発信方針：感情を煽らない、押し売りしない、焦らせない
+○ 良い言葉：整える、軽くなる、呼吸、今の状態、自分に戻る
+× 避ける言葉：劇的、絶対、必ず、老廃物、痩せる、若返る、今すぐ、損、殺到
+
+# 依頼内容
+すでに用意した動画・画像に添えるキャプション文を3パターン作成してください。
+
+【動画/画像の内容】<span class="placeholder">{ここに入力。例：ホットストーンを背中に置いている手元}</span>
+【伝えたいこと】<span class="placeholder">{ここに入力。例：温まることで深く呼吸できるようになる感覚}</span>
+【投稿先】<span class="placeholder">{リール / フィード / ストーリーズ}</span>
+
+# 出力形式
+**短め版（80〜120文字）**: シンプルに添える
+**標準版（150〜200文字）**: 丁寧に伝える
+**長め版（250〜350文字）**: 考え方も伝える
+
+最後に：3パターンのうち、どれが「うたかたらしさ」が強いと感じるか、ひとこと添えてください。</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      動画の内容は「自分が見ているもの」を素直に書けばOK（例：「ホットストーンを背中に置いている手元」）。長め版は考え方を伝えやすいので、月のテーマと連動させたい時に向く。
+    </div>
   </div>
+
+  <!-- 4. ストーリーズ -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 04</div>
+      <h3 class="prompt-title">ストーリーズ投稿作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      24時間で消えるストーリーズ用に、軽めの投稿アイデアと文言が欲しいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p04">コピー</button><span id="p04">あなたは、個人エステサロン「うたかた」のSNS発信を支える編集者です。
+
+# 発信方針
+押し売りしない / 感情を煽らない / 焦らせない / 静かに、丁寧に
+○ 良い言葉：整える、呼吸、今の状態、自分に戻る、その日の状態
+× NG言葉：劇的、絶対、必ず、痩せる、若返る、今すぐ、損、殺到
+
+# 依頼内容
+ストーリーズ用の投稿アイデアを5本提案してください。
+
+【目的】<span class="placeholder">{お知らせ / 状態共有 / 空き枠案内 / 季節の話題 / 自宅ケアのひとこと}</span>
+【ベース素材】<span class="placeholder">{画像か動画か、または写真の内容}</span>
+
+# 出力形式（各案ごと）
+## アイデア◯
+**1枚目のテキスト**: 短く、目に入る言葉（20文字以内）
+**重ねるスタンプ/質問機能**: 使うなら案内
+**画像/動画の指示**: どんな素材が合うか
+**リンク先・誘導**: DM / LINE / なし
+
+# 必須ルール
+- ストーリーズは「日常の小さな共有」なので、力まずに
+- 押し売りの空き枠案内ではなく「もしよければ」のトーン
+- 絵文字は控えめ（多くて1〜2個）</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      毎日投稿する習慣があるので、「ネタが思いつかない日用」として活用。空き枠案内も、「◯日が空いています」のような事実だけの伝え方ならうたかたらしさが残る。
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- セクション2: テーマ・企画 -->
+  <!-- ===================================================== -->
+  <div class="section-title">テーマと企画を立てる</div>
+
+  <!-- 5. 月次テーマ -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 05</div>
+      <h3 class="prompt-title">月次テーマ作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      月初に1ヶ月の発信全体の柱を決めたいとき。テーマがあると毎日の投稿に迷わなくなる。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p05">コピー</button><span id="p05">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# サロン情報
+うたかた / 個人エステサロン
+発信方針：感情を煽らない / 売り込まない / 焦らせない / 静かに整える
+○ 使う言葉：整える、軽くなる、呼吸、自分に戻る、その日の状態
+× 避ける言葉：劇的、絶対、必ず、痩せる、若返る、今すぐ、損
+
+# 依頼内容
+来月の発信全体のテーマと、サブテーマを5つ提案してください。
+
+【月】<span class="placeholder">{何月か}</span>
+【季節の特徴】<span class="placeholder">{あれば。例：梅雨、年末、夏の終わり}</span>
+【お客様の状態仮説】<span class="placeholder">{あれば。例：花粉症、5月病、年末疲れ}</span>
+
+# 出力形式
+**月のテーマ**: 一文。例「呼吸を整える月」「眠りに戻る月」
+**テーマの背景**: なぜこの月にこのテーマか、200文字程度
+**サブテーマ5つ**: 週ごとに展開できる小テーマ
+**おすすめ施術メニュー**: 月のテーマと相性の良い施術と理由
+**この月に避けたい話題**: 例えば年末なら「ダイエット系」を避ける、など
+
+# 必須ルール
+- 月のテーマは「商品」でなく「お客様の状態」を主語にする
+- 「来店促進キャンペーン」のような押し売り構造にしない</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      月初の30分で「来月のテーマを決める時間」を作るのがおすすめ。テーマが決まれば、週次・日次のネタ出しが圧倒的に早くなる。
+    </div>
+  </div>
+
+  <!-- 6. 週次テーマ -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 06</div>
+      <h3 class="prompt-title">週ごとの投稿テーマ作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      月のテーマが決まったあと、1週間分の投稿予定を組み立てたいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p06">コピー</button><span id="p06">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# サロン情報
+うたかた / 発信方針：押し売りしない、焦らせない、静かに
+○ 良い言葉：整える、軽くなる、呼吸、自分に戻る
+× 避ける言葉：劇的、絶対、必ず、痩せる、若返る、今すぐ、損
+
+# 依頼内容
+今週1週間の投稿テーマを、月〜日まで7本分提案してください。
+
+【今週の月のテーマ】<span class="placeholder">{月次プロンプトで決めたもの}</span>
+【特記事項】<span class="placeholder">{お知らせや特別な日があれば}</span>
+
+# 出力形式（曜日ごと）
+## 月曜
+**投稿フォーマット**: リール / フィード / ストーリーズ / LINE配信
+**テーマ**: 短く
+**一言コメント**: なぜこの曜日にこのテーマか
+**所要時間目安**: 撮影・編集にかかる時間
+
+（火〜日も同様に）
+
+# 配分の目安
+- リール：週1〜2本
+- フィード：週1〜2本
+- ストーリーズ：ほぼ毎日（軽めでOK）
+- LINE配信：週1回
+
+# 必須ルール
+- 力を入れる日と、軽い日のバランスをとる
+- 「毎日全力」を求めない</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      日曜の夜に来週分を組むのがおすすめ。テーマだけ決まっていれば、当日その日の状態で柔軟に内容を変えてOK。
+    </div>
+  </div>
+
+  <!-- 7. 部位別投稿 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 07</div>
+      <h3 class="prompt-title">施術部位ごとの投稿作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      特定の部位やメニュー（背中、首肩、フェイシャルなど）にフォーカスした投稿を作りたいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p07">コピー</button><span id="p07">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# サロン情報
+うたかた / オイル・フェイシャル・ホットストーン・キャンドルアロマ
+発信方針：感情を煽らない、押し売りしない、その日の状態に合わせる
+
+# 依頼内容
+以下の部位・メニューについて、お客様の状態への気づきを促す投稿案を3パターン提案してください。
+
+【部位/メニュー】<span class="placeholder">{例：背中 / 首肩 / フェイシャル / ホットストーン / 脚}</span>
+【投稿フォーマット】<span class="placeholder">{リール / フィード / ストーリーズ}</span>
+
+# 出力形式（各パターン）
+## パターン◯
+**お客様の状態への問いかけ**: 共感から始まる、20〜40文字
+**部位の特徴の説明**: 専門用語に頼らない、なぜここが疲れやすいかなど
+**施術での向き合い方**: 押し売り感なく、丁寧に
+**やわらかなCTA**
+
+# 必須ルール
+- 「ここが詰まっている」「老廃物が」のような専門用語っぽい煽りは使わない
+- 「最近、〇〇な感じありませんか」のように、選択肢として提示
+- メニューの羅列にならない、状態への気づきが主</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      部位は「目に見えにくい疲れの場所」を選ぶと刺さりやすい（背中、首の付け根、目の周りなど）。
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- セクション3: ブランドと考え方 -->
+  <!-- ===================================================== -->
+  <div class="section-title">うたかたの考え方を伝える</div>
+
+  <!-- 8. 悩みを言語化 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 08</div>
+      <h3 class="prompt-title">お客様の悩みを言語化する投稿プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      お客様が「うまく言葉にできていないモヤモヤ」を投稿で言語化してあげたいとき。共感型の投稿の核になる。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p08">コピー</button><span id="p08">あなたは、個人エステサロン「うたかた」のSNS発信を支える編集者です。
+
+# サロン情報
+うたかた / 個人エステサロン
+対象：疲れを感じている大人、自分のケアを後回しにしがちな方
+発信方針：押しつけない、選択肢を残す、丁寧に
+
+# 依頼内容
+お客様が言葉にできていないかもしれない「もやっとした不調」を、丁寧に言語化する投稿を3パターン提案してください。
+
+【テーマ】<span class="placeholder">{例：眠りが浅い / 首の重さ / 自分のことが後回しになっている / 呼吸が浅い}</span>
+【投稿フォーマット】<span class="placeholder">{リール / フィード / ストーリーズ}</span>
+
+# 出力形式（各パターン）
+## パターン◯
+**問いかけ**: お客様が「私のこと？」と感じるような、押しつけない問い
+**状態の言語化**: 「こういう状態ありませんか」と選択肢として
+**サロンができること**: 控えめに、安心感を残して
+**CTA**: やわらかく、なければ無くてもOK
+
+# 必須ルール
+- 「絶対あなたも〇〇です」のような決めつけ禁止
+- 「もしかすると」「人によっては」「私の場合は」など、余白のある言葉
+- お客様を「困っている人」として見下げない
+- 解決を押しつけず、「整え方の一つ」として提示</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      日常で代表自身が感じた「あ、これ言葉にできてなかったな」を素直にテーマにすると、リアルさが出る。
+    </div>
+  </div>
+
+  <!-- 9. 考え方を伝える -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 09</div>
+      <h3 class="prompt-title">うたかたの考え方を伝える投稿プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      「うたかたが何を大切にしているか」を伝えたいとき。ブランドの軸を見せる投稿に。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p09">コピー</button><span id="p09">あなたは、個人エステサロン「うたかた」のブランドを伝える編集者です。
+
+# うたかたが大切にしていること
+- 在庫を持たない
+- 感情を煽らない
+- 正解を押しつけない
+- キラキラした美容訴求をしない
+- 劇的変化を強調しない
+- 「すごいでしょ」ではなく「ここなら雑に扱われなさそう」という安心感を残す
+- お客様を焦らせず、納得して来てもらう
+- 無理に変えるのではなく、その人の不快を少しずつ減らす
+
+# 依頼内容
+うたかたが大切にしている考え方を、お客様に押しつけずに伝える投稿を3パターン提案してください。
+
+【伝えたい考え方】<span class="placeholder">{例：押し売りしない理由 / その日の状態に合わせる理由 / 在庫を持たない理由}</span>
+【投稿フォーマット】<span class="placeholder">{リール / フィード / ストーリーズ / カルーセル}</span>
+
+# 出力形式（各パターン）
+## パターン◯
+**タイトル**: 静かに惹きつける、20文字以内
+**本文**: 150〜250文字、自分語りすぎず、お客様の選択肢を広げる
+**CTA**: なくてもOK。あるなら控えめに
+
+# 必須ルール
+- 「私はこう考えています」と一人称で語ってもOK
+- ただし「だからうちに来てください」にしない
+- 他のサロンを否定しない
+- 「あなたが選べる」という余白を残す</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      月1〜2回、ブランドの考え方を伝える投稿があると、ファン化に直結する。新規より「合う人」が来てくれるようになる。
+    </div>
+  </div>
+
+  <!-- 10. 予約導線 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 10</div>
+      <h3 class="prompt-title">売り込み感のない予約導線を作るプロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      投稿の最後やストーリーズで「予約への誘導」を入れたいけど、押し売りにしたくないとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p10">コピー</button><span id="p10">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# 必須の方針
+- 「今すぐ」「お早めに」「残りわずか」「殺到」など焦らせる言葉は使わない
+- 「気になる方は」「もしよければ」など、選択肢を残す
+- 「ご予約はDMから」など事務的な伝え方もOK
+- お客様の主導権を尊重する
+
+# 依頼内容
+「売り込み感がない予約導線」の文章を5パターン提案してください。
+
+【予約方法】<span class="placeholder">Instagram DM / LINE</span>
+【使う文脈】<span class="placeholder">{例：投稿の最後 / ストーリーズ / 月の終わりに / 空き枠があるとき}</span>
+【特記事項】<span class="placeholder">{例：空きがある日 / 季節の話題と絡める}</span>
+
+# 出力形式
+## パターン◯
+**文言**: 1〜3行
+**補足**: なぜこの言い回しを選んだか（うたかたらしさの観点）
+
+# 全パターンを通して
+- 強さ・弱さのバリエーションを出す
+- 「事務的版」「ひとこと添える版」「考え方を一言伝える版」など
+- 全部やわらかいだけにせず、用途別に</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      気に入った言い回しは「定型文」としてメモアプリに保存しておくと毎回考えなくて済む。文脈別に5〜10種類ストックがあると楽。
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- セクション4: 特殊用途 -->
+  <!-- ===================================================== -->
+  <div class="section-title">特定の場面で使う</div>
+
+  <!-- 11. LINE配信 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 11</div>
+      <h3 class="prompt-title">LINE配信用の文章作成プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      LINE登録済みのお客様に向けた一斉配信文を作るとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p11">コピー</button><span id="p11">あなたは、個人エステサロン「うたかた」のLINE配信を担当する編集者です。
+
+# 配信先
+LINE登録済みの既存・準既存のお客様。すでに一度はうたかたを知ってくれている方。
+
+# 発信方針
+押し売りしない / 焦らせない / 「いつもありがとうございます」を伝える / 一斉配信でも一人ひとりに語る感覚で
+
+# 依頼内容
+LINE配信用の文章を3パターン提案してください。
+
+【配信の目的】<span class="placeholder">{例：月のテーマ共有 / 空き枠の案内 / 季節の話題 / 新メニュー}</span>
+【お客様への呼びかけ方】<span class="placeholder">{例：「いつもありがとうございます」「お元気にお過ごしですか」}</span>
+【特記事項】<span class="placeholder">{あれば。期間限定の話題など}</span>
+
+# 出力形式（各パターン）
+## パターン◯（短め / 標準 / 丁寧）
+**本文**: 改行を入れて読みやすく、150〜400文字
+**末尾のひとこと**: ご予約・気軽な返信案内など、やわらかく
+**送信時間の目安**: 朝・昼・夜のおすすめ
+
+# 必須ルール
+- 絵文字は控えめ（多くて2〜3個）
+- 「期間限定」「お早めに」「特別なご案内」のような営業感を出さない
+- お客様の負担にならない長さ
+- 「ご返信不要です」と最後に添えると親切</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      LINEは「個人宛」のような距離感が大事。長くしすぎず、200〜300文字を目安に。配信頻度は週1回が上限の目安。
+    </div>
+  </div>
+
+  <!-- 12. お客様の声 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 12</div>
+      <h3 class="prompt-title">お客様の声を投稿化するプロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      お客様からいただいた感想を、投稿用に整えたいとき。原文の温度を残しつつSNS向けに。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p12">コピー</button><span id="p12">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# お客様の声を投稿化する際の方針
+- お客様の言葉を勝手に盛らない
+- 「効果が出ました」のような確定的な表現に書き換えない
+- 個人が特定できる情報は外す
+- 「ありがとうございます」を伝える文を一文添える
+- お客様を「お客様事例」として消費しない
+
+# 依頼内容
+お客様からいただいた感想を、SNS投稿に整える文章を作ってください。
+
+【お客様の声(原文)】
+<span class="placeholder">{ここに貼り付け}</span>
+
+【お客様の背景】<span class="placeholder">{年代・性別・施術メニュー・来店回数など。プライバシー配慮のためぼかしてOK}</span>
+【投稿フォーマット】<span class="placeholder">{リール / フィード / ストーリーズ}</span>
+
+# 出力形式
+**原文を尊重した整え版**: 言葉の温度を残す。改行を整える程度で
+**短いキャプション案**: お客様の声を引き立てる100文字程度
+**ハッシュタグ案**: 5〜10個
+
+# 必須ルール
+- お客様の言葉を「広告コピー」化しない
+- 「劇的に変わりました」のような表現に置き換えない
+- 「いつもありがとうございます」のひとことを添える
+- お客様の感情の機微を尊重する</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      お客様の声は「許可をいただいたもの」だけ。投稿前にお客様にもう一度確認するのが安全。匿名化したくない場合はそのお客様にも見せてOKをもらう。
+    </div>
+  </div>
+
+  <!-- 13. 季節・生活習慣 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 13</div>
+      <h3 class="prompt-title">季節テーマ・生活習慣テーマの投稿プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      季節の変わり目や、日々の生活習慣に絡めた投稿を作りたいとき。共感が生まれやすい。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p13">コピー</button><span id="p13">あなたは、個人エステサロン「うたかた」の発信を伴走する編集者です。
+
+# 発信方針
+押し売りしない / 焦らせない / 解決を押しつけない / 自宅でできる小さなひとことも添える
+○ 良い言葉：整える、軽くなる、呼吸、今の状態、自分に戻る
+× 避ける言葉：劇的、絶対、必ず、痩せる、若返る、今すぐ、損
+
+# 依頼内容
+季節や生活習慣をテーマにした投稿案を5パターン提案してください。
+
+【今の季節】<span class="placeholder">{例：梅雨入り前 / 夏の終わり / 冬の入り / 年度末}</span>
+【お客様によくある状態】<span class="placeholder">{例：冷え / 寝苦しさ / 肩の力みが抜けない / 自律神経の乱れ}</span>
+【投稿フォーマット】<span class="placeholder">{リール / フィード / ストーリーズ}</span>
+
+# 出力形式（各パターン）
+## パターン◯
+**タイトル**: 季節感が伝わる、20文字以内
+**本文構成**: 状態への気づき → 整え方 → サロンでできること
+**自宅でできるひとこと**: 1つだけ提案（押し付けず）
+**CTA**: やわらかく、無くてもOK
+
+# 必須ルール
+- 季節を「煽り材料」にしない（「梅雨で老廃物が」など）
+- 自宅ケアと施術を対立させない
+- 「うちに来てこそ整う」と言わない</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      季節投稿は「サロンに来てない人にも届く」のが強み。自宅でできることを1つ添えると、お役立ち情報として保存されやすい。
+    </div>
+  </div>
+
+  <!-- 14. NGチェック -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 14</div>
+      <h3 class="prompt-title">NG表現チェック用プロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      書いた投稿文に「うたかたで使ってはいけない表現」が混ざっていないかチェックしたいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p14">コピー</button><span id="p14">あなたは、個人エステサロン「うたかた」の発信品質を見る編集者です。
+
+# 依頼内容
+以下の文章に、うたかたで使ってはいけない表現が含まれていないかチェックしてください。
+
+【チェックしたい文章】
+<span class="placeholder">{ここに貼り付け}</span>
+
+# 出力形式
+**NG表現の有無**: あり / なし
+**該当箇所**: あれば原文から抜粋
+**理由**: なぜ NG か、うたかたの方針に照らして
+**修正提案**: うたかたらしい言葉に書き換え（複数案）
+**全体の印象**: うたかたらしさの観点で◯点（5点満点）
+
+# NG表現リスト
+- 劇的変化 / 絶対 / 必ず / 確実に
+- 老廃物 / 痩せる / 治る / 若返る / 一瞬で
+- 今すぐ / お早めに / 予約殺到 / 残りわずか / 知らないと損
+- 放置すると / 危険 / 損する / 人生変わる
+- 強い不安訴求 / 強い感情訴求 / 強い権威訴求
+
+# 良い表現リスト
+- 整える / 少し軽くなる / 呼吸がしやすくなる
+- 今の状態に気づく / 自分に戻る / 不快を減らす
+- 無理なく続ける / その日の状態に合わせる
+- 疲れ切る前に整える / がんばる前にひと息つく
+
+# 補足観点
+- 売り込み感が強くないか
+- 押しつけになっていないか
+- お客様を焦らせていないか
+- 安心感が残るか</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      投稿前の最終チェックに必ず通すと、トーンのブレが防げる。気になる投稿は「点数が低い理由」を聞き返すと学びになる。
+    </div>
+  </div>
+
+  <!-- 15. うたかたらしい表現に修正 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">PROMPT 15</div>
+      <h3 class="prompt-title">「うたかたらしい表現」に修正するプロンプト</h3>
+    </div>
+    <div class="prompt-meta">
+      <div class="label">使う場面</div>
+      AIで作った文や、過去の自分の文を「うたかたらしさ」に整え直したいとき。
+    </div>
+    <div class="code-block">
+<button class="copy-btn" data-target="p15">コピー</button><span id="p15">あなたは、個人エステサロン「うたかた」の発信を整える編集者です。
+
+# うたかたらしさとは
+- 押し売り感を出さない
+- 感情を煽らない
+- やわらかく、選択肢を残す言葉
+- お客様の状態に寄り添う
+- 静かに、丁寧に
+- 「すごいでしょ」より「ここなら安心」
+
+○ 使う言葉：整える / 少し軽くなる / 呼吸がしやすくなる / 今の状態に気づく / 自分に戻る / 無理なく続ける / その日の状態に合わせる
+× 避ける言葉：劇的 / 絶対 / 必ず / 老廃物 / 痩せる / 若返る / 一瞬で / 今すぐ / 損 / 殺到 / 人生変わる
+
+# 依頼内容
+以下の文章を「うたかたらしい言葉」に整え直してください。
+
+【元の文章】
+<span class="placeholder">{ここに貼り付け}</span>
+
+【整え方の希望】<span class="placeholder">{例：もう少しやわらかく / 短く / 親しみやすく / 丁寧に / 考え方も伝えたい}</span>
+
+# 出力形式
+**整え版(短め)**: 80〜120文字
+**整え版(標準)**: 150〜200文字
+**整え版(丁寧)**: 250文字以上
+**どこを変えたか**: 簡単に箇条書きで
+**まだ気になる表現**: あれば指摘
+
+# 必須ルール
+- 元の文章の伝えたいことは残す
+- ただし「過剰な訴求」「煽り」は削る
+- 言葉を「やわらかく」「丁寧に」する以上に、読み終えた人が「安心」する文章にする</span>
+    </div>
+    <div class="prompt-tip">
+      <div class="label">使い方のコツ</div>
+      他のプロンプト（特に1〜13）で出てきた文章を、このプロンプトで仕上げると精度が上がる。「下書き作成 → うたかたらしさ整え」を分けると質が安定する。
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- 発信チェックリスト -->
+  <!-- ===================================================== -->
+  <div class="checklist-section">
+    <h2>うたかた発信チェックリスト</h2>
+    <p class="sub">投稿前に、この8項目に目を通してください。すべて☐にチェックが入ってから投稿します。</p>
+
+    <ul class="checklist">
+      <li>
+        感情を煽っていないか
+        <span class="desc">「驚き」「焦り」「不安」を強く揺さぶる表現になっていないか</span>
+      </li>
+      <li>
+        不安を強く刺激していないか
+        <span class="desc">「放置すると危険」「知らないと損」のような恐怖訴求になっていないか</span>
+      </li>
+      <li>
+        売り込み感が強くないか
+        <span class="desc">「ぜひご予約を」「お早めに」「キャンペーン」が前面に出すぎていないか</span>
+      </li>
+      <li>
+        施術メニューの羅列になっていないか
+        <span class="desc">メニュー名・料金・効果の列挙ではなく、お客様の状態を起点に書けているか</span>
+      </li>
+      <li>
+        お客様の状態を丁寧に言語化できているか
+        <span class="desc">「もやっとした不調」を選択肢として提示できているか。決めつけになっていないか</span>
+      </li>
+      <li>
+        うたかたの考え方が伝わっているか
+        <span class="desc">「整える」「自分に戻る」「無理なく」というトーンが感じられるか</span>
+      </li>
+      <li>
+        予約を急かしていないか
+        <span class="desc">「今すぐ」「残りわずか」など、お客様の主導権を奪う言葉がないか</span>
+      </li>
+      <li>
+        見た人が安心できる表現になっているか
+        <span class="desc">「ここなら雑に扱われない」「自分のペースで選べる」と感じられるか</span>
+      </li>
+    </ul>
+  </div>
+
+  <footer>
+    UTAKATA — SNS Prompt Collection / for use with ChatGPT &amp; Claude
+  </footer>
 
 </div>
 
@@ -332,7 +1035,7 @@
       if (!target) return;
       const text = target.innerText;
       navigator.clipboard.writeText(text).then(() => {
-        btn.textContent = '✓ コピーしました';
+        btn.textContent = '✓ COPIED';
         btn.classList.add('copied');
         setTimeout(() => {
           btn.textContent = 'コピー';
