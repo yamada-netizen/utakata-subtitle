@@ -3,187 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハイライト抽出ガイド - サロン用</title>
+<title>うたかた ハイライト抽出ガイド</title>
 <style>
   :root {
-    --c-primary: #f59e0b;
-    --c-accent: #ec4899;
-    --c-success: #10b981;
-    --c-danger: #ef4444;
-    --bg: #f8fafc;
-    --text: #0f172a;
-    --muted: #64748b;
-    --line: #e2e8f0;
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-ok: #6b8b6e;
+    --c-danger: #b56565;
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
-    background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
-    line-height: 1.6; font-size: 14px;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
   }
-  .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  .container { max-width: 920px; margin: 0 auto; padding: 32px 24px; }
 
   header {
-    background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
-    color: white; padding: 24px 28px; border-radius: 12px; margin-bottom: 24px;
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
   }
-  header h1 { margin: 0 0 6px; font-size: 22px; }
-  header p { margin: 0; opacity: 0.95; font-size: 13px; }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 600px; margin: 0 auto;
+  }
 
-  .problem {
-    background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
-    padding: 16px 20px; margin-bottom: 24px;
+  .section { margin-bottom: 44px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
   }
-  .problem h2 {
-    margin: 0 0 8px; font-size: 15px; color: #991b1b;
-    display: flex; align-items: center; gap: 8px; border: none; padding: 0;
+  .section h2 {
+    margin: 0 0 14px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85; color: var(--c-text);
+    margin-bottom: 16px;
+  }
+
+  /* 現状問題 */
+  .problem {
+    background: #f7f3ee; border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-danger);
+    border-radius: 4px; padding: 18px 22px; margin-bottom: 16px;
+  }
+  .problem h3 {
+    margin: 0 0 8px; font-size: 14px; color: #8b4a4a;
+    font-weight: 600; letter-spacing: 0.05em;
   }
   .problem-flow {
     display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
-    margin-top: 12px; font-size: 12px;
+    margin-top: 14px; font-size: 12px;
   }
   .problem-step {
-    background: white; padding: 10px; border-radius: 6px; text-align: center;
-    border: 1px solid #fecaca;
+    background: var(--c-card); padding: 10px 12px; border-radius: 4px;
+    border: 1px solid var(--c-line); text-align: center;
   }
-  .problem-step .num { font-weight: 700; color: #dc2626; font-size: 13px; }
-  .problem-step .desc { color: var(--muted); font-size: 11px; margin-top: 4px; }
-  .problem-step .time { font-weight: 700; color: #dc2626; margin-top: 4px; }
-
-  h2 {
-    font-size: 16px; margin: 32px 0 14px;
-    padding-bottom: 6px; border-bottom: 2px solid var(--c-primary);
-    display: flex; align-items: center; gap: 8px;
+  .problem-step .num {
+    font-weight: 700; color: var(--c-danger); font-size: 12px;
+    font-family: "SF Mono", monospace;
   }
-  h3 { font-size: 14px; margin: 16px 0 8px; }
+  .problem-step .desc { color: var(--c-muted); font-size: 11px; margin-top: 4px; }
+  .problem-step .time { font-weight: 600; color: var(--c-danger); margin-top: 6px; font-size: 12px; }
 
   /* ヒーロー解決策 */
   .hero-solution {
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    border: 2px solid var(--c-success); border-radius: 12px;
-    padding: 20px 24px; margin-bottom: 28px;
+    background: var(--c-card); border: 2px solid var(--c-primary);
+    border-radius: 4px; padding: 22px 26px; margin-bottom: 28px;
   }
   .hero-solution h2 {
-    margin: 0 0 8px; color: #065f46; border: none; padding: 0;
+    margin: 0 0 8px; color: var(--c-primary-dark);
   }
-  .hero-solution .lead {
-    font-size: 15px; color: #065f46; font-weight: 700; margin-bottom: 12px;
+  .hero-solution .lead-strong {
+    font-size: 14px; color: var(--c-text); font-weight: 600;
+    margin-bottom: 14px; line-height: 1.85;
   }
-  .hero-solution .comparison {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px;
+  .comparison {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin-top: 14px;
   }
   .comp-box {
-    background: white; border-radius: 10px; padding: 14px 16px;
+    background: var(--c-bg); border-radius: 4px; padding: 16px 18px;
   }
-  .comp-box.bad { border-left: 4px solid var(--c-danger); }
-  .comp-box.good { border-left: 4px solid var(--c-success); }
+  .comp-box.bad { border-left: 3px solid var(--c-danger); }
+  .comp-box.good { border-left: 3px solid var(--c-ok); }
   .comp-box .label {
-    font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 4px;
+    font-size: 10px; color: var(--c-muted); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 6px;
   }
   .comp-box .title {
-    font-size: 13px; font-weight: 700; margin-bottom: 8px;
+    font-size: 13px; font-weight: 700; margin-bottom: 10px;
   }
-  .comp-box.bad .title { color: #991b1b; }
-  .comp-box.good .title { color: #065f46; }
-  .comp-flow {
-    font-size: 12px; line-height: 1.8; color: var(--text);
-  }
-  .comp-flow .step {
-    padding: 2px 0;
-  }
+  .comp-box.bad .title { color: #8b4a4a; }
+  .comp-box.good .title { color: #4a6d4d; }
+  .comp-flow { font-size: 12px; line-height: 1.9; color: var(--c-text); }
   .comp-time {
-    margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line);
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px dashed var(--c-line);
     font-size: 12px; font-weight: 700;
   }
-  .comp-box.bad .comp-time { color: #dc2626; }
-  .comp-box.good .comp-time { color: #16a34a; }
+  .comp-box.bad .comp-time { color: #8b4a4a; }
+  .comp-box.good .comp-time { color: #4a6d4d; }
 
-  /* セクション共通 */
-  .card {
-    background: white; border: 1px solid var(--line); border-radius: 10px;
-    padding: 16px 20px; margin-bottom: 14px;
+  .impact {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin: 16px 0 0;
   }
-  .card h3 { margin-top: 0; }
+  .impact-stat {
+    background: var(--c-bg); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 12px; text-align: center;
+  }
+  .impact-stat .num {
+    font-size: 20px; font-weight: 700; color: var(--c-primary-dark);
+    font-family: "SF Mono", monospace;
+  }
+  .impact-stat .label {
+    font-size: 11px; color: var(--c-muted); margin-top: 4px;
+  }
 
+  /* スクリプトカード */
+  .script-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 20px 24px; margin-bottom: 14px;
+  }
+  .script-card .script-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--c-line);
+    padding-bottom: 10px; margin-bottom: 14px;
+  }
+  .script-card h3 {
+    margin: 0; font-size: 15px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.03em;
+  }
+  .script-card .menu-tag {
+    font-size: 11px; color: var(--c-accent); letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+
+  .scene-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px;
+  }
+  .scene-table th, .scene-table td {
+    border-bottom: 1px solid var(--c-line); padding: 8px 10px;
+    text-align: left; vertical-align: top;
+  }
+  .scene-table th {
+    background: #f5f1ea; font-size: 10px; color: var(--c-muted);
+    letter-spacing: 0.15em; font-weight: 600;
+  }
+  .scene-table td.check { text-align: center; width: 32px; color: var(--c-muted); }
+  .scene-table td.n { width: 28px; color: var(--c-accent); font-weight: 700;
+    font-family: "SF Mono", monospace; font-size: 11px; }
+  .scene-table td.time { width: 50px; color: var(--c-primary); font-weight: 600;
+    font-family: "SF Mono", monospace; }
+  .scene-table td.scene-content { width: 38%; }
+  .scene-table td.telop {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--c-primary-dark);
+  }
+  .scene-table td.telop.empty { color: var(--c-muted); font-style: italic; }
+  .script-foot {
+    font-size: 11px; color: var(--c-muted); margin-top: 10px;
+    padding-top: 8px; border-top: 1px dashed var(--c-line);
+  }
+
+  /* テクニックカード */
+  .tech-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 16px 20px; margin-bottom: 10px;
+  }
+  .tech-card h3 {
+    margin: 0 0 8px; font-size: 14px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .tech-card p { margin: 6px 0; font-size: 13px; }
+  .tech-card .note {
+    font-size: 11px; color: var(--c-muted); font-style: italic;
+    margin-top: 6px;
+  }
+
+  /* ツールカード */
+  .tool-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 14px 18px; margin-bottom: 8px;
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 12px; align-items: center;
+  }
+  .tool-icon {
+    width: 36px; height: 36px; background: var(--c-primary);
+    color: white; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    font-family: "SF Mono", monospace;
+  }
+  .tool-info .name { font-weight: 600; font-size: 13px; color: var(--c-primary-dark); }
+  .tool-info .desc { font-size: 12px; color: var(--c-muted); margin-top: 2px; }
+  .tool-rating {
+    font-size: 11px; color: var(--c-accent); font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* チェックリスト */
   .checklist {
     list-style: none; padding: 0; margin: 8px 0;
   }
   .checklist li {
-    padding: 6px 0 6px 26px; position: relative; font-size: 13px;
-    border-bottom: 1px dashed var(--line);
+    padding: 8px 0 8px 28px; position: relative; font-size: 13px;
+    border-bottom: 1px dashed var(--c-line);
   }
   .checklist li:last-child { border-bottom: none; }
   .checklist li::before {
-    content: '☐'; position: absolute; left: 0; top: 6px;
+    content: '☐'; position: absolute; left: 4px; top: 7px;
     font-size: 16px; color: var(--c-primary);
   }
 
-  .scene-table {
-    width: 100%; border-collapse: collapse; background: white;
-    border-radius: 10px; overflow: hidden; margin: 12px 0;
-    font-size: 12px;
+  .tip {
+    background: #f5f1ea; border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
   }
-  .scene-table th, .scene-table td {
-    border: 1px solid var(--line); padding: 8px 10px; text-align: left;
-  }
-  .scene-table th {
-    background: #f1f5f9; font-size: 11px; color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-  .scene-table td.check { text-align: center; width: 40px; }
-  .scene-table td.time { width: 60px; color: var(--c-primary); font-weight: 700; }
+  .tip strong { color: var(--c-accent); }
 
-  .tag {
-    display: inline-block; font-size: 11px; padding: 2px 8px;
-    border-radius: 4px; background: #f1f5f9; color: var(--muted);
-    margin-right: 4px;
-  }
-  .tag.tip { background: #fef3c7; color: #92400e; }
-
-  .tool-card {
-    background: white; border: 1px solid var(--line); border-radius: 10px;
-    padding: 14px 18px; margin-bottom: 10px;
-    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
-  }
-  .tool-icon {
-    width: 40px; height: 40px; background: var(--c-primary); color: white;
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 800;
-  }
-  .tool-info .name { font-weight: 700; font-size: 14px; }
-  .tool-info .desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .tool-rating { font-size: 11px; color: var(--c-primary); font-weight: 700; }
-
-  .tip-box {
-    background: #fffbeb; border-left: 4px solid #f59e0b;
-    padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 13px;
-  }
-  .tip-box strong { color: #92400e; }
-
-  .impact {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-    margin: 16px 0;
-  }
-  .impact-stat {
-    background: white; border: 1px solid var(--line); border-radius: 10px;
-    padding: 14px; text-align: center;
-  }
-  .impact-stat .num {
-    font-size: 22px; font-weight: 800; color: var(--c-success);
-  }
-  .impact-stat .label {
-    font-size: 11px; color: var(--muted); margin-top: 4px;
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
   }
 
   @media print {
     body { background: white; font-size: 11px; }
     .container { padding: 0; }
+    @page { size: A4 portrait; margin: 10mm; }
   }
   @media (max-width: 720px) {
     .problem-flow { grid-template-columns: 1fr; }
-    .hero-solution .comparison { grid-template-columns: 1fr; }
+    .comparison { grid-template-columns: 1fr; }
     .impact { grid-template-columns: 1fr; }
   }
 </style>
@@ -192,354 +265,370 @@
 <div class="container">
 
   <header>
-    <h1>✂️ ハイライト抽出ガイド</h1>
-    <p>「長尺から使えるシーンを探す作業」を激減させる撮影設計と編集テクニック</p>
+    <div class="brand">UTAKATA — 個人エステサロン</div>
+    <h1>ハイライト抽出ガイド</h1>
+    <p>「長尺から使えるシーンを探す作業」を激減させる撮影設計と編集テクニック。<br>うたかたの「整える時間」を、編集に時間をかけずに伝えるための仕組み。</p>
   </header>
 
-  <!-- 現状の問題 -->
-  <div class="problem">
-    <h2>🚨 現状の作業フローと所要時間</h2>
-    <p style="font-size:13px;margin:6px 0;">
-      ChatGPTで台本ができても、長尺の素材からハイライトを切り出すのに毎回時間が溶けています。
+  <!-- セクション1: 現状の問題 -->
+  <div class="section">
+    <div class="section-title">01　現状のボトルネック</div>
+    <h2>編集時間の半分は「ハイライト探し」に消えている</h2>
+    <p class="lead">
+      ChatGPTで台本ができても、長尺の素材からハイライトを切り出すのに毎回時間が溶けます。
+      特にうたかたのような落ち着いた施術風景は「決定的瞬間」が分かりにくく、
+      「どこを使うか」の判断に時間がかかりがちです。
     </p>
-    <div class="problem-flow">
-      <div class="problem-step">
-        <div class="num">①</div>
-        <div>長尺素材を全部見直し</div>
-        <div class="desc">10分の動画を頭から再生</div>
-        <div class="time">⏱ 10〜20分</div>
+
+    <div class="problem">
+      <h3>長尺撮影パターンの所要時間</h3>
+      <div class="problem-flow">
+        <div class="problem-step">
+          <div class="num">01</div>
+          <div>長尺素材を見直す</div>
+          <div class="desc">頭から再生して確認</div>
+          <div class="time">10〜20分</div>
+        </div>
+        <div class="problem-step">
+          <div class="num">02</div>
+          <div>使う部分を選別</div>
+          <div class="desc">台本と照らし合わせ</div>
+          <div class="time">10〜15分</div>
+        </div>
+        <div class="problem-step">
+          <div class="num">03</div>
+          <div>カット・並び替え</div>
+          <div class="desc">細かい調整</div>
+          <div class="time">10〜15分</div>
+        </div>
       </div>
-      <div class="problem-step">
-        <div class="num">②</div>
-        <div>使う部分を判断・選別</div>
-        <div class="desc">台本と照らし合わせ</div>
-        <div class="time">⏱ 10〜15分</div>
-      </div>
-      <div class="problem-step">
-        <div class="num">③</div>
-        <div>カット・並び替え</div>
-        <div class="desc">細かい調整</div>
-        <div class="time">⏱ 10〜15分</div>
-      </div>
+      <p style="font-size:13px;margin:12px 0 0;font-weight:600;color:#8b4a4a;">
+        合計: 1本あたり 30〜50分（編集時間の半分以上）
+      </p>
     </div>
-    <p style="font-size:13px;margin:12px 0 0;font-weight:700;color:#991b1b;">
-      合計: 1本あたり 30〜50分（編集時間の半分以上）
-    </p>
   </div>
 
-  <!-- ヒーロー解決策: 分割撮影 -->
-  <div class="hero-solution">
-    <h2>💡 最大の解決策: 「分割撮影」に切り替える</h2>
-    <p class="lead">
-      長尺で撮ってから切り出すのをやめる。<br>
-      「1動画 = 1シーン」で短く分けて撮影すれば、編集時の「選別作業」がほぼゼロになります。
-    </p>
+  <!-- セクション2: 分割撮影 -->
+  <div class="section">
+    <div class="section-title">02　解決の柱</div>
+    <div class="hero-solution">
+      <h2>「分割撮影」に切り替える</h2>
+      <p class="lead-strong">
+        長尺で撮ってから切り出すのをやめる。<br>
+        「1動画 = 1シーン」で短く分けて撮影すれば、編集時の「選別作業」がほぼゼロに。
+      </p>
 
-    <div class="comparison">
-      <div class="comp-box bad">
-        <div class="label">❌ 今までの撮り方</div>
-        <div class="title">長尺撮影 → 後で選別</div>
-        <div class="comp-flow">
-          <div class="step">📹 施術全体を10分で撮影</div>
-          <div class="step">👀 編集時に全部見直す</div>
-          <div class="step">🤔 「どこが使える？」と悩む</div>
-          <div class="step">✂️ いらない部分を消す</div>
-          <div class="step">🔄 並び替える</div>
+      <div class="comparison">
+        <div class="comp-box bad">
+          <div class="label">× 今までの撮り方</div>
+          <div class="title">長尺撮影 → 後で選別</div>
+          <div class="comp-flow">
+            ・施術全体を10分で撮影<br>
+            ・編集時に全部見直す<br>
+            ・「どこが使える？」と悩む<br>
+            ・いらない部分を消す<br>
+            ・並び替える
+          </div>
+          <div class="comp-time">編集時間: 約40分／本</div>
         </div>
-        <div class="comp-time">⏱ 編集時間: 約40分/本</div>
+
+        <div class="comp-box good">
+          <div class="label">○ これからの撮り方</div>
+          <div class="title">分割撮影 → 並べるだけ</div>
+          <div class="comp-flow">
+            ・シーンごとに4〜5秒で撮影<br>
+            ・別シーンも個別に撮影<br>
+            ・計6〜7本の短尺素材<br>
+            ・編集は順番に並べるだけ<br>
+            ・台本順 = 撮影順
+          </div>
+          <div class="comp-time">編集時間: 約10分／本</div>
+        </div>
       </div>
 
-      <div class="comp-box good">
-        <div class="label">✅ これからの撮り方</div>
-        <div class="title">分割撮影 → 並べるだけ</div>
-        <div class="comp-flow">
-          <div class="step">📹 シーンごとに30秒で撮影</div>
-          <div class="step">📹 別のシーンも30秒で撮影</div>
-          <div class="step">📹 計5〜7本の短尺素材</div>
-          <div class="step">🎬 編集は「順番に並べる」だけ</div>
-          <div class="step">💬 台本順 = 撮影順</div>
+      <div class="impact">
+        <div class="impact-stat">
+          <div class="num">-75%</div>
+          <div class="label">編集時間の削減</div>
         </div>
-        <div class="comp-time">⏱ 編集時間: 約10分/本</div>
+        <div class="impact-stat">
+          <div class="num">0分</div>
+          <div class="label">素材選別の時間</div>
+        </div>
+        <div class="impact-stat">
+          <div class="num">×3</div>
+          <div class="label">同じ時間で作れる本数</div>
+        </div>
       </div>
     </div>
+  </div>
 
+  <!-- セクション3: 撮影スクリプト -->
+  <div class="section">
+    <div class="section-title">03　うたかた向け撮影スクリプト</div>
+    <h2>メニュー別 撮影テンプレ</h2>
+    <p class="lead">
+      撮影前に「どんなシーンを何本撮るか」を決めたチェックリスト。
+      これに沿って撮影すれば、編集時の「どこを使うか」の悩みがなくなる。<br>
+      テロップ案は「うたかた発信チェックリスト」と一致する言葉で構成しています。
+    </p>
+
+    <!-- 1. オイルマッサージ -->
+    <div class="script-card">
+      <div class="script-head">
+        <h3>① オイルマッサージ — 肩・首の力を抜く時間</h3>
+        <span class="menu-tag">30秒構成</span>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr><th class="check">✓</th><th class="n">#</th><th>シーン</th><th class="time">尺</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="check">☐</td><td class="n">1</td><td class="scene-content">静かな空間・お客様が深く息を吐く瞬間</td><td class="time">3秒</td><td class="telop">呼吸が浅い日に</td></tr>
+          <tr><td class="check">☐</td><td class="n">2</td><td class="scene-content">オイルを手のひらで温める動き</td><td class="time">4秒</td><td class="telop empty">（無テロップ・音と動きで）</td></tr>
+          <tr><td class="check">☐</td><td class="n">3</td><td class="scene-content">肩〜首への施術（手元アップ）</td><td class="time">5秒</td><td class="telop">少し力が抜けていく</td></tr>
+          <tr><td class="check">☐</td><td class="n">4</td><td class="scene-content">背中を流す手の動き（広めの画）</td><td class="time">5秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">5</td><td class="scene-content">お客様の表情・呼吸の様子</td><td class="time">4秒</td><td class="telop">自分に戻る時間</td></tr>
+          <tr><td class="check">☐</td><td class="n">6</td><td class="scene-content">施術後の静かな空間</td><td class="time">5秒</td><td class="telop">整える、ということ</td></tr>
+          <tr><td class="check">☐</td><td class="n">7</td><td class="scene-content">サロン情報・案内</td><td class="time">4秒</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+      <div class="script-foot">合計30秒。各シーン2〜3テイク撮ると編集が楽に。</div>
+    </div>
+
+    <!-- 2. ホットストーン -->
+    <div class="script-card">
+      <div class="script-head">
+        <h3>② ホットストーン — 深く整える時間</h3>
+        <span class="menu-tag">30秒構成</span>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr><th class="check">✓</th><th class="n">#</th><th>シーン</th><th class="time">尺</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="check">☐</td><td class="n">1</td><td class="scene-content">ストーンが温まる様子（湯気・温度感）</td><td class="time">3秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">2</td><td class="scene-content">静かな空間・キャンドルの灯り</td><td class="time">4秒</td><td class="telop">ホットストーン</td></tr>
+          <tr><td class="check">☐</td><td class="n">3</td><td class="scene-content">背中にストーンを置く手元</td><td class="time">5秒</td><td class="telop">重みで肩がほどける</td></tr>
+          <tr><td class="check">☐</td><td class="n">4</td><td class="scene-content">ゆっくり滑らせる動き（ロングショット）</td><td class="time">5秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">5</td><td class="scene-content">お客様の深い呼吸・表情</td><td class="time">4秒</td><td class="telop">深く整える時間</td></tr>
+          <tr><td class="check">☐</td><td class="n">6</td><td class="scene-content">終わった後の温まった肌・空間</td><td class="time">4秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">7</td><td class="scene-content">サロン情報</td><td class="time">5秒</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+      <div class="script-foot">熱や湯気の動きが映えるので、撮影は明かりを少し落とすと雰囲気が出る。</div>
+    </div>
+
+    <!-- 3. フェイシャル -->
+    <div class="script-card">
+      <div class="script-head">
+        <h3>③ フェイシャル — 顔の緊張をほどく時間</h3>
+        <span class="menu-tag">30秒構成</span>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr><th class="check">✓</th><th class="n">#</th><th>シーン</th><th class="time">尺</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="check">☐</td><td class="n">1</td><td class="scene-content">リラックスしたお客様の顔（横向き）</td><td class="time">3秒</td><td class="telop">顔、緊張していませんか</td></tr>
+          <tr><td class="check">☐</td><td class="n">2</td><td class="scene-content">クレンジング（手元・指先）</td><td class="time">4秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">3</td><td class="scene-content">パック塗布・穏やかな動き</td><td class="time">5秒</td><td class="telop">肌が静まる</td></tr>
+          <tr><td class="check">☐</td><td class="n">4</td><td class="scene-content">軽いマッサージ（こめかみ・あご周り）</td><td class="time">5秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">5</td><td class="scene-content">仕上がりの肌アップ</td><td class="time">4秒</td><td class="telop">自分の顔に戻る</td></tr>
+          <tr><td class="check">☐</td><td class="n">6</td><td class="scene-content">お客様の表情（静かな満たされ感）</td><td class="time">4秒</td><td class="telop">整えた後の静けさ</td></tr>
+          <tr><td class="check">☐</td><td class="n">7</td><td class="scene-content">サロン情報</td><td class="time">5秒</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+      <div class="script-foot">「劇的変化」を煽る表現は避け、「静かさ」を残す構図を意識。</div>
+    </div>
+
+    <!-- 4. キャンドルアロママッサージ -->
+    <div class="script-card">
+      <div class="script-head">
+        <h3>④ キャンドルアロママッサージ — 静かに呼吸を整える時間</h3>
+        <span class="menu-tag">30秒構成</span>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr><th class="check">✓</th><th class="n">#</th><th>シーン</th><th class="time">尺</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="check">☐</td><td class="n">1</td><td class="scene-content">キャンドルの炎（ゆらぎ）</td><td class="time">3秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">2</td><td class="scene-content">アロマを選ぶ手元・香りを確かめる様子</td><td class="time">4秒</td><td class="telop">その日の状態に合わせて</td></tr>
+          <tr><td class="check">☐</td><td class="n">3</td><td class="scene-content">温まったキャンドルオイルを注ぐ瞬間</td><td class="time">5秒</td><td class="telop">温かなオイル</td></tr>
+          <tr><td class="check">☐</td><td class="n">4</td><td class="scene-content">背中への施術（広めの画）</td><td class="time">5秒</td><td class="telop empty">（無テロップ）</td></tr>
+          <tr><td class="check">☐</td><td class="n">5</td><td class="scene-content">お客様の静かな呼吸</td><td class="time">4秒</td><td class="telop">呼吸がやわらかくなる</td></tr>
+          <tr><td class="check">☐</td><td class="n">6</td><td class="scene-content">終わった後の空間（キャンドル消える）</td><td class="time">4秒</td><td class="telop">自分に戻る時間</td></tr>
+          <tr><td class="check">☐</td><td class="n">7</td><td class="scene-content">サロン情報</td><td class="time">5秒</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+      <div class="script-foot">キャンドルや香りの「気配」が伝わる動きを撮ると、世界観が強く出る。</div>
+    </div>
+
+    <!-- 5. トータル -->
+    <div class="script-card">
+      <div class="script-head">
+        <h3>⑤ トータル「整える時間」 — 全メニュー組み合わせ紹介</h3>
+        <span class="menu-tag">30秒構成</span>
+      </div>
+      <table class="scene-table">
+        <thead>
+          <tr><th class="check">✓</th><th class="n">#</th><th>シーン</th><th class="time">尺</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="check">☐</td><td class="n">1</td><td class="scene-content">サロン入口・空間の全体感</td><td class="time">3秒</td><td class="telop">UTAKATA</td></tr>
+          <tr><td class="check">☐</td><td class="n">2</td><td class="scene-content">カウンセリング・状態を見るシーン</td><td class="time">4秒</td><td class="telop">今日の状態を見る</td></tr>
+          <tr><td class="check">☐</td><td class="n">3</td><td class="scene-content">複数施術のハイライト（各2秒×3〜4本）</td><td class="time">8秒</td><td class="telop">その日に合わせて整える</td></tr>
+          <tr><td class="check">☐</td><td class="n">4</td><td class="scene-content">お客様の呼吸・表情</td><td class="time">5秒</td><td class="telop">自分に戻る</td></tr>
+          <tr><td class="check">☐</td><td class="n">5</td><td class="scene-content">静かな空間（キャンドル・テクスチャ）</td><td class="time">5秒</td><td class="telop">整える、ということ</td></tr>
+          <tr><td class="check">☐</td><td class="n">6</td><td class="scene-content">サロン情報</td><td class="time">5秒</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+      <div class="script-foot">サロン紹介・月のテーマ・新規顧客向けに使う「定番リール」として量産可能。</div>
+    </div>
+  </div>
+
+  <!-- セクション4: 撮影テクニック -->
+  <div class="section">
+    <div class="section-title">04　撮影中のテクニック</div>
+    <h2>うたかたらしく撮るための4つの心得</h2>
+
+    <div class="tech-card">
+      <h3>① 「1シーン = 1動画」で短く分けて撮る</h3>
+      <p>録画ボタンを押す → 4〜5秒撮影 → 停止 → 次のシーンへ。「ながら撮影」をやめて「区切り撮影」に。</p>
+    </div>
+
+    <div class="tech-card">
+      <h3>② 「決定的瞬間」より「静かな間」を狙う</h3>
+      <p>うたかたの世界観では、派手な動きより「呼吸の間」「手の止まり」「灯りのゆらぎ」が映える。撮影中に被写体に「ゆっくり」を意識してもらう。</p>
+      <p class="note">※ お客様にも「自然に、ゆっくり」と一言伝えるだけでOK</p>
+    </div>
+
+    <div class="tech-card">
+      <h3>③ 同じシーンを 2〜3 テイク撮る</h3>
+      <p>一発撮りを諦める。角度・寄り引きを変えて2〜3回撮ると、編集時に「ベストを選ぶだけ」で済む。</p>
+    </div>
+
+    <div class="tech-card">
+      <h3>④ 撮影直後にファイル名を変更</h3>
+      <p>撮影後すぐにファイル名を <code>20260501_オイル_シーン3_肩.mp4</code> のように変更。<br>
+      <strong>素材フォルダ設計ガイドの命名規則と合わせる</strong>と管理が一気に楽になる。</p>
+    </div>
+
+    <div class="tip">
+      <strong>うたかたらしい撮影のコツ:</strong>
+      声を張らずに撮影する。「シーン3、テイク1」と言うときも小さな声で。
+      撮影現場の静けさ自体が、後で素材を見返したときに伝わってくる。
+    </div>
+  </div>
+
+  <!-- セクション5: 編集ツール -->
+  <div class="section">
+    <div class="section-title">05　編集ツールの自動ハイライト機能</div>
+    <h2>長尺で撮らざるを得ない時の保険</h2>
+    <p class="lead">
+      基本は分割撮影。ただし、施術全体の雰囲気を残したい場合や、撮影を分割できない時もある。
+      その時はAIに任せる手も。
+    </p>
+
+    <div class="tool-card">
+      <div class="tool-icon">A</div>
+      <div class="tool-info">
+        <div class="name">Edits（標準アプリ）の自動編集</div>
+        <div class="desc">複数素材をAIが自動で並べてくれる。試す価値あり</div>
+      </div>
+      <div class="tool-rating">★★</div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">C</div>
+      <div class="tool-info">
+        <div class="name">CapCut の「自動ハイライト」</div>
+        <div class="desc">長尺素材から見どころを自動抽出。動きや変化を検出。無料</div>
+      </div>
+      <div class="tool-rating">★★★</div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">O</div>
+      <div class="tool-info">
+        <div class="name">Opus Clip / Vizard（AIハイライトツール）</div>
+        <div class="desc">月10〜30 USD。喋りベースなので無音BGM動画には弱い</div>
+      </div>
+      <div class="tool-rating">★★</div>
+    </div>
+
+    <div class="tip">
+      <strong>注意:</strong>
+      AIハイライト系ツールは「動きの激しい動画」「喋りのある動画」を想定して設計されている。
+      うたかたのような <strong>静かな施術風景</strong> では、AIが「ハイライト＝動きの大きい瞬間」と誤判定して、
+      派手なカットを優先しがち。<strong>分割撮影＋スクリプトのほうが確実</strong>です。
+    </div>
+  </div>
+
+  <!-- セクション6: 導入プラン -->
+  <div class="section">
+    <div class="section-title">06　導入プラン（3週間）</h2>
+    <h2>無理なく取り入れる順序</h2>
+
+    <div class="tech-card">
+      <h3>第1週: 撮影スクリプトを1回だけ試す</h3>
+      <ul class="checklist">
+        <li>上記スクリプトを1つ印刷 or スマホに表示</li>
+        <li>次の撮影で1メニューだけ試す</li>
+        <li>「やってみてどうだったか」を振り返る</li>
+      </ul>
+    </div>
+
+    <div class="tech-card">
+      <h3>第2週: 分割撮影に切り替える</h3>
+      <ul class="checklist">
+        <li>長尺撮影をやめて「1シーン = 1動画」で撮る</li>
+        <li>各シーンを2〜3テイク撮影</li>
+        <li>編集時間を計測してビフォーアフターを比較</li>
+      </ul>
+    </div>
+
+    <div class="tech-card">
+      <h3>第3週: スクリプトを自分らしくカスタマイズ</h3>
+      <ul class="checklist">
+        <li>テンプレを実際の流れに合わせて調整</li>
+        <li>よく使うシーンを「定番素材」として保存</li>
+        <li>素材フォルダの「定番」フォルダに整理</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- セクション7: 期待効果 -->
+  <div class="section">
+    <div class="section-title">07　期待される効果</div>
     <div class="impact">
       <div class="impact-stat">
-        <div class="num">75%</div>
-        <div class="label">編集時間の削減</div>
+        <div class="num">-30分</div>
+        <div class="label">1本あたりの編集時間</div>
       </div>
       <div class="impact-stat">
-        <div class="num">0分</div>
-        <div class="label">素材選別の時間</div>
-      </div>
-      <div class="impact-stat">
-        <div class="num">3倍</div>
+        <div class="num">+3本</div>
         <div class="label">同じ時間で作れる本数</div>
       </div>
+      <div class="impact-stat">
+        <div class="num">月1→月3</div>
+        <div class="label">リール投稿の現実的な頻度</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>まとめ:</strong>
+      ハイライト抽出の自動化＝AIに任せる、ではなく
+      <strong>「撮影段階で抽出しなくていい状態にする」</strong> が答え。
+      うたかたの静かな世界観は、決まったスクリプトで撮るほど、編集が楽になり、
+      かつ「うたかたらしさ」が動画ごとに一貫していきます。
     </div>
   </div>
 
-  <!-- 撮影前: 撮影スクリプト -->
-  <h2>📋 ステップ1: 撮影前に「撮影スクリプト」を作る</h2>
-
-  <div class="card">
-    <h3>撮影スクリプトとは</h3>
-    <p style="font-size:13px;">
-      撮影前に「どんなシーンを何本撮るか」を決めたチェックリスト。
-      これに沿って撮影すれば、編集時に「あれ撮ればよかった…」がなくなる。
-    </p>
-    <p style="font-size:13px;">
-      <span class="tag tip">コツ</span>
-      ChatGPTで作った30秒台本をベースに、シーンを<strong>5〜7個に分解</strong>するだけ。
-    </p>
-  </div>
-
-  <!-- メニュー別撮影スクリプトテンプレ -->
-  <h3>💍 ブライダルフェイシャル 撮影スクリプト（テンプレ）</h3>
-  <table class="scene-table">
-    <thead>
-      <tr>
-        <th class="check">✓</th>
-        <th>シーン</th>
-        <th>内容</th>
-        <th class="time">尺</th>
-        <th>テロップ案</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="check">☐</td>
-        <td>1</td>
-        <td>サロン入口・看板</td>
-        <td class="time">3秒</td>
-        <td>「肌が弱い花嫁様へ」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>2</td>
-        <td>カウンセリングシーン</td>
-        <td class="time">5秒</td>
-        <td>「丁寧なカウンセリング」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>3</td>
-        <td>クレンジング（手元アップ）</td>
-        <td class="time">5秒</td>
-        <td>「優しい洗浄」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>4</td>
-        <td>パック塗布（手元）</td>
-        <td class="time">5秒</td>
-        <td>「敏感肌専用パック」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>5</td>
-        <td>仕上がりの肌アップ</td>
-        <td class="time">5秒</td>
-        <td>「うるツヤ肌へ」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>6</td>
-        <td>お客様の笑顔（許可済み）</td>
-        <td class="time">3秒</td>
-        <td>「式当日が楽しみ」</td>
-      </tr>
-      <tr>
-        <td class="check">☐</td>
-        <td>7</td>
-        <td>店内・予約案内テロップ</td>
-        <td class="time">4秒</td>
-        <td>「DMで予約受付中」</td>
-      </tr>
-    </tbody>
-  </table>
-  <p style="font-size:12px;color:var(--muted);margin-top:-8px;">
-    合計 30秒。撮影は各シーン2〜3テイク撮っておくと選びやすい。
-  </p>
-
-  <h3>✨ フェイシャル一般 撮影スクリプト（テンプレ）</h3>
-  <table class="scene-table">
-    <thead>
-      <tr>
-        <th class="check">✓</th>
-        <th>シーン</th>
-        <th>内容</th>
-        <th class="time">尺</th>
-        <th>テロップ案</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="check">☐</td><td>1</td><td>テーマの問いかけ（手元・店内）</td><td class="time">3秒</td><td>「最近肌の調子どう？」</td></tr>
-      <tr><td class="check">☐</td><td>2</td><td>悩みの提示（肌アップ）</td><td class="time">5秒</td><td>「乾燥・くすみ・たるみ」</td></tr>
-      <tr><td class="check">☐</td><td>3</td><td>施術風景①（クレンジング）</td><td class="time">5秒</td><td>「丁寧な洗浄から」</td></tr>
-      <tr><td class="check">☐</td><td>4</td><td>施術風景②（マッサージ）</td><td class="time">5秒</td><td>「リフトアップマッサージ」</td></tr>
-      <tr><td class="check">☐</td><td>5</td><td>仕上がり（ビフォーアフター）</td><td class="time">7秒</td><td>「みるみる変わる肌」</td></tr>
-      <tr><td class="check">☐</td><td>6</td><td>CTA（予約案内）</td><td class="time">5秒</td><td>「DM『フェイシャル』で予約」</td></tr>
-    </tbody>
-  </table>
-
-  <h3>🎓 スクール紹介 撮影スクリプト（テンプレ）</h3>
-  <table class="scene-table">
-    <thead>
-      <tr>
-        <th class="check">✓</th>
-        <th>シーン</th>
-        <th>内容</th>
-        <th class="time">尺</th>
-        <th>テロップ案</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="check">☐</td><td>1</td><td>受講生の手元・道具</td><td class="time">3秒</td><td>「未経験から始められる」</td></tr>
-      <tr><td class="check">☐</td><td>2</td><td>授業風景（先生＆受講生）</td><td class="time">5秒</td><td>「少人数制で丁寧に指導」</td></tr>
-      <tr><td class="check">☐</td><td>3</td><td>技術練習シーン</td><td class="time">5秒</td><td>「現役オーナーが直接指導」</td></tr>
-      <tr><td class="check">☐</td><td>4</td><td>受講生の笑顔・声</td><td class="time">5秒</td><td>「3ヶ月で開業準備完了」</td></tr>
-      <tr><td class="check">☐</td><td>5</td><td>卒業生の事例写真</td><td class="time">5秒</td><td>「卒業後も開業サポート」</td></tr>
-      <tr><td class="check">☐</td><td>6</td><td>体験入学案内</td><td class="time">7秒</td><td>「体験入学受付中」</td></tr>
-    </tbody>
-  </table>
-
-  <!-- 撮影中のテクニック -->
-  <h2>🎥 ステップ2: 撮影中のテクニック</h2>
-
-  <div class="card">
-    <h3>① 「1シーン = 1動画」で分けて撮る</h3>
-    <p style="font-size:13px;">
-      録画ボタンを押す → 5〜10秒撮影 → 停止 → 次のシーンへ。<br>
-      <strong>「ながら撮影」をやめて「区切り撮影」</strong> にする。
-    </p>
-  </div>
-
-  <div class="card">
-    <h3>② 同じシーンを 2〜3 テイク撮る</h3>
-    <p style="font-size:13px;">
-      一発撮りを諦める。同じシーンを角度・寄り引きを変えて2〜3回撮っておくと、
-      編集時に <strong>「ベストショットを選ぶだけ」</strong> で済む。
-    </p>
-  </div>
-
-  <div class="card">
-    <h3>③ シーン番号を声に出す</h3>
-    <p style="font-size:13px;">
-      録画ボタンを押した直後に「シーン3、テイク1」と小声で言う。<br>
-      編集時にどの動画が何のシーンかすぐ判別可能。
-    </p>
-    <p style="font-size:12px;color:var(--muted);">
-      ※ 後でカットする部分なのでBGMで消える
-    </p>
-  </div>
-
-  <div class="card">
-    <h3>④ 撮影直後にファイル名を変更</h3>
-    <p style="font-size:13px;">
-      撮影後すぐにスマホで動画ファイル名を <code>20260501_ブライダル_シーン3_クレンジング.mp4</code> のように変更。
-      <strong>素材フォルダ設計ガイドの命名規則と合わせる</strong> ことで管理が一気に楽になる。
-    </p>
-  </div>
-
-  <div class="tip-box">
-    <strong>🎯 究極のコツ:</strong>
-    撮影スクリプトを <strong>iPad/印刷物</strong> として撮影現場に持ち込んで、終わったらチェックを入れる。
-    これで撮り漏れゼロ・編集時の悩みゼロ。
-  </div>
-
-  <!-- 編集ツールの自動機能 -->
-  <h2>🤖 ステップ3: 編集ツールの自動ハイライト機能</h2>
-  <p style="font-size:13px;color:var(--muted);">
-    どうしても長尺で撮らざるを得ないときは、AIに任せる手もあります。
-  </p>
-
-  <div class="tool-card">
-    <div class="tool-icon">A</div>
-    <div class="tool-info">
-      <div class="name">Edits（標準アプリ）の自動編集</div>
-      <div class="desc">複数素材をAIが自動で並べてくれる機能。お試しで使う価値あり</div>
-    </div>
-    <div class="tool-rating">⭐⭐</div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-icon">C</div>
-    <div class="tool-info">
-      <div class="name">CapCut の「自動ハイライト」</div>
-      <div class="desc">長尺素材から見どころを自動抽出。動きや変化を検出。無料</div>
-    </div>
-    <div class="tool-rating">⭐⭐⭐</div>
-  </div>
-
-  <div class="tool-card">
-    <div class="tool-icon">O</div>
-    <div class="tool-info">
-      <div class="name">Opus Clip / Vizard（AI ハイライトツール）</div>
-      <div class="desc">長尺動画からショート用クリップをAIが抽出。月10〜30 USD。喋りベースなので無音BGMには弱め</div>
-    </div>
-    <div class="tool-rating">⭐⭐</div>
-  </div>
-
-  <div class="tip-box">
-    <strong>⚠ 注意:</strong>
-    AIハイライト系ツールは「喋りベース」のものが多く、サロンの無音BGM動画とは相性が良くないことが多い。
-    <strong>分割撮影＋撮影スクリプトのほうが結局速くて確実</strong>です。
-  </div>
-
-  <!-- 実装プラン -->
-  <h2>🚀 導入プラン（3週間）</h2>
-
-  <div class="card">
-    <h3>第1週: 撮影スクリプトを使ってみる</h3>
-    <ul class="checklist">
-      <li>上記テンプレを印刷 or iPadに表示</li>
-      <li>次の撮影で1回だけ試す</li>
-      <li>「やってみてどうだった？」を振り返る</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3>第2週: 分割撮影に切り替える</h3>
-    <ul class="checklist">
-      <li>長尺撮影をやめて「1シーン = 1動画」で撮る</li>
-      <li>各シーン2〜3テイク撮影する</li>
-      <li>編集時間を計測してビフォーアフターを比較</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3>第3週: メニュー別スクリプトをカスタマイズ</h3>
-    <ul class="checklist">
-      <li>テンプレをサロン独自の流れにアレンジ</li>
-      <li>よく使うシーンを再利用できる「定番素材」として保存</li>
-      <li>素材フォルダの「定番」枠を作る</li>
-    </ul>
-  </div>
-
-  <!-- 期待効果 -->
-  <h2>📊 期待効果</h2>
-  <div class="impact">
-    <div class="impact-stat">
-      <div class="num">-30分</div>
-      <div class="label">1本あたりの編集時間</div>
-    </div>
-    <div class="impact-stat">
-      <div class="num">+3本</div>
-      <div class="label">同じ時間で作れる本数</div>
-    </div>
-    <div class="impact-stat">
-      <div class="num">月1→週2</div>
-      <div class="label">リール投稿頻度</div>
-    </div>
-  </div>
-
-  <div class="tip-box">
-    <strong>💡 まとめ:</strong>
-    ハイライト抽出の自動化＝AIに任せる、ではなく
-    <strong>「撮影段階で抽出しなくていい状態にする」</strong> が正解。
-    これがエステサロンのような「決まったメニュー」の撮影で最大効果を発揮します。
-  </div>
+  <footer>
+    UTAKATA — Highlight Extraction Guide
+  </footer>
 
 </div>
 </body>
