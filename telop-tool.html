@@ -108,36 +108,66 @@
     margin-top: 10px; padding: 8px 12px;
     background: var(--c-soft); border-radius: 4px;
   }
+  /* 固定された動画＋時間バー（常に画面上部に表示） */
+  .sticky-control {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--c-bg);
+    margin: 0 -16px 14px; padding: 8px 16px 0;
+    border-bottom: 1px solid var(--c-line);
+  }
   .preview-video {
-    width: 100%; max-height: 50vh; border-radius: 6px;
-    margin-top: 12px; background: black;
+    width: 100%; max-height: 40vh; border-radius: 6px;
+    background: black; display: block;
   }
   .time-bar {
     background: var(--c-primary); color: white;
-    padding: 12px 16px; border-radius: 6px;
-    margin: 12px 0 8px;
+    padding: 10px 14px; border-radius: 0 0 6px 6px;
     display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 8px;
+    gap: 8px; margin-bottom: 8px;
   }
   .time-bar .current-time {
     font-family: "SF Mono", Monaco, monospace; font-size: 18px;
     font-weight: 600; letter-spacing: 0.05em;
   }
   .time-bar .add-here {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white; padding: 8px 14px; border-radius: 4px;
+    background: white; color: var(--c-primary-dark);
+    border: none; padding: 8px 14px; border-radius: 4px;
     font-size: 13px; cursor: pointer; font-family: inherit;
-    font-weight: 600;
+    font-weight: 700;
   }
-  .time-bar .add-here:hover { background: rgba(255,255,255,0.3); }
-  .time-grab-btn {
+  .time-bar .add-here:hover { opacity: 0.92; }
+
+  /* インライン時間取得ボタン（テロップ行内） */
+  .time-controls {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    margin-top: 8px;
+  }
+  .time-btn {
     background: var(--c-accent); color: white;
-    border: none; padding: 4px 8px; border-radius: 3px;
-    font-size: 10px; cursor: pointer; font-family: inherit;
-    margin-top: 3px; width: 100%;
+    border: none; padding: 10px 8px; border-radius: 4px;
+    font-size: 12px; cursor: pointer; font-family: inherit;
+    text-align: center;
   }
-  .time-grab-btn:hover { opacity: 0.85; }
+  .time-btn:hover { opacity: 0.88; }
+  .time-btn .label {
+    font-size: 9px; opacity: 0.85; letter-spacing: 0.1em;
+    display: block; margin-bottom: 2px;
+  }
+  .time-btn .val {
+    font-family: "SF Mono", monospace; font-size: 13px;
+    font-weight: 700;
+  }
+  .telop-actions {
+    display: flex; justify-content: space-between;
+    margin-top: 10px; gap: 8px;
+  }
+  .seek-btn {
+    background: var(--c-soft); color: var(--c-primary-dark);
+    border: 1px solid var(--c-line); padding: 6px 12px;
+    border-radius: 4px; font-size: 11px; cursor: pointer;
+    font-family: inherit;
+  }
+  .seek-btn:hover { background: var(--c-line); }
 
   /* ボタン */
   .btn {
@@ -359,7 +389,7 @@
 
 <main>
 
-  <div class="step">
+  <div class="step" id="stepUpload">
     <div class="step-label">STEP 1</div>
     <h3>動画を選ぶ</h3>
     <label class="upload-area" for="videoInput" id="uploadLabel">
@@ -368,34 +398,37 @@
       <input type="file" id="videoInput" accept="video/*">
     </label>
     <div class="file-info" id="fileInfo" style="display:none;"></div>
-    <video id="previewVideo" class="preview-video" controls playsinline style="display:none;"></video>
   </div>
 
-  <div class="step" id="step2" style="display:none;">
-    <div class="step-label">STEP 2</div>
-    <h3>テロップを追加</h3>
-
-    <label class="ai-toggle">
-      <input type="checkbox" id="faceDetectEnabled" checked>
-      <div class="ai-toggle-text">
-        <div class="ai-toggle-title">🤖 顔検出で自動配置</div>
-        <div class="ai-toggle-desc">位置を「自動」にすると、顔のない方向（上 or 下）にAIがテロップを置きます</div>
-      </div>
-    </label>
-
+  <!-- 動画＋時間バー（画面上部に固定） -->
+  <div class="sticky-control" id="stickyControl" style="display:none;">
+    <video id="previewVideo" class="preview-video" controls playsinline></video>
     <div class="time-bar">
       <div>
-        <div style="font-size:10px;opacity:0.8;letter-spacing:0.1em;">現在の動画時刻</div>
+        <div style="font-size:9px;opacity:0.85;letter-spacing:0.15em;">CURRENT TIME</div>
         <div class="current-time" id="currentTimeDisplay">0:00</div>
       </div>
       <button class="add-here" onclick="addTelopAtCurrentTime()">
         📍 ここにテロップ追加
       </button>
     </div>
-    <div class="hint">動画を一時停止した時刻にテロップが追加されます。「⏱ 現在時刻」ボタンでも修正可能。</div>
+  </div>
+
+  <div class="step" id="step2" style="display:none;">
+    <div class="step-label">STEP 2</div>
+    <h3>テロップ</h3>
+
+    <label class="ai-toggle">
+      <input type="checkbox" id="faceDetectEnabled" checked>
+      <div class="ai-toggle-text">
+        <div class="ai-toggle-title">🤖 顔検出で自動配置</div>
+        <div class="ai-toggle-desc">位置「自動」で顔のない方向にAIがテロップを配置</div>
+      </div>
+    </label>
+
+    <div class="hint">動画を再生・停止して、テロップを入れたい瞬間で「ここにテロップ追加」を押す → 文字を打つ → 終了タイミングまで進めて「終了をここに」を押す。</div>
 
     <div id="telopList" style="margin-top:12px;"></div>
-    <button class="add-btn" onclick="addTelop()">＋ 手動で時間指定して追加</button>
   </div>
 
   <div class="step" id="step3" style="display:none;">
@@ -626,11 +659,19 @@ document.getElementById('videoInput').addEventListener('change', (e) => {
   info.textContent = `${f.name}（${mb} MB）`;
   info.style.display = 'block';
   document.getElementById('uploadLabel').style.display = 'none';
+  document.getElementById('stickyControl').style.display = 'block';
   document.getElementById('step2').style.display = 'block';
   document.getElementById('step3').style.display = 'block';
   document.getElementById('step4').style.display = 'none';
   // 初期テロップは挿入しない（ユーザが「ここにテロップ追加」で配置する）
 });
+
+// 動画を指定時刻にシークして再生位置を移動
+window.seekVideoTo = function(sec) {
+  const preview = document.getElementById('previewVideo');
+  preview.currentTime = Math.max(0, sec);
+  preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 // 現在の動画時刻でテロップを追加
 window.addTelopAtCurrentTime = function() {
@@ -720,6 +761,14 @@ function updatePreview(id) {
 
 function renderTelops() {
   const wrap = document.getElementById('telopList');
+  if (state.telops.length === 0) {
+    wrap.innerHTML = `
+      <div style="text-align:center;padding:24px 16px;color:var(--c-muted);font-size:13px;background:var(--c-soft);border-radius:6px;">
+        まだテロップがありません。<br>動画を再生して、入れたい瞬間で<br><strong style="color:var(--c-primary);">「📍 ここにテロップ追加」</strong><br>を押してください。
+      </div>
+    `;
+    return;
+  }
   wrap.innerHTML = state.telops.map((t, i) => {
     const style = STYLES[t.style];
     const previewText = t.text || 'プレビュー文字';
@@ -733,18 +782,26 @@ function renderTelops() {
             <div class="style-preview-text ${style.css}">${escapeHtml(previewText)}</div>
           </div>
         </div>
-        <div class="telop-meta">
+
+        <div class="time-controls">
+          <button class="time-btn" onclick="useCurrentTime(${t.id}, 'start')">
+            <span class="label">📍 開始をここに</span>
+            <span class="val">${fmtTime(t.start)}</span>
+          </button>
+          <button class="time-btn" onclick="useCurrentTime(${t.id}, 'end')">
+            <span class="label">📍 終了をここに</span>
+            <span class="val">${fmtTime(t.start + t.duration)}</span>
+          </button>
+        </div>
+
+        <div class="telop-meta" style="grid-template-columns: 1fr 1fr;">
           <div>
-            <label>開始 ${fmtTime(t.start)}</label>
-            <input type="number" min="0" step="0.1" value="${t.start}"
-                   onchange="updateTelop(${t.id}, 'start', this.value)">
-            <button class="time-grab-btn" onclick="useCurrentTime(${t.id}, 'start')">⏱ 現在時刻</button>
-          </div>
-          <div>
-            <label>終了 ${fmtTime(t.start + t.duration)}</label>
-            <input type="number" min="0.5" step="0.1" value="${(t.start + t.duration).toFixed(1)}"
-                   onchange="updateTelopEnd(${t.id}, this.value)">
-            <button class="time-grab-btn" onclick="useCurrentTime(${t.id}, 'end')">⏱ 現在時刻</button>
+            <label>スタイル</label>
+            <select onchange="updateTelop(${t.id}, 'style', this.value)">
+              ${Object.entries(STYLES).map(([k, v]) =>
+                `<option value="${k}" ${k === t.style ? 'selected' : ''}>${v.name}</option>`
+              ).join('')}
+            </select>
           </div>
           <div>
             <label>位置</label>
@@ -754,19 +811,13 @@ function renderTelops() {
               ).join('')}
             </select>
           </div>
-          <div>
-            <button class="btn btn-icon" onclick="removeTelop(${t.id})">削除</button>
-          </div>
         </div>
-        <div style="margin-top:8px;">
-          <label style="font-size:10px;color:var(--c-muted);font-weight:600;letter-spacing:0.05em;">スタイル</label>
-          <select style="width:100%;padding:6px 8px;font-size:12px;border:1px solid var(--c-line);border-radius:4px;background:white;font-family:inherit;margin-top:3px;"
-                  onchange="updateTelop(${t.id}, 'style', this.value)">
-            ${Object.entries(STYLES).map(([k, v]) =>
-              `<option value="${k}" ${k === t.style ? 'selected' : ''}>${v.name}</option>`
-            ).join('')}
-          </select>
+
+        <div class="telop-actions">
+          <button class="seek-btn" onclick="seekVideoTo(${t.start})">▶ 開始時刻に動画を移動</button>
+          <button class="btn btn-icon" onclick="removeTelop(${t.id})">削除</button>
         </div>
+
         ${t.detectedPosition ? `<div class="face-result">🤖 検出結果: ${t.detectedPosition === 'top' ? '上部に配置（顔が下にあり）' : '下部に配置（顔が上にあり）'}</div>` : ''}
       </div>
     `;
