@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた テロップ自動配置ツール</title>
+<style>
+  /* 日本語装飾フォント */
+  @font-face {
+    font-family: 'MPlusRounded';
+    src: url('/fonts/MPlusRounded1c-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'HachiMaruPop';
+    src: url('/fonts/HachiMaruPop-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'KleeOne';
+    src: url('/fonts/KleeOne-SemiBold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'ZenMaruGothic';
+    src: url('/fonts/ZenMaruGothic-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-danger: #b56565;
+    --c-ok: #6b8b6e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6; font-size: 14px;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  header {
+    text-align: center; padding: 24px 16px 20px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 24px;
+  }
+  header .brand {
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    margin: 0 0 6px; font-size: 22px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  header p {
+    margin: 0; font-size: 12px; color: var(--c-muted);
+  }
+  .phase-tag {
+    display: inline-block; margin-left: 8px;
+    background: var(--c-accent); color: white;
+    padding: 1px 6px; border-radius: 2px;
+    font-size: 9px; letter-spacing: 0.1em; vertical-align: middle;
+  }
+
+  .step {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 8px; padding: 18px 22px; margin-bottom: 14px;
+  }
+  .step-label {
+    font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.2em; font-weight: 700; margin-bottom: 8px;
+  }
+  .step h3 {
+    margin: 0 0 10px; font-size: 15px; font-weight: 600;
+    color: var(--c-primary-dark);
+  }
+  .hint {
+    font-size: 11px; color: var(--c-muted); margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* アップロード */
+  .upload-area {
+    border: 2px dashed var(--c-line); border-radius: 8px;
+    padding: 28px 16px; text-align: center; cursor: pointer;
+    transition: all 0.15s; background: var(--c-soft);
+  }
+  .upload-area:hover { border-color: var(--c-primary); background: var(--c-bg); }
+  .upload-area input { display: none; }
+  .upload-icon {
+    font-size: 24px; margin-bottom: 6px; color: var(--c-primary);
+  }
+  .upload-text { font-size: 13px; color: var(--c-muted); }
+  .file-info {
+    font-size: 12px; color: var(--c-text);
+    margin-top: 10px; padding: 8px 12px;
+    background: var(--c-soft); border-radius: 4px;
+  }
+
+  /* ボタン */
+  .btn {
+    border: none; border-radius: 6px; padding: 10px 18px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--c-primary); color: white; width: 100%;
+    padding: 12px 18px; font-weight: 600; letter-spacing: 0.05em;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--c-primary-dark); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-icon {
+    background: transparent; color: var(--c-muted);
+    padding: 4px 8px; font-size: 12px;
+  }
+  .btn-icon:hover { color: var(--c-danger); }
+
+  /* AI機能トグル */
+  .ai-toggle {
+    background: var(--c-soft); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+  }
+  .ai-toggle:hover { background: #eee5d6; }
+  .ai-toggle input[type="checkbox"] {
+    accent-color: var(--c-primary);
+    width: 16px; height: 16px;
+  }
+  .ai-toggle-text { flex: 1; }
+  .ai-toggle-title {
+    font-weight: 600; font-size: 13px; color: var(--c-primary-dark);
+  }
+  .ai-toggle-desc {
+    font-size: 11px; color: var(--c-muted); margin-top: 2px;
+  }
+
+  /* テロップ入力 */
+  .telop-row {
+    background: var(--c-soft); border-radius: 6px;
+    padding: 12px 14px; margin-bottom: 8px;
+    position: relative;
+  }
+  .telop-row .telop-num {
+    position: absolute; top: 8px; right: 12px;
+    font-size: 10px; color: var(--c-muted);
+    font-family: "SF Mono", monospace;
+  }
+  .telop-row textarea {
+    width: 100%; border: 1px solid var(--c-line); background: white;
+    border-radius: 4px; padding: 8px 10px; font-family: inherit;
+    font-size: 14px; resize: vertical; min-height: 40px;
+  }
+  .telop-row textarea:focus { outline: none; border-color: var(--c-primary); }
+  .telop-meta {
+    display: grid; grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 8px; margin-top: 8px; align-items: end;
+  }
+  .telop-meta label {
+    font-size: 10px; color: var(--c-muted); display: block;
+    margin-bottom: 3px; letter-spacing: 0.05em; font-weight: 600;
+  }
+  .telop-meta input, .telop-meta select {
+    width: 100%; padding: 6px 8px; font-size: 12px;
+    border: 1px solid var(--c-line); border-radius: 4px;
+    background: white; font-family: inherit;
+  }
+  .telop-meta input:focus, .telop-meta select:focus {
+    outline: none; border-color: var(--c-primary);
+  }
+
+  /* スタイルプレビュー */
+  .style-preview-wrap {
+    margin-top: 8px;
+  }
+  .style-preview {
+    background: #3a3a3a; min-height: 48px;
+    border-radius: 4px; padding: 12px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .style-preview-text {
+    padding: 6px 14px; text-align: center; max-width: 100%;
+    word-break: break-all;
+  }
+
+  /* スタイル定義（CSSプレビュー用） */
+  .style-utakata-mincho {
+    background: rgba(250, 247, 242, 0.92);
+    color: #2c2c2c;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: 0.06em;
+    border-left: 2px solid #b89178;
+  }
+  .style-utakata-sub {
+    background: rgba(45, 56, 56, 0.75);
+    color: #faf7f2;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px; font-weight: 400;
+    letter-spacing: 0.08em;
+  }
+  .style-utakata-cta {
+    background: rgba(184, 145, 120, 0.92);
+    color: #faf7f2;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.15em;
+    border-radius: 2px;
+  }
+  .style-yawaraka {
+    background: rgba(252, 240, 235, 0.92);
+    color: #5a4040;
+    font-family: -apple-system, sans-serif;
+    font-size: 14px; font-weight: 600;
+    border-radius: 18px;
+    padding: 6px 18px;
+  }
+  .style-shikku {
+    background: rgba(20, 20, 20, 0.85);
+    color: #f0ead8;
+    font-family: -apple-system, sans-serif;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 0.15em;
+  }
+  /* 新フォント使用スタイル */
+  .style-rounded-soft {
+    background: rgba(252, 240, 235, 0.92);
+    color: #4a4040;
+    font-family: 'MPlusRounded', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 16px;
+    padding: 6px 18px;
+  }
+  .style-pop-cute {
+    background: rgba(255, 245, 248, 0.95);
+    color: #c47b8a;
+    font-family: 'HachiMaruPop', sans-serif;
+    font-size: 16px; font-weight: 400;
+    letter-spacing: 0.02em;
+    border-radius: 20px;
+    padding: 6px 18px;
+    border: 2px solid #f5c0d0;
+  }
+  .style-handwritten {
+    background: rgba(248, 240, 220, 0.92);
+    color: #5a4838;
+    font-family: 'KleeOne', serif;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 6px 18px;
+  }
+  .style-zen-rounded {
+    background: rgba(240, 245, 240, 0.92);
+    color: #3a4a4a;
+    font-family: 'ZenMaruGothic', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.03em;
+    border-radius: 12px;
+    padding: 6px 18px;
+  }
+
+  /* 進捗 */
+  .progress {
+    margin-top: 12px; padding: 12px;
+    background: var(--c-soft); border-radius: 4px;
+  }
+  .progress-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 0; font-size: 12px;
+  }
+  .progress-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--c-line); flex-shrink: 0;
+  }
+  .progress-dot.active {
+    background: var(--c-primary);
+    animation: pulse 1.2s infinite;
+  }
+  .progress-dot.done { background: var(--c-ok); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .error-box {
+    background: #fde8e7; color: #8b4040;
+    padding: 10px 14px; border-radius: 4px;
+    font-size: 12px; margin-top: 10px;
+  }
+
+  video { width: 100%; border-radius: 6px; margin-top: 10px; background: black; }
+
+  .add-btn {
+    width: 100%; padding: 10px; background: white;
+    border: 1px dashed var(--c-line); border-radius: 6px;
+    color: var(--c-muted); font-size: 12px; cursor: pointer;
+    transition: all 0.15s; margin-top: 4px;
+  }
+  .add-btn:hover {
+    border-color: var(--c-primary); color: var(--c-primary);
+    background: var(--c-soft);
+  }
+
+  .face-result {
+    margin-top: 8px; padding: 8px 12px;
+    background: #ecf3ef; border-radius: 4px;
+    font-size: 11px; color: #4a6d4d;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">UTAKATA</div>
+  <h1>テロップ自動配置ツール<span class="phase-tag">Phase 2</span></h1>
+  <p>顔検出 + 多彩なフォントで、うたかたスタイルに自動で仕上げる</p>
+</header>
+
+<main>
+
+  <div class="step">
+    <div class="step-label">STEP 1</div>
+    <h3>動画を選ぶ</h3>
+    <label class="upload-area" for="videoInput">
+      <div class="upload-icon">＋</div>
+      <div class="upload-text">タップして動画を選択<br>（縦動画 9:16 推奨 / 90秒以内）</div>
+      <input type="file" id="videoInput" accept="video/*">
+    </label>
+    <div class="file-info" id="fileInfo" style="display:none;"></div>
+  </div>
+
+  <div class="step" id="step2" style="display:none;">
+    <div class="step-label">STEP 2</div>
+    <h3>テロップを追加</h3>
+
+    <label class="ai-toggle">
+      <input type="checkbox" id="faceDetectEnabled" checked>
+      <div class="ai-toggle-text">
+        <div class="ai-toggle-title">🤖 顔検出で自動配置</div>
+        <div class="ai-toggle-desc">位置を「自動」にすると、顔のない方向（上 or 下）にAIがテロップを置きます</div>
+      </div>
+    </label>
+
+    <div class="hint">表示開始秒・表示時間・スタイル・位置を指定。何個でも追加可能。</div>
+    <div id="telopList" style="margin-top:12px;"></div>
+    <button class="add-btn" onclick="addTelop()">＋ テロップを追加</button>
+  </div>
+
+  <div class="step" id="step3" style="display:none;">
+    <div class="step-label">STEP 3</div>
+    <h3>テロップを焼き込む</h3>
+    <button class="btn btn-primary" id="processBtn" onclick="processVideo()">テロップ入り動画を作る</button>
+    <div class="hint">顔検出ON時は数十秒〜数分かかります。タブを閉じないでください。</div>
+    <div class="progress" id="progress" style="display:none;"></div>
+    <div class="error-box" id="errorBox" style="display:none;"></div>
+  </div>
+
+  <div class="step" id="step4" style="display:none;">
+    <div class="step-label">STEP 4</div>
+    <h3>完成</h3>
+    <video id="resultVideo" controls playsinline></video>
+    <button class="btn btn-primary" id="downloadBtn" style="margin-top:10px;">動画をダウンロード</button>
+  </div>
+
+</main>
+
+<!-- 顔検出に使う非表示の動画要素 -->
+<video id="hiddenVideo" style="display:none;" muted playsinline></video>
+
+<script src="/ffmpeg/ffmpeg.js"></script>
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<script>
+const { FFmpeg } = FFmpegWASM;
+const { fetchFile } = FFmpegUtil;
+
+// スタイルプリセット定義
+// 各スタイル: ffmpeg drawtext用パラメータ + CSSプレビュー用class + フォントファイル
+const STYLES = {
+  'utakata-mincho': {
+    name: 'うたかた標準（主題・明朝）',
+    css: 'style-utakata-mincho',
+    font: 'font.ttf',
+    fontcolor: '0x2C2C2C',
+    fontsize: 42,
+    box: 1,
+    boxcolor: '0xFAF7F2@0.92',
+    boxborderw: 18
+  },
+  'utakata-sub': {
+    name: 'うたかた補足（細ゴシック）',
+    css: 'style-utakata-sub',
+    font: 'font.ttf',
+    fontcolor: '0xFAF7F2',
+    fontsize: 30,
+    box: 1,
+    boxcolor: '0x2D3838@0.75',
+    boxborderw: 14
+  },
+  'utakata-cta': {
+    name: 'うたかたCTA（予約案内）',
+    css: 'style-utakata-cta',
+    font: 'font.ttf',
+    fontcolor: '0xFAF7F2',
+    fontsize: 26,
+    box: 1,
+    boxcolor: '0xB89178@0.92',
+    boxborderw: 16
+  },
+  'rounded-soft': {
+    name: 'やわらか丸ゴシック（M PLUS Rounded）',
+    css: 'style-rounded-soft',
+    font: 'fonts/MPlusRounded1c-Bold.ttf',
+    fontcolor: '0x4A4040',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xFCF0EB@0.92',
+    boxborderw: 18
+  },
+  'pop-cute': {
+    name: 'ポップかわいい（ハチマルポップ）',
+    css: 'style-pop-cute',
+    font: 'fonts/HachiMaruPop-Regular.ttf',
+    fontcolor: '0xC47B8A',
+    fontsize: 42,
+    box: 1,
+    boxcolor: '0xFFF5F8@0.95',
+    boxborderw: 20
+  },
+  'handwritten': {
+    name: 'やわらか手書き（クレーOne）',
+    css: 'style-handwritten',
+    font: 'fonts/KleeOne-SemiBold.ttf',
+    fontcolor: '0x5A4838',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xF8F0DC@0.92',
+    boxborderw: 18
+  },
+  'zen-rounded': {
+    name: 'もちっと丸（Zen丸ゴシック）',
+    css: 'style-zen-rounded',
+    font: 'fonts/ZenMaruGothic-Bold.ttf',
+    fontcolor: '0x3A4A4A',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xF0F5F0@0.92',
+    boxborderw: 18
+  },
+  'yawaraka': {
+    name: 'やわらか（淡いピンク）',
+    css: 'style-yawaraka',
+    font: 'font.ttf',
+    fontcolor: '0x5A4040',
+    fontsize: 38,
+    box: 1,
+    boxcolor: '0xFCF0EB@0.92',
+    boxborderw: 18
+  },
+  'shikku': {
+    name: 'シック（黒×アイボリー）',
+    css: 'style-shikku',
+    font: 'font.ttf',
+    fontcolor: '0xF0EAD8',
+    fontsize: 38,
+    box: 1,
+    boxcolor: '0x141414@0.85',
+    boxborderw: 18
+  }
+};
+
+const POSITIONS = {
+  'auto': { name: '🤖 AI自動', y: 'h*0.18' },
+  'top': { name: '上部30%', y: 'h*0.18' },
+  'middle': { name: '中央', y: '(h-text_h)/2' },
+  'bottom': { name: '下部20%', y: 'h*0.78' }
+};
+
+const state = {
+  videoFile: null,
+  videoUrl: null,
+  videoWidth: 0,
+  videoHeight: 0,
+  ffmpeg: null,
+  ffmpegLoaded: false,
+  telops: [],
+  resultBlob: null,
+  faceapiLoaded: false
+};
+
+// face-api.js 動的ロード
+async function loadFaceAPI() {
+  if (state.faceapiLoaded) return;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('face-api.js のロードに失敗しました'));
+    document.head.appendChild(script);
+  });
+  await faceapi.nets.tinyFaceDetector.loadFromUri(
+    'https://cdn.jsdelivr.net/gh/vladmandic/face-api/model/'
+  );
+  state.faceapiLoaded = true;
+}
+
+// 動画の指定時間のフレームを取得して顔検出
+async function detectFacesAtTime(videoEl, timeSec) {
+  videoEl.currentTime = Math.max(0, Math.min(videoEl.duration - 0.1, timeSec));
+  await new Promise(resolve => {
+    const onSeeked = () => { videoEl.removeEventListener('seeked', onSeeked); resolve(); };
+    videoEl.addEventListener('seeked', onSeeked);
+  });
+  const canvas = document.createElement('canvas');
+  canvas.width = videoEl.videoWidth;
+  canvas.height = videoEl.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+  const detections = await faceapi.detectAllFaces(
+    canvas,
+    new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+  );
+  return detections.map(d => ({
+    x: d.box.x, y: d.box.y, width: d.box.width, height: d.box.height
+  }));
+}
+
+// 顔の位置からテロップ位置を決定
+function chooseTopOrBottom(faceBoxes, videoHeight) {
+  if (faceBoxes.length === 0) return 'top';
+  const avgCenterY = faceBoxes.reduce(
+    (sum, b) => sum + b.y + b.height / 2, 0
+  ) / faceBoxes.length;
+  const ratio = avgCenterY / videoHeight;
+  return ratio < 0.5 ? 'bottom' : 'top';
+}
+
+// 動画選択
+document.getElementById('videoInput').addEventListener('change', (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  state.videoFile = f;
+  if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
+  state.videoUrl = URL.createObjectURL(f);
+  const hidden = document.getElementById('hiddenVideo');
+  hidden.src = state.videoUrl;
+  hidden.onloadedmetadata = () => {
+    state.videoWidth = hidden.videoWidth;
+    state.videoHeight = hidden.videoHeight;
+  };
+  const mb = (f.size / 1024 / 1024).toFixed(1);
+  const info = document.getElementById('fileInfo');
+  info.textContent = `${f.name}（${mb} MB）`;
+  info.style.display = 'block';
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('step3').style.display = 'block';
+  document.getElementById('step4').style.display = 'none';
+  if (state.telops.length === 0) addTelop();
+});
+
+window.addTelop = function() {
+  const id = Date.now() + Math.random();
+  state.telops.push({
+    id, text: '', start: 0, duration: 3,
+    style: 'utakata-mincho', position: 'auto',
+    detectedPosition: null
+  });
+  renderTelops();
+};
+
+window.removeTelop = function(id) {
+  state.telops = state.telops.filter(t => t.id !== id);
+  renderTelops();
+};
+
+window.updateTelop = function(id, field, value) {
+  const t = state.telops.find(t => t.id === id);
+  if (!t) return;
+  if (field === 'start' || field === 'duration') {
+    t[field] = parseFloat(value) || 0;
+  } else {
+    t[field] = value;
+  }
+  if (field === 'text' || field === 'style') renderTelops();
+};
+
+function renderTelops() {
+  const wrap = document.getElementById('telopList');
+  wrap.innerHTML = state.telops.map((t, i) => {
+    const style = STYLES[t.style];
+    const previewText = t.text || 'プレビュー文字';
+    return `
+      <div class="telop-row">
+        <div class="telop-num">#${i + 1}</div>
+        <textarea placeholder="テロップ文言（例: 呼吸が浅い日に）"
+                  oninput="updateTelop(${t.id}, 'text', this.value)">${escapeHtml(t.text)}</textarea>
+        <div class="style-preview-wrap">
+          <div class="style-preview">
+            <div class="style-preview-text ${style.css}">${escapeHtml(previewText)}</div>
+          </div>
+        </div>
+        <div class="telop-meta">
+          <div>
+            <label>開始秒</label>
+            <input type="number" min="0" step="0.5" value="${t.start}"
+                   onchange="updateTelop(${t.id}, 'start', this.value)">
+          </div>
+          <div>
+            <label>表示秒数</label>
+            <input type="number" min="0.5" step="0.5" value="${t.duration}"
+                   onchange="updateTelop(${t.id}, 'duration', this.value)">
+          </div>
+          <div>
+            <label>位置</label>
+            <select onchange="updateTelop(${t.id}, 'position', this.value)">
+              ${Object.entries(POSITIONS).map(([k, v]) =>
+                `<option value="${k}" ${k === t.position ? 'selected' : ''}>${v.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-icon" onclick="removeTelop(${t.id})">削除</button>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="font-size:10px;color:var(--c-muted);font-weight:600;letter-spacing:0.05em;">スタイル</label>
+          <select style="width:100%;padding:6px 8px;font-size:12px;border:1px solid var(--c-line);border-radius:4px;background:white;font-family:inherit;margin-top:3px;"
+                  onchange="updateTelop(${t.id}, 'style', this.value)">
+            ${Object.entries(STYLES).map(([k, v]) =>
+              `<option value="${k}" ${k === t.style ? 'selected' : ''}>${v.name}</option>`
+            ).join('')}
+          </select>
+        </div>
+        ${t.detectedPosition ? `<div class="face-result">🤖 検出結果: ${t.detectedPosition === 'top' ? '上部に配置（顔が下にあり）' : '下部に配置（顔が上にあり）'}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escapeFFText(text) {
+  return text
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\\\'")
+    .replace(/:/g, '\\:')
+    .replace(/%/g, '\\%')
+    .replace(/,/g, '\\,');
+}
+
+async function loadFfmpeg() {
+  if (state.ffmpegLoaded) return state.ffmpeg;
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on('log', ({ message }) => console.log('[ffmpeg]', message));
+  ffmpeg.on('progress', ({ progress }) => updateProgressBar(progress));
+  const base = location.origin;
+  await ffmpeg.load({
+    coreURL: `${base}/ffmpeg/ffmpeg-core.js`,
+    wasmURL: `${base}/ffmpeg/ffmpeg-core.wasm`
+  });
+  state.ffmpeg = ffmpeg;
+  state.ffmpegLoaded = true;
+  return ffmpeg;
+}
+
+let progressSteps = [];
+function setProgress(steps) {
+  progressSteps = steps;
+  const el = document.getElementById('progress');
+  el.style.display = 'block';
+  el.innerHTML = steps.map(s =>
+    `<div class="progress-row"><div class="progress-dot ${s.state}"></div><div>${s.label}</div></div>`
+  ).join('');
+}
+function updateProgressBar(p) {
+  const lastActive = progressSteps.findIndex(s => s.state === 'active');
+  if (lastActive < 0) return;
+  const el = document.querySelectorAll('.progress-row')[lastActive];
+  if (!el) return;
+  const pct = Math.round(p * 100);
+  const labelDiv = el.children[1];
+  const baseLabel = progressSteps[lastActive].label.split('（')[0];
+  labelDiv.textContent = `${baseLabel}（${pct}%）`;
+}
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+window.processVideo = async function() {
+  if (!state.videoFile) { showError('動画を選択してください'); return; }
+  const validTelops = state.telops.filter(t => t.text.trim());
+  if (validTelops.length === 0) { showError('テロップを1つ以上入力してください'); return; }
+
+  document.getElementById('errorBox').style.display = 'none';
+  const btn = document.getElementById('processBtn');
+  btn.disabled = true;
+  btn.textContent = '処理中...';
+
+  const faceEnabled = document.getElementById('faceDetectEnabled').checked;
+  const hasAutoPosition = validTelops.some(t => t.position === 'auto');
+
+  const steps = [];
+  if (faceEnabled && hasAutoPosition) {
+    steps.push({ label: 'face-api.js 読み込み中', state: 'active' });
+    steps.push({ label: '顔検出中', state: '' });
+  }
+  steps.push({ label: 'ffmpeg.wasm 読み込み中', state: faceEnabled && hasAutoPosition ? '' : 'active' });
+  steps.push({ label: 'フォント・動画を準備中', state: '' });
+  steps.push({ label: 'テロップを焼き込み中', state: '' });
+  setProgress(steps);
+
+  try {
+    let stepIdx = 0;
+
+    // 顔検出
+    if (faceEnabled && hasAutoPosition) {
+      await loadFaceAPI();
+      steps[stepIdx].state = 'done'; stepIdx++;
+      steps[stepIdx].state = 'active'; setProgress(steps);
+
+      const hiddenVideo = document.getElementById('hiddenVideo');
+      for (const t of validTelops) {
+        if (t.position !== 'auto') continue;
+        const faces = await detectFacesAtTime(hiddenVideo, t.start);
+        t.detectedPosition = chooseTopOrBottom(faces, hiddenVideo.videoHeight);
+      }
+      renderTelops();
+      steps[stepIdx].state = 'done'; stepIdx++;
+    }
+
+    // ffmpeg ロード
+    steps[stepIdx].state = 'active'; setProgress(steps);
+    const ffmpeg = await loadFfmpeg();
+    steps[stepIdx].state = 'done'; stepIdx++;
+
+    // フォント・動画準備
+    steps[stepIdx].state = 'active'; setProgress(steps);
+    const usedFonts = [...new Set(validTelops.map(t => STYLES[t.style].font))];
+    for (const fontPath of usedFonts) {
+      const fontName = fontPath.split('/').pop();
+      const res = await fetch('/' + fontPath);
+      if (!res.ok) throw new Error(`フォント読み込み失敗: ${fontPath}`);
+      const buf = new Uint8Array(await res.arrayBuffer());
+      await ffmpeg.writeFile(fontName, buf);
+    }
+    const inputExt = state.videoFile.name.match(/\.[^.]+$/)?.[0] || '.mp4';
+    const inputName = 'input' + inputExt;
+    await ffmpeg.writeFile(inputName, await fetchFile(state.videoFile));
+    steps[stepIdx].state = 'done'; stepIdx++;
+
+    // テロップ焼き込み
+    steps[stepIdx].state = 'active'; setProgress(steps);
+
+    const filterParts = validTelops.map(t => {
+      const style = STYLES[t.style];
+      const fontName = style.font.split('/').pop();
+      let positionKey = t.position;
+      if (positionKey === 'auto') {
+        positionKey = t.detectedPosition || 'top';
+      }
+      const position = POSITIONS[positionKey];
+      const text = escapeFFText(t.text);
+      const params = [
+        `fontfile=/${fontName}`,
+        `text='${text}'`,
+        `fontcolor=${style.fontcolor}`,
+        `fontsize=${style.fontsize}`,
+        `box=${style.box}`,
+        `boxcolor=${style.boxcolor}`,
+        `boxborderw=${style.boxborderw}`,
+        `x=(w-text_w)/2`,
+        `y=${position.y}`,
+        `enable='between(t,${t.start},${t.start + t.duration})'`
+      ].join(':');
+      return `drawtext=${params}`;
+    });
+    const vf = filterParts.join(',');
+    console.log('Filter:', vf);
+
+    await ffmpeg.exec([
+      '-i', inputName,
+      '-vf', vf,
+      '-c:v', 'libx264',
+      '-preset', 'ultrafast',
+      '-c:a', 'copy',
+      '-y',
+      'output.mp4'
+    ]);
+
+    const outputBuf = await ffmpeg.readFile('output.mp4');
+    state.resultBlob = new Blob([outputBuf.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(state.resultBlob);
+
+    const video = document.getElementById('resultVideo');
+    video.src = url;
+    document.getElementById('step4').style.display = 'block';
+
+    document.getElementById('downloadBtn').onclick = () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `utakata_${Date.now()}.mp4`;
+      a.click();
+    };
+
+    steps[stepIdx].state = 'done'; setProgress(steps);
+    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+
+  } catch (err) {
+    console.error(err);
+    showError('処理中にエラーが発生しました: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'テロップ入り動画を作る';
+  }
+};
+
+addTelop();
+</script>
+
+</body>
+</html>
