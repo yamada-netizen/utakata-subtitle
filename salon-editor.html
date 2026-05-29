@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた リール エディター</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-accent-dark: #a07a62;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-err: #c0584e;
+    --c-ok: #6b8b6e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6; font-size: 14px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+  header {
+    text-align: center; padding: 28px 20px 24px;
+    border-bottom: 1px solid var(--c-line); margin-bottom: 28px;
+  }
+  header .brand {
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.3em; margin-bottom: 10px;
+  }
+  header h1 {
+    margin: 0 0 8px; font-size: 24px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 520px; margin: 0 auto;
+  }
+
+  .step-title {
+    font-size: 11px; color: var(--c-accent); letter-spacing: 0.25em;
+    margin: 0 0 8px; font-weight: 700;
+  }
+  .step-heading {
+    font-size: 16px; color: var(--c-primary-dark);
+    font-weight: 600; margin: 0 0 16px;
+  }
+
+  /* テンプレ選択 */
+  .template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .template-card {
+    background: var(--c-card);
+    border: 2px solid var(--c-line);
+    border-radius: 6px; padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .template-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-1px);
+  }
+  .template-card.selected {
+    border-color: var(--c-primary);
+    background: var(--c-soft);
+  }
+  .template-card .num {
+    font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.2em; font-weight: 700;
+    font-family: "SF Mono", monospace;
+  }
+  .template-card .name {
+    font-size: 14px; color: var(--c-primary-dark);
+    font-weight: 600; margin: 4px 0 2px;
+  }
+  .template-card .sub {
+    font-size: 11px; color: var(--c-muted); margin: 0;
+  }
+
+  /* シーンスロット */
+  .scenes-section { display: none; margin-top: 28px; }
+  .scenes-section.active { display: block; }
+
+  .scene-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .scene-slot {
+    background: var(--c-card);
+    border: 1px solid var(--c-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .scene-slot .scene-head {
+    background: var(--c-soft); padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .scene-slot .scene-num {
+    background: var(--c-primary); color: white;
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    font-family: "SF Mono", monospace;
+  }
+  .scene-slot .scene-time {
+    font-family: "SF Mono", monospace;
+    font-size: 11px; color: var(--c-muted);
+  }
+  .scene-slot .scene-tag {
+    font-size: 10px; color: var(--c-accent); font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-left: auto;
+  }
+  .scene-slot .upload-zone {
+    aspect-ratio: 9/16;
+    background: var(--c-bg);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+    overflow: hidden;
+  }
+  .scene-slot .upload-zone:hover {
+    background: #f0ebe1;
+  }
+  .scene-slot .upload-zone.has-clip {
+    background: black; cursor: pointer;
+  }
+  .scene-slot .upload-zone video {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .scene-slot .upload-empty {
+    text-align: center; color: var(--c-muted);
+    font-size: 12px; padding: 12px;
+  }
+  .scene-slot .upload-empty .icon {
+    font-size: 24px; margin-bottom: 6px; opacity: 0.5;
+  }
+  .scene-slot .telop-preview {
+    position: absolute; left: 8px; right: 8px;
+    padding: 6px 8px; border-radius: 3px;
+    font-size: 11px; text-align: center; pointer-events: none;
+    font-family: "Hiragino Mincho ProN", serif;
+    white-space: pre-line;
+  }
+  .scene-slot .telop-preview.main {
+    top: 18%;
+    background: rgba(250, 247, 242, 0.92);
+    color: #2C2C2C; font-weight: 600;
+  }
+  .scene-slot .telop-preview.sub {
+    bottom: 18%;
+    background: rgba(45, 56, 56, 0.75);
+    color: #FAF7F2;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+    font-weight: 300;
+  }
+  .scene-slot .telop-preview.cta {
+    bottom: 10%;
+    background: rgba(184, 145, 120, 0.92);
+    color: #FAF7F2;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+    font-weight: 500;
+  }
+  .scene-slot .scene-foot {
+    padding: 8px 12px;
+    font-size: 11px; color: var(--c-muted);
+    border-top: 1px solid var(--c-line);
+    background: white;
+  }
+  .scene-slot .scene-foot .label-text {
+    color: var(--c-primary-dark); font-weight: 600;
+  }
+
+  /* BGM */
+  .bgm-row {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 16px 18px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .bgm-row .label {
+    font-size: 12px; color: var(--c-muted);
+    letter-spacing: 0.05em; min-width: 80px;
+  }
+  .bgm-row .bgm-status {
+    flex: 1; font-size: 13px;
+  }
+  .bgm-row .bgm-status .file-name {
+    font-family: "SF Mono", monospace; font-size: 11px;
+    color: var(--c-primary-dark);
+  }
+  .bgm-row .bgm-status .none {
+    color: var(--c-muted); font-style: italic;
+  }
+  .bgm-controls { display: flex; gap: 8px; align-items: center; }
+
+  /* ボタン */
+  .btn {
+    background: var(--c-primary); color: white;
+    border: none; padding: 9px 16px; border-radius: 4px;
+    font-size: 12px; cursor: pointer;
+    font-weight: 600; letter-spacing: 0.05em;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--c-primary-dark); }
+  .btn:disabled {
+    background: var(--c-line); color: var(--c-muted);
+    cursor: not-allowed;
+  }
+  .btn.accent { background: var(--c-accent); }
+  .btn.accent:hover { background: var(--c-accent-dark); }
+  .btn.ghost {
+    background: transparent;
+    border: 1px solid var(--c-line);
+    color: var(--c-text);
+  }
+  .btn.ghost:hover { background: var(--c-soft); }
+  .btn.large {
+    padding: 14px 36px; font-size: 14px;
+    letter-spacing: 0.1em;
+  }
+
+  /* オプション */
+  .options-row {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 14px 18px;
+    display: flex; flex-wrap: wrap; gap: 20px;
+    align-items: center;
+  }
+  .option-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px;
+  }
+  .option-item label {
+    font-size: 12px; color: var(--c-muted);
+  }
+  .option-item input[type="text"],
+  .option-item input[type="number"] {
+    border: 1px solid var(--c-line); border-radius: 3px;
+    padding: 5px 8px; font-size: 12px;
+    background: var(--c-bg); width: 80px;
+  }
+  .option-item input[type="checkbox"] { cursor: pointer; }
+
+  /* ビルドボタン */
+  .build-section {
+    text-align: center; padding: 28px 0;
+    border-top: 1px solid var(--c-line);
+    margin-top: 28px;
+  }
+  .build-status {
+    font-size: 12px; color: var(--c-muted);
+    margin-top: 12px; min-height: 18px;
+  }
+
+  /* 進捗 */
+  .progress {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 16px 22px; margin: 16px auto;
+    max-width: 480px; display: none;
+  }
+  .progress.active { display: block; }
+  .progress-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 5px 0; font-size: 13px;
+  }
+  .progress-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--c-line);
+    flex-shrink: 0;
+  }
+  .progress-dot.active {
+    border-color: var(--c-accent);
+    background: var(--c-accent);
+    animation: pulse 1.2s infinite;
+  }
+  .progress-dot.done {
+    background: var(--c-ok); border-color: var(--c-ok);
+  }
+  .progress-dot.error {
+    background: var(--c-err); border-color: var(--c-err);
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* 出力 */
+  .output-section {
+    display: none; text-align: center;
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 24px;
+    margin-top: 24px;
+  }
+  .output-section.active { display: block; }
+  .output-section video {
+    max-width: 320px; max-height: 560px;
+    border: 1px solid var(--c-line);
+    background: black;
+    margin: 16px auto;
+    display: block;
+  }
+  .output-section .download {
+    display: inline-block;
+    background: var(--c-accent); color: white;
+    padding: 10px 24px; border-radius: 4px;
+    text-decoration: none; font-size: 13px;
+    font-weight: 600; letter-spacing: 0.05em;
+    margin-top: 12px;
+  }
+  .output-section .download:hover { background: var(--c-accent-dark); }
+
+  /* エラー */
+  .error-box {
+    display: none;
+    background: #fde9e6; border-left: 3px solid var(--c-err);
+    padding: 12px 16px; margin: 16px 0;
+    font-size: 13px; color: #803a35;
+    border-radius: 3px;
+  }
+  .error-box.active { display: block; }
+
+  /* ヘルプ・注意 */
+  .info-box {
+    background: var(--c-soft);
+    border-left: 3px solid var(--c-accent);
+    padding: 12px 16px; margin: 14px 0;
+    font-size: 12px;
+  }
+  .info-box strong { color: var(--c-accent); }
+
+  /* セクション分け */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-line {
+    border-bottom: 1px solid var(--c-line);
+    margin: 28px 0;
+  }
+
+  /* レスポンシブ */
+  @media (max-width: 600px) {
+    .scene-list { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .bgm-row { flex-wrap: wrap; }
+    .options-row { gap: 12px; }
+  }
+
+  input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — REEL EDITOR</div>
+    <h1>うたかた リール エディター</h1>
+    <p>テンプレを選んで → クリップを並べて → BGM を入れて → 30秒MP4 を書き出す</p>
+  </header>
+
+  <!-- STEP 1: テンプレ選択 -->
+  <div class="section">
+    <div class="step-title">STEP 1</div>
+    <h2 class="step-heading">テンプレートを選ぶ</h2>
+    <div class="template-grid" id="templateGrid"></div>
+  </div>
+
+  <!-- STEP 2: シーン -->
+  <div class="section scenes-section" id="scenesSection">
+    <div class="step-title">STEP 2</div>
+    <h2 class="step-heading">各シーンに動画クリップを入れる</h2>
+    <div class="info-box">
+      <strong>使い方:</strong> 各スロットをクリックして動画ファイル（.mp4 / .mov）を選択。
+      スロットに表示されている長さに自動で先頭から切り出されます。同じクリップを複数スロットに使うこともOK。
+    </div>
+    <div class="scene-list" id="sceneList"></div>
+  </div>
+
+  <!-- STEP 3: BGM -->
+  <div class="section scenes-section" id="bgmSection">
+    <div class="step-title">STEP 3</div>
+    <h2 class="step-heading">BGM を選ぶ</h2>
+    <div class="bgm-row">
+      <span class="label">BGM</span>
+      <div class="bgm-status" id="bgmStatus">
+        <span class="none">未選択（無音で書き出します）</span>
+      </div>
+      <div class="bgm-controls">
+        <button class="btn ghost" onclick="document.getElementById('bgmInput').click()">音楽ファイルを選ぶ</button>
+        <button class="btn ghost" onclick="clearBgm()" id="bgmClearBtn" style="display:none">クリア</button>
+        <input type="file" id="bgmInput" accept="audio/*" onchange="onBgmSelect(event)">
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>音量:</strong> 自動で -15dB に下げます。テンプレ毎の推奨BGMジャンルは
+      <a href="/salon-bgm-guide.html" target="_blank" style="color:var(--c-accent)">うたかたBGMガイド</a> 参照。
+    </div>
+  </div>
+
+  <!-- STEP 4: オプション -->
+  <div class="section scenes-section" id="optionsSection">
+    <div class="step-title">STEP 4（任意）</div>
+    <h2 class="step-heading">微調整</h2>
+    <div class="options-row">
+      <div class="option-item">
+        <input type="checkbox" id="optGrading" checked>
+        <label for="optGrading">うたかた的カラー補正（彩度-15 / 暖色寄り）</label>
+      </div>
+      <div class="option-item">
+        <label for="optBgmVolume">BGM音量(dB)</label>
+        <input type="number" id="optBgmVolume" value="-15" min="-30" max="0" step="1">
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:12px;">
+      <strong>動作のヒント:</strong> 各クリップはシーンの先頭から指定秒数を使います。
+      長すぎる動画はブラウザが重くなるので、5〜10秒程度に事前トリミングするのがおすすめ。
+    </div>
+  </div>
+
+  <!-- STEP 5: 書き出し -->
+  <div class="section scenes-section" id="buildSection">
+    <div class="build-section">
+      <button class="btn accent large" id="buildBtn" onclick="buildVideo()" disabled>30秒MP4 を書き出す</button>
+      <div class="build-status" id="buildStatus">テンプレートを選んでクリップをアップロードしてください</div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <div class="output-section" id="outputSection">
+      <h3 style="margin:0 0 8px;color:var(--c-primary-dark);font-size:16px;">書き出し完了</h3>
+      <video id="outputVideo" controls playsinline></video>
+      <div>
+        <a href="#" class="download" id="downloadLink" download="utakata-reel.mp4">📥 MP4 をダウンロード</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/ffmpeg/ffmpeg.js"></script>
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<script>
+const { FFmpeg } = FFmpegWASM;
+const { fetchFile } = FFmpegUtil;
+
+// ===== テンプレートデータ =====
+const TEMPLATES = {
+  oil: {
+    num: 'TEMPLATE 01',
+    name: 'オイルマッサージ',
+    sub: '肩・首の力を抜く時間',
+    scenes: [
+      { start: 0,  end: 3,  shot: '静かな空間 / お客様が深く息を吐く',     telop: { text: '呼吸が浅い日に',     style: 'main' } },
+      { start: 3,  end: 7,  shot: 'オイルを手のひらで温める',                telop: null },
+      { start: 7,  end: 12, shot: '肩〜首への施術（手元アップ）',           telop: { text: '少し力が抜けていく', style: 'sub'  } },
+      { start: 12, end: 17, shot: '背中を流す手の動き',                      telop: null },
+      { start: 17, end: 22, shot: 'お客様の表情・呼吸',                      telop: { text: '自分に戻る時間',     style: 'main' } },
+      { start: 22, end: 26, shot: '施術後の静かな空間',                      telop: { text: '整える、ということ', style: 'main' } },
+      { start: 26, end: 30, shot: 'サロン情報・案内',                        telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
+    ]
+  },
+  stone: {
+    num: 'TEMPLATE 02',
+    name: 'ホットストーン',
+    sub: '深く整える時間',
+    scenes: [
+      { start: 0,  end: 3,  shot: 'ストーンが温まる様子（湯気）',     telop: null },
+      { start: 3,  end: 7,  shot: '静かな空間・キャンドルの灯り',     telop: { text: 'ホットストーン',         style: 'main' } },
+      { start: 7,  end: 12, shot: '背中にストーンを置く手元',         telop: { text: '重みで肩がほどける',     style: 'sub'  } },
+      { start: 12, end: 17, shot: 'ゆっくり滑らせる動き',             telop: null },
+      { start: 17, end: 22, shot: 'お客様の深い呼吸・表情',           telop: { text: '深く整える時間',         style: 'main' } },
+      { start: 22, end: 26, shot: '終わった後の温まった肌・空間',     telop: null },
+      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
+    ]
+  },
+  facial: {
+    num: 'TEMPLATE 03',
+    name: 'フェイシャル',
+    sub: '顔の緊張をほどく時間',
+    scenes: [
+      { start: 0,  end: 3,  shot: 'リラックスしたお客様の顔',         telop: { text: '顔、緊張していませんか', style: 'main' } },
+      { start: 3,  end: 7,  shot: 'クレンジング（手元・指先）',       telop: null },
+      { start: 7,  end: 12, shot: 'パック塗布・穏やかな動き',         telop: { text: '肌が静まる',             style: 'sub'  } },
+      { start: 12, end: 17, shot: '軽いマッサージ',                   telop: null },
+      { start: 17, end: 22, shot: '仕上がりの肌アップ',               telop: { text: '自分の顔に戻る',         style: 'main' } },
+      { start: 22, end: 26, shot: 'お客様の表情（満たされ感）',       telop: { text: '整えた後の静けさ',       style: 'main' } },
+      { start: 26, end: 30, shot: 'サロン情報・案内',                 telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
+    ]
+  },
+  candle: {
+    num: 'TEMPLATE 04',
+    name: 'キャンドルアロマ',
+    sub: '静かに呼吸を整える時間',
+    scenes: [
+      { start: 0,  end: 3,  shot: 'キャンドルの炎（ゆらぎ）',          telop: null },
+      { start: 3,  end: 7,  shot: 'アロマを選ぶ手元',                  telop: { text: 'その日の状態に合わせて', style: 'main' } },
+      { start: 7,  end: 12, shot: '温まったオイルを注ぐ瞬間',          telop: { text: '温かなオイル',           style: 'sub'  } },
+      { start: 12, end: 17, shot: '背中への施術（広めの画）',          telop: null },
+      { start: 17, end: 22, shot: 'お客様の静かな呼吸',                telop: { text: '呼吸がやわらかくなる',   style: 'main' } },
+      { start: 22, end: 26, shot: '終わった後の空間',                  telop: { text: '自分に戻る時間',         style: 'main' } },
+      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
+    ]
+  },
+  total: {
+    num: 'TEMPLATE 05',
+    name: 'トータル「整える時間」',
+    sub: '全メニュー組み合わせ紹介',
+    scenes: [
+      { start: 0,  end: 3,  shot: 'サロン入口・空間の全体感',         telop: { text: 'UTAKATA',                style: 'main' } },
+      { start: 3,  end: 7,  shot: 'カウンセリング・状態を見る',       telop: { text: '今日の状態を見る',       style: 'sub'  } },
+      { start: 7,  end: 12, shot: '施術ハイライト 1',                  telop: null },
+      { start: 12, end: 17, shot: '施術ハイライト 2',                  telop: { text: 'その日に合わせて整える', style: 'main' } },
+      { start: 17, end: 22, shot: 'お客様の呼吸・表情',                telop: { text: '自分に戻る',             style: 'main' } },
+      { start: 22, end: 26, shot: '静かな空間（キャンドル）',          telop: { text: '整える、ということ',     style: 'main' } },
+      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
+    ]
+  }
+};
+
+// ===== テロップスタイル定義（FFmpegパラメータ） =====
+const TELOP_STYLES = {
+  // 主題（明朝 / クリーム背景）
+  main: {
+    fontsize: 56,
+    fontcolor: '0x2C2C2C',
+    boxcolor: '0xFAF7F2@0.92',
+    boxborderw: 22,
+    // y position from top: 18% of height
+    y: 'h*0.18'
+  },
+  // 補足（細ゴシック / ダーク背景）
+  sub: {
+    fontsize: 30,
+    fontcolor: '0xFAF7F2',
+    boxcolor: '0x2D3838@0.75',
+    boxborderw: 16,
+    // y position from bottom: 22% from bottom
+    y: 'h*0.72'
+  },
+  // CTA（細ゴシック / クレイ背景）
+  cta: {
+    fontsize: 26,
+    fontcolor: '0xFAF7F2',
+    boxcolor: '0xB89178@0.92',
+    boxborderw: 14,
+    // y position from bottom
+    y: 'h*0.80'
+  }
+};
+
+// ===== 状態管理 =====
+const state = {
+  template: null,
+  clips: {},      // sceneIndex -> { file, url, name }
+  bgm: null,      // { file, name } or null
+  ffmpeg: null,
+  ffmpegLoaded: false,
+  building: false
+};
+
+// ===== 初期化: テンプレ一覧 =====
+function renderTemplates() {
+  const grid = document.getElementById('templateGrid');
+  grid.innerHTML = '';
+  for (const key of Object.keys(TEMPLATES)) {
+    const t = TEMPLATES[key];
+    const card = document.createElement('div');
+    card.className = 'template-card';
+    card.dataset.key = key;
+    card.innerHTML = `
+      <div class="num">${t.num}</div>
+      <div class="name">${t.name}</div>
+      <div class="sub">${t.sub}</div>
+    `;
+    card.addEventListener('click', () => selectTemplate(key));
+    grid.appendChild(card);
+  }
+}
+
+function selectTemplate(key) {
+  state.template = key;
+  state.clips = {};
+  document.querySelectorAll('.template-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.key === key);
+  });
+  renderScenes();
+  document.getElementById('scenesSection').classList.add('active');
+  document.getElementById('bgmSection').classList.add('active');
+  document.getElementById('optionsSection').classList.add('active');
+  document.getElementById('buildSection').classList.add('active');
+  updateBuildButton();
+}
+
+// ===== シーン一覧描画 =====
+function renderScenes() {
+  const tpl = TEMPLATES[state.template];
+  const list = document.getElementById('sceneList');
+  list.innerHTML = '';
+
+  tpl.scenes.forEach((scene, i) => {
+    const dur = scene.end - scene.start;
+    const hasClip = !!state.clips[i];
+    const clip = state.clips[i];
+
+    const slot = document.createElement('div');
+    slot.className = 'scene-slot';
+    slot.innerHTML = `
+      <div class="scene-head">
+        <div class="scene-num">${i + 1}</div>
+        <div class="scene-time">${dur.toFixed(1)}s</div>
+        ${scene.telop ? `<div class="scene-tag">テロップ</div>` : ''}
+      </div>
+      <div class="upload-zone ${hasClip ? 'has-clip' : ''}" data-scene="${i}">
+        ${hasClip
+          ? `<video src="${clip.url}" muted playsinline preload="metadata"></video>`
+          : `<div class="upload-empty">
+              <div class="icon">＋</div>
+              <div>クリップを選ぶ</div>
+              <div style="font-size:10px;margin-top:4px;opacity:0.7">${dur.toFixed(1)}秒で切り出し</div>
+            </div>`
+        }
+        ${scene.telop
+          ? `<div class="telop-preview ${scene.telop.style}">${escapeHtml(scene.telop.text)}</div>`
+          : ''}
+      </div>
+      <div class="scene-foot">
+        <div class="label-text">${escapeHtml(scene.shot)}</div>
+        ${hasClip ? `<div style="margin-top:3px;font-size:10px;">${escapeHtml(clip.name)}</div>` : ''}
+      </div>
+    `;
+    slot.querySelector('.upload-zone').addEventListener('click', () => pickClip(i));
+    list.appendChild(slot);
+  });
+}
+
+function pickClip(sceneIdx) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'video/*';
+  input.onchange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    if (state.clips[sceneIdx] && state.clips[sceneIdx].url) {
+      URL.revokeObjectURL(state.clips[sceneIdx].url);
+    }
+    state.clips[sceneIdx] = {
+      file: f,
+      url: URL.createObjectURL(f),
+      name: f.name
+    };
+    renderScenes();
+    updateBuildButton();
+  };
+  input.click();
+}
+
+// ===== BGM =====
+function onBgmSelect(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  state.bgm = { file: f, name: f.name };
+  document.getElementById('bgmStatus').innerHTML =
+    `<span class="file-name">${escapeHtml(f.name)}</span>`;
+  document.getElementById('bgmClearBtn').style.display = '';
+}
+
+function clearBgm() {
+  state.bgm = null;
+  document.getElementById('bgmStatus').innerHTML =
+    `<span class="none">未選択（無音で書き出します）</span>`;
+  document.getElementById('bgmClearBtn').style.display = 'none';
+  document.getElementById('bgmInput').value = '';
+}
+
+// ===== ビルドボタン制御 =====
+function updateBuildButton() {
+  const btn = document.getElementById('buildBtn');
+  const status = document.getElementById('buildStatus');
+  if (!state.template) {
+    btn.disabled = true;
+    status.textContent = 'テンプレートを選んでください';
+    return;
+  }
+  const tpl = TEMPLATES[state.template];
+  const missing = [];
+  for (let i = 0; i < tpl.scenes.length; i++) {
+    if (!state.clips[i]) missing.push(i + 1);
+  }
+  if (missing.length > 0) {
+    btn.disabled = true;
+    status.textContent = `シーン ${missing.join(', ')} のクリップが未設定（残り${missing.length}本）`;
+    return;
+  }
+  btn.disabled = state.building;
+  status.textContent = '準備OK。書き出しを開始できます。';
+}
+
+// ===== Util =====
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// drawtext用のテキストエスケープ
+function escapeDrawtext(text) {
+  return text
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\\\'")
+    .replace(/:/g, '\\:')
+    .replace(/,/g, '\\,')
+    .replace(/\[/g, '\\[')
+    .replace(/\]/g, '\\]')
+    .replace(/%/g, '\\%')
+    .replace(/\n/g, '\\n');
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('active');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('active');
+}
+
+// ===== 進捗表示 =====
+let progressSteps = [];
+function setProgress(steps) {
+  progressSteps = steps;
+  const el = document.getElementById('progress');
+  el.classList.add('active');
+  el.innerHTML = steps.map(s =>
+    `<div class="progress-row"><div class="progress-dot ${s.state}"></div><div>${s.label}</div></div>`
+  ).join('');
+}
+function markStep(idx, stepState) {
+  if (progressSteps[idx]) {
+    progressSteps[idx].state = stepState;
+    setProgress(progressSteps);
+  }
+}
+
+// ===== FFmpeg ロード =====
+async function loadFfmpeg() {
+  if (state.ffmpegLoaded) return state.ffmpeg;
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on('log', ({ message }) => console.log('[ffmpeg]', message));
+  const base = location.origin;
+  await ffmpeg.load({
+    coreURL: `${base}/ffmpeg/ffmpeg-core.js`,
+    wasmURL: `${base}/ffmpeg/ffmpeg-core.wasm`
+  });
+  state.ffmpeg = ffmpeg;
+  state.ffmpegLoaded = true;
+  return ffmpeg;
+}
+
+// ===== シーン毎にフィルタ文字列を構築 =====
+// （pre-trim 段階で既に scale/crop/fps 済みなので、ここでは色補正とテロップのみ）
+function buildSceneFilter(sceneIdx, scene, opts) {
+  const dur = scene.end - scene.start;
+  let chain = [];
+  if (opts.grading) {
+    chain.push(`eq=saturation=0.85:contrast=1.05:gamma_r=1.04:gamma_b=0.96`);
+  }
+  if (scene.telop) {
+    const style = TELOP_STYLES[scene.telop.style];
+    const text = escapeDrawtext(scene.telop.text);
+    const fadeIn = 0.5;
+    const fadeOut = 0.5;
+    const alphaExpr = `if(lt(t\\,${fadeIn})\\,t/${fadeIn}\\,if(gt(t\\,${(dur - fadeOut).toFixed(2)})\\,(${dur}-t)/${fadeOut}\\,1))`;
+    chain.push(
+      `drawtext=fontfile=font.ttf:text='${text}':fontsize=${style.fontsize}:fontcolor=${style.fontcolor}:x=(w-text_w)/2:y=${style.y}:box=1:boxcolor=${style.boxcolor}:boxborderw=${style.boxborderw}:line_spacing=10:alpha='${alphaExpr}'`
+    );
+  }
+  // フィルタが何もなければ null フィルタを入れる
+  if (chain.length === 0) chain.push('null');
+  return `[${sceneIdx}:v]${chain.join(',')}[v${sceneIdx}]`;
+}
+
+// ===== メイン: 動画ビルド =====
+window.buildVideo = async function() {
+  if (state.building) return;
+  hideError();
+  state.building = true;
+  document.getElementById('buildBtn').disabled = true;
+  document.getElementById('outputSection').classList.remove('active');
+
+  const tpl = TEMPLATES[state.template];
+  const opts = {
+    grading: document.getElementById('optGrading').checked,
+    bgmDb: parseInt(document.getElementById('optBgmVolume').value, 10) || -15
+  };
+
+  const steps = [
+    { label: 'FFmpeg.wasm を読み込み中', state: 'active' },
+    { label: 'フォント・クリップを準備中', state: '' },
+    { label: 'BGM を準備中', state: '' },
+    { label: '動画を合成中（時間がかかります）', state: '' },
+    { label: '完了', state: '' }
+  ];
+  setProgress(steps);
+
+  try {
+    const ffmpeg = await loadFfmpeg();
+    markStep(0, 'done'); markStep(1, 'active');
+
+    // フォント
+    const fontRes = await fetch('/ffmpeg/font.ttf');
+    if (!fontRes.ok) throw new Error('フォントの読み込みに失敗しました');
+    await ffmpeg.writeFile('font.ttf', new Uint8Array(await fontRes.arrayBuffer()));
+
+    // クリップ毎にトリム → 中間ファイル化（事前に短く切ってからフィルタに渡す）
+    for (let i = 0; i < tpl.scenes.length; i++) {
+      const scene = tpl.scenes[i];
+      const dur = scene.end - scene.start;
+      const clip = state.clips[i];
+      const inName = `in_${i}.mp4`;
+      const outName = `clip_${i}.mp4`;
+      await ffmpeg.writeFile(inName, await fetchFile(clip.file));
+
+      await ffmpeg.exec([
+        '-i', inName,
+        '-t', String(dur + 0.1),
+        '-an',
+        '-c:v', 'libx264',
+        '-preset', 'ultrafast',
+        '-pix_fmt', 'yuv420p',
+        '-vf', `scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30`,
+        '-y',
+        outName
+      ]);
+      await ffmpeg.deleteFile(inName);
+    }
+    markStep(1, 'done'); markStep(2, 'active');
+
+    // BGM
+    if (state.bgm) {
+      await ffmpeg.writeFile('bgm.in', await fetchFile(state.bgm.file));
+    }
+    markStep(2, 'done'); markStep(3, 'active');
+
+    // フィルタ文字列を構築（テロップ + 連結）
+    const filterParts = [];
+    for (let i = 0; i < tpl.scenes.length; i++) {
+      filterParts.push(buildSceneFilter(i, tpl.scenes[i], opts));
+    }
+    const concatInputs = tpl.scenes.map((_, i) => `[v${i}]`).join('');
+    filterParts.push(`${concatInputs}concat=n=${tpl.scenes.length}:v=1:a=0[outv]`);
+
+    const filterComplex = filterParts.join(';');
+
+    // filter_complex は1つにまとめる（複数渡しは不可）
+    let fullFilter = filterComplex;
+    if (state.bgm) {
+      const bgmGain = Math.pow(10, opts.bgmDb / 20);
+      const bgmIdx = tpl.scenes.length;
+      fullFilter += `;[${bgmIdx}:a]volume=${bgmGain.toFixed(3)},atrim=duration=30,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st=29.2:d=0.8[outa]`;
+    }
+
+    const finalArgs = [];
+    for (let i = 0; i < tpl.scenes.length; i++) {
+      finalArgs.push('-i', `clip_${i}.mp4`);
+    }
+    if (state.bgm) {
+      finalArgs.push('-i', 'bgm.in');
+    }
+    finalArgs.push('-filter_complex', fullFilter);
+    finalArgs.push('-map', '[outv]');
+    if (state.bgm) {
+      finalArgs.push('-map', '[outa]');
+    }
+    finalArgs.push(
+      '-c:v', 'libx264',
+      '-preset', 'ultrafast',
+      '-pix_fmt', 'yuv420p',
+      '-r', '30'
+    );
+    if (state.bgm) {
+      finalArgs.push('-c:a', 'aac', '-b:a', '128k');
+    }
+    finalArgs.push('-t', '30', '-y', 'output.mp4');
+
+    console.log('FFmpeg args:', finalArgs);
+    console.log('Filter complex:', fullFilter);
+
+    await ffmpeg.exec(finalArgs);
+    markStep(3, 'done'); markStep(4, 'active');
+
+    // 出力読み込み
+    const data = await ffmpeg.readFile('output.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(blob);
+
+    const video = document.getElementById('outputVideo');
+    video.src = url;
+    document.getElementById('downloadLink').href = url;
+    const fileName = `utakata-${tpl.name.replace(/[^a-zA-Z0-9一-龯ぁ-んァ-ヶー]/g, '_')}-${Date.now()}.mp4`;
+    document.getElementById('downloadLink').download = fileName;
+    document.getElementById('outputSection').classList.add('active');
+
+    markStep(4, 'done');
+
+    // クリーンアップ
+    for (let i = 0; i < tpl.scenes.length; i++) {
+      try { await ffmpeg.deleteFile(`clip_${i}.mp4`); } catch (e) {}
+    }
+    if (state.bgm) {
+      try { await ffmpeg.deleteFile('bgm.in'); } catch (e) {}
+    }
+    try { await ffmpeg.deleteFile('output.mp4'); } catch (e) {}
+
+  } catch (err) {
+    console.error(err);
+    showError(`書き出しに失敗しました: ${err.message || err}`);
+    const activeIdx = progressSteps.findIndex(s => s.state === 'active');
+    if (activeIdx >= 0) markStep(activeIdx, 'error');
+  } finally {
+    state.building = false;
+    document.getElementById('buildBtn').disabled = false;
+    updateBuildButton();
+  }
+};
+
+// ===== 初期化 =====
+renderTemplates();
+</script>
+</body>
+</html>
