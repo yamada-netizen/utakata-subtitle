@@ -591,8 +591,25 @@ window.updateTelop = function(id, field, value) {
   } else {
     t[field] = value;
   }
-  if (field === 'text' || field === 'style') renderTelops();
+  // 文字入力やスタイル変更ではDOM全体を再構築せず、プレビューだけ更新する
+  // （全体再構築するとtextareaのカーソル位置が失われる）
+  if (field === 'text' || field === 'style') updatePreview(id);
 };
+
+function updatePreview(id) {
+  const idx = state.telops.findIndex(t => t.id === id);
+  if (idx < 0) return;
+  const t = state.telops[idx];
+  const rows = document.querySelectorAll('.telop-row');
+  const row = rows[idx];
+  if (!row) return;
+  const previewText = row.querySelector('.style-preview-text');
+  if (previewText) {
+    previewText.textContent = t.text || 'プレビュー文字';
+    const style = STYLES[t.style];
+    previewText.className = 'style-preview-text ' + style.css;
+  }
+}
 
 function renderTelops() {
   const wrap = document.getElementById('telopList');
