@@ -5,6 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>うたかた テロップ自動配置ツール</title>
 <style>
+  /* 日本語装飾フォント */
+  @font-face {
+    font-family: 'MPlusRounded';
+    src: url('/fonts/MPlusRounded1c-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'HachiMaruPop';
+    src: url('/fonts/HachiMaruPop-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'KleeOne';
+    src: url('/fonts/KleeOne-SemiBold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'ZenMaruGothic';
+    src: url('/fonts/ZenMaruGothic-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+
   :root {
     --c-primary: #5d7b7c;
     --c-primary-dark: #45615f;
@@ -44,6 +66,12 @@
   }
   header p {
     margin: 0; font-size: 12px; color: var(--c-muted);
+  }
+  .phase-tag {
+    display: inline-block; margin-left: 8px;
+    background: var(--c-accent); color: white;
+    padding: 1px 6px; border-radius: 2px;
+    font-size: 9px; letter-spacing: 0.1em; vertical-align: middle;
   }
 
   .step {
@@ -93,16 +121,31 @@
   }
   .btn-primary:hover:not(:disabled) { background: var(--c-primary-dark); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-secondary {
-    background: white; color: var(--c-primary);
-    border: 1px solid var(--c-primary);
-  }
-  .btn-secondary:hover { background: var(--c-soft); }
   .btn-icon {
     background: transparent; color: var(--c-muted);
     padding: 4px 8px; font-size: 12px;
   }
   .btn-icon:hover { color: var(--c-danger); }
+
+  /* AI機能トグル */
+  .ai-toggle {
+    background: var(--c-soft); border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+  }
+  .ai-toggle:hover { background: #eee5d6; }
+  .ai-toggle input[type="checkbox"] {
+    accent-color: var(--c-primary);
+    width: 16px; height: 16px;
+  }
+  .ai-toggle-text { flex: 1; }
+  .ai-toggle-title {
+    font-weight: 600; font-size: 13px; color: var(--c-primary-dark);
+  }
+  .ai-toggle-desc {
+    font-size: 11px; color: var(--c-muted); margin-top: 2px;
+  }
 
   /* テロップ入力 */
   .telop-row {
@@ -152,7 +195,8 @@
     padding: 6px 14px; text-align: center; max-width: 100%;
     word-break: break-all;
   }
-  /* スタイル: utakata-mincho */
+
+  /* スタイル定義（CSSプレビュー用） */
   .style-utakata-mincho {
     background: rgba(250, 247, 242, 0.92);
     color: #2c2c2c;
@@ -161,7 +205,6 @@
     letter-spacing: 0.06em;
     border-left: 2px solid #b89178;
   }
-  /* スタイル: utakata-sub */
   .style-utakata-sub {
     background: rgba(45, 56, 56, 0.75);
     color: #faf7f2;
@@ -169,7 +212,6 @@
     font-size: 13px; font-weight: 400;
     letter-spacing: 0.08em;
   }
-  /* スタイル: utakata-cta */
   .style-utakata-cta {
     background: rgba(184, 145, 120, 0.92);
     color: #faf7f2;
@@ -178,7 +220,6 @@
     letter-spacing: 0.15em;
     border-radius: 2px;
   }
-  /* スタイル: yawaraka */
   .style-yawaraka {
     background: rgba(252, 240, 235, 0.92);
     color: #5a4040;
@@ -187,17 +228,6 @@
     border-radius: 18px;
     padding: 6px 18px;
   }
-  /* スタイル: kawaii */
-  .style-kawaii {
-    background: rgba(255, 245, 248, 0.95);
-    color: #c47b8a;
-    font-family: -apple-system, sans-serif;
-    font-size: 14px; font-weight: 700;
-    border-radius: 20px;
-    padding: 6px 18px;
-    border: 2px solid #f5c0d0;
-  }
-  /* スタイル: shikku */
   .style-shikku {
     background: rgba(20, 20, 20, 0.85);
     color: #f0ead8;
@@ -205,13 +235,42 @@
     font-size: 14px; font-weight: 600;
     letter-spacing: 0.15em;
   }
-  /* スタイル: natural */
-  .style-natural {
-    background: rgba(247, 240, 224, 0.92);
-    color: #6b5238;
-    font-family: -apple-system, sans-serif;
-    font-size: 14px; font-weight: 500;
+  /* 新フォント使用スタイル */
+  .style-rounded-soft {
+    background: rgba(252, 240, 235, 0.92);
+    color: #4a4040;
+    font-family: 'MPlusRounded', sans-serif;
+    font-size: 15px; font-weight: 700;
     letter-spacing: 0.04em;
+    border-radius: 16px;
+    padding: 6px 18px;
+  }
+  .style-pop-cute {
+    background: rgba(255, 245, 248, 0.95);
+    color: #c47b8a;
+    font-family: 'HachiMaruPop', sans-serif;
+    font-size: 16px; font-weight: 400;
+    letter-spacing: 0.02em;
+    border-radius: 20px;
+    padding: 6px 18px;
+    border: 2px solid #f5c0d0;
+  }
+  .style-handwritten {
+    background: rgba(248, 240, 220, 0.92);
+    color: #5a4838;
+    font-family: 'KleeOne', serif;
+    font-size: 15px; font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 6px 18px;
+  }
+  .style-zen-rounded {
+    background: rgba(240, 245, 240, 0.92);
+    color: #3a4a4a;
+    font-family: 'ZenMaruGothic', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.03em;
+    border-radius: 12px;
+    padding: 6px 18px;
   }
 
   /* 進捗 */
@@ -242,27 +301,6 @@
 
   video { width: 100%; border-radius: 6px; margin-top: 10px; background: black; }
 
-  /* モーダル */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    display: flex; align-items: center; justify-content: center; z-index: 100;
-  }
-  .modal-box {
-    background: white; border-radius: 12px; padding: 28px;
-    width: 90%; max-width: 360px; text-align: center;
-  }
-  .modal-box h2 {
-    font-family: "Hiragino Mincho ProN", serif;
-    font-size: 16px; margin: 0 0 10px; color: var(--c-primary-dark);
-  }
-  .modal-box p { font-size: 12px; color: var(--c-muted); margin: 0 0 14px; }
-  .modal-box input {
-    width: 100%; border: 1px solid var(--c-line); border-radius: 4px;
-    padding: 8px 10px; font-size: 14px; margin-bottom: 12px;
-    font-family: inherit;
-  }
-  .pw-error { font-size: 11px; color: #8b4040; margin-top: 6px; }
-
   .add-btn {
     width: 100%; padding: 10px; background: white;
     border: 1px dashed var(--c-line); border-radius: 6px;
@@ -274,31 +312,19 @@
     background: var(--c-soft);
   }
 
-  .style-link {
-    display: inline-block; font-size: 11px;
-    color: var(--c-accent); text-decoration: none;
-    margin-left: 6px;
+  .face-result {
+    margin-top: 8px; padding: 8px 12px;
+    background: #ecf3ef; border-radius: 4px;
+    font-size: 11px; color: #4a6d4d;
   }
-  .style-link:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<div class="modal-overlay" id="accessGate" style="display:none;">
-  <div class="modal-box">
-    <h2>うたかた テロップツール</h2>
-    <p>パスワードを入力してください</p>
-    <input type="password" id="accessInput" placeholder="パスワード"
-           onkeydown="if(event.key==='Enter')submitAccess()">
-    <button class="btn btn-primary" onclick="submitAccess()">開く</button>
-    <p class="pw-error" id="accessError" style="display:none;">パスワードが違います</p>
-  </div>
-</div>
-
 <header>
   <div class="brand">UTAKATA</div>
-  <h1>テロップ自動配置ツール</h1>
-  <p>動画を選んでテロップを書き、ボタン1つでうたかたスタイルの動画に</p>
+  <h1>テロップ自動配置ツール<span class="phase-tag">Phase 2</span></h1>
+  <p>顔検出 + 多彩なフォントで、うたかたスタイルに自動で仕上げる</p>
 </header>
 
 <main>
@@ -317,6 +343,15 @@
   <div class="step" id="step2" style="display:none;">
     <div class="step-label">STEP 2</div>
     <h3>テロップを追加</h3>
+
+    <label class="ai-toggle">
+      <input type="checkbox" id="faceDetectEnabled" checked>
+      <div class="ai-toggle-text">
+        <div class="ai-toggle-title">🤖 顔検出で自動配置</div>
+        <div class="ai-toggle-desc">位置を「自動」にすると、顔のない方向（上 or 下）にAIがテロップを置きます</div>
+      </div>
+    </label>
+
     <div class="hint">表示開始秒・表示時間・スタイル・位置を指定。何個でも追加可能。</div>
     <div id="telopList" style="margin-top:12px;"></div>
     <button class="add-btn" onclick="addTelop()">＋ テロップを追加</button>
@@ -326,7 +361,7 @@
     <div class="step-label">STEP 3</div>
     <h3>テロップを焼き込む</h3>
     <button class="btn btn-primary" id="processBtn" onclick="processVideo()">テロップ入り動画を作る</button>
-    <div class="hint">端末によって数十秒〜数分かかります。タブを閉じないでください。</div>
+    <div class="hint">顔検出ON時は数十秒〜数分かかります。タブを閉じないでください。</div>
     <div class="progress" id="progress" style="display:none;"></div>
     <div class="error-box" id="errorBox" style="display:none;"></div>
   </div>
@@ -340,6 +375,9 @@
 
 </main>
 
+<!-- 顔検出に使う非表示の動画要素 -->
+<video id="hiddenVideo" style="display:none;" muted playsinline></video>
+
 <script src="/ffmpeg/ffmpeg.js"></script>
 <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 <script>
@@ -347,11 +385,12 @@ const { FFmpeg } = FFmpegWASM;
 const { fetchFile } = FFmpegUtil;
 
 // スタイルプリセット定義
-// ffmpeg drawtext用のパラメータと、HTMLプレビュー用のCSSクラス
+// 各スタイル: ffmpeg drawtext用パラメータ + CSSプレビュー用class + フォントファイル
 const STYLES = {
   'utakata-mincho': {
-    name: 'うたかた標準（主題）',
+    name: 'うたかた標準（主題・明朝）',
     css: 'style-utakata-mincho',
+    font: 'font.ttf',
     fontcolor: '0x2C2C2C',
     fontsize: 42,
     box: 1,
@@ -359,8 +398,9 @@ const STYLES = {
     boxborderw: 18
   },
   'utakata-sub': {
-    name: 'うたかた補足',
+    name: 'うたかた補足（細ゴシック）',
     css: 'style-utakata-sub',
+    font: 'font.ttf',
     fontcolor: '0xFAF7F2',
     fontsize: 30,
     box: 1,
@@ -370,51 +410,77 @@ const STYLES = {
   'utakata-cta': {
     name: 'うたかたCTA（予約案内）',
     css: 'style-utakata-cta',
+    font: 'font.ttf',
     fontcolor: '0xFAF7F2',
     fontsize: 26,
     box: 1,
     boxcolor: '0xB89178@0.92',
     boxborderw: 16
   },
+  'rounded-soft': {
+    name: 'やわらか丸ゴシック（M PLUS Rounded）',
+    css: 'style-rounded-soft',
+    font: 'fonts/MPlusRounded1c-Bold.ttf',
+    fontcolor: '0x4A4040',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xFCF0EB@0.92',
+    boxborderw: 18
+  },
+  'pop-cute': {
+    name: 'ポップかわいい（ハチマルポップ）',
+    css: 'style-pop-cute',
+    font: 'fonts/HachiMaruPop-Regular.ttf',
+    fontcolor: '0xC47B8A',
+    fontsize: 42,
+    box: 1,
+    boxcolor: '0xFFF5F8@0.95',
+    boxborderw: 20
+  },
+  'handwritten': {
+    name: 'やわらか手書き（クレーOne）',
+    css: 'style-handwritten',
+    font: 'fonts/KleeOne-SemiBold.ttf',
+    fontcolor: '0x5A4838',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xF8F0DC@0.92',
+    boxborderw: 18
+  },
+  'zen-rounded': {
+    name: 'もちっと丸（Zen丸ゴシック）',
+    css: 'style-zen-rounded',
+    font: 'fonts/ZenMaruGothic-Bold.ttf',
+    fontcolor: '0x3A4A4A',
+    fontsize: 40,
+    box: 1,
+    boxcolor: '0xF0F5F0@0.92',
+    boxborderw: 18
+  },
   'yawaraka': {
     name: 'やわらか（淡いピンク）',
     css: 'style-yawaraka',
+    font: 'font.ttf',
     fontcolor: '0x5A4040',
     fontsize: 38,
     box: 1,
     boxcolor: '0xFCF0EB@0.92',
     boxborderw: 18
   },
-  'kawaii': {
-    name: 'かわいい（ポップピンク）',
-    css: 'style-kawaii',
-    fontcolor: '0xC47B8A',
-    fontsize: 40,
-    box: 1,
-    boxcolor: '0xFFF5F8@0.95',
-    boxborderw: 20
-  },
   'shikku': {
     name: 'シック（黒×アイボリー）',
     css: 'style-shikku',
+    font: 'font.ttf',
     fontcolor: '0xF0EAD8',
     fontsize: 38,
     box: 1,
     boxcolor: '0x141414@0.85',
     boxborderw: 18
-  },
-  'natural': {
-    name: 'ナチュラル（ベージュ）',
-    css: 'style-natural',
-    fontcolor: '0x6B5238',
-    fontsize: 38,
-    box: 1,
-    boxcolor: '0xF7F0E0@0.92',
-    boxborderw: 18
   }
 };
 
 const POSITIONS = {
+  'auto': { name: '🤖 AI自動', y: 'h*0.18' },
   'top': { name: '上部30%', y: 'h*0.18' },
   'middle': { name: '中央', y: '(h-text_h)/2' },
   'bottom': { name: '下部20%', y: 'h*0.78' }
@@ -422,35 +488,76 @@ const POSITIONS = {
 
 const state = {
   videoFile: null,
+  videoUrl: null,
+  videoWidth: 0,
+  videoHeight: 0,
   ffmpeg: null,
   ffmpegLoaded: false,
   telops: [],
   resultBlob: null,
-  accessPassword: null
+  faceapiLoaded: false
 };
 
-// アクセスゲート（パスワード設定があれば表示）
-async function initAccess() {
-  try {
-    const res = await fetch('/api/transcribe', { method: 'OPTIONS' });
-    if (res.status === 401 || res.status === 200) {
-      // パスワードが必要かもしれない。最初は表示しない。STEP 3 で実際に
-      // 使用するわけではないので、開発時はゲートを表示しない。
-    }
-  } catch (e) {}
+// face-api.js 動的ロード
+async function loadFaceAPI() {
+  if (state.faceapiLoaded) return;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('face-api.js のロードに失敗しました'));
+    document.head.appendChild(script);
+  });
+  await faceapi.nets.tinyFaceDetector.loadFromUri(
+    'https://cdn.jsdelivr.net/gh/vladmandic/face-api/model/'
+  );
+  state.faceapiLoaded = true;
 }
 
-window.submitAccess = function() {
-  const pw = document.getElementById('accessInput').value;
-  state.accessPassword = pw;
-  document.getElementById('accessGate').style.display = 'none';
-};
+// 動画の指定時間のフレームを取得して顔検出
+async function detectFacesAtTime(videoEl, timeSec) {
+  videoEl.currentTime = Math.max(0, Math.min(videoEl.duration - 0.1, timeSec));
+  await new Promise(resolve => {
+    const onSeeked = () => { videoEl.removeEventListener('seeked', onSeeked); resolve(); };
+    videoEl.addEventListener('seeked', onSeeked);
+  });
+  const canvas = document.createElement('canvas');
+  canvas.width = videoEl.videoWidth;
+  canvas.height = videoEl.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+  const detections = await faceapi.detectAllFaces(
+    canvas,
+    new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+  );
+  return detections.map(d => ({
+    x: d.box.x, y: d.box.y, width: d.box.width, height: d.box.height
+  }));
+}
+
+// 顔の位置からテロップ位置を決定
+function chooseTopOrBottom(faceBoxes, videoHeight) {
+  if (faceBoxes.length === 0) return 'top';
+  const avgCenterY = faceBoxes.reduce(
+    (sum, b) => sum + b.y + b.height / 2, 0
+  ) / faceBoxes.length;
+  const ratio = avgCenterY / videoHeight;
+  return ratio < 0.5 ? 'bottom' : 'top';
+}
 
 // 動画選択
 document.getElementById('videoInput').addEventListener('change', (e) => {
   const f = e.target.files[0];
   if (!f) return;
   state.videoFile = f;
+  if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
+  state.videoUrl = URL.createObjectURL(f);
+  const hidden = document.getElementById('hiddenVideo');
+  hidden.src = state.videoUrl;
+  hidden.onloadedmetadata = () => {
+    state.videoWidth = hidden.videoWidth;
+    state.videoHeight = hidden.videoHeight;
+  };
   const mb = (f.size / 1024 / 1024).toFixed(1);
   const info = document.getElementById('fileInfo');
   info.textContent = `${f.name}（${mb} MB）`;
@@ -461,12 +568,12 @@ document.getElementById('videoInput').addEventListener('change', (e) => {
   if (state.telops.length === 0) addTelop();
 });
 
-// テロップ追加
 window.addTelop = function() {
   const id = Date.now() + Math.random();
   state.telops.push({
     id, text: '', start: 0, duration: 3,
-    style: 'utakata-mincho', position: 'top'
+    style: 'utakata-mincho', position: 'auto',
+    detectedPosition: null
   });
   renderTelops();
 };
@@ -534,6 +641,7 @@ function renderTelops() {
             ).join('')}
           </select>
         </div>
+        ${t.detectedPosition ? `<div class="face-result">🤖 検出結果: ${t.detectedPosition === 'top' ? '上部に配置（顔が下にあり）' : '下部に配置（顔が上にあり）'}</div>` : ''}
       </div>
     `;
   }).join('');
@@ -546,7 +654,6 @@ function escapeHtml(s) {
 }
 
 function escapeFFText(text) {
-  // ffmpeg drawtext用にエスケープ
   return text
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\\\'")
@@ -555,14 +662,11 @@ function escapeFFText(text) {
     .replace(/,/g, '\\,');
 }
 
-// ffmpeg ロード
 async function loadFfmpeg() {
   if (state.ffmpegLoaded) return state.ffmpeg;
   const ffmpeg = new FFmpeg();
   ffmpeg.on('log', ({ message }) => console.log('[ffmpeg]', message));
-  ffmpeg.on('progress', ({ progress, time }) => {
-    updateProgressBar(progress);
-  });
+  ffmpeg.on('progress', ({ progress }) => updateProgressBar(progress));
   const base = location.origin;
   await ffmpeg.load({
     coreURL: `${base}/ffmpeg/ffmpeg-core.js`,
@@ -582,9 +686,7 @@ function setProgress(steps) {
     `<div class="progress-row"><div class="progress-dot ${s.state}"></div><div>${s.label}</div></div>`
   ).join('');
 }
-
 function updateProgressBar(p) {
-  // ffmpeg の progress (0-1) を最後のステップに反映
   const lastActive = progressSteps.findIndex(s => s.state === 'active');
   if (lastActive < 0) return;
   const el = document.querySelectorAll('.progress-row')[lastActive];
@@ -594,14 +696,12 @@ function updateProgressBar(p) {
   const baseLabel = progressSteps[lastActive].label.split('（')[0];
   labelDiv.textContent = `${baseLabel}（${pct}%）`;
 }
-
 function showError(msg) {
   const el = document.getElementById('errorBox');
   el.textContent = msg;
   el.style.display = 'block';
 }
 
-// テロップ焼き込み処理
 window.processVideo = async function() {
   if (!state.videoFile) { showError('動画を選択してください'); return; }
   const validTelops = state.telops.filter(t => t.text.trim());
@@ -612,34 +712,72 @@ window.processVideo = async function() {
   btn.disabled = true;
   btn.textContent = '処理中...';
 
-  const steps = [
-    { label: 'ffmpeg.wasm 読み込み中', state: 'active' },
-    { label: 'フォント・動画を準備中', state: '' },
-    { label: 'テロップを焼き込み中', state: '' }
-  ];
+  const faceEnabled = document.getElementById('faceDetectEnabled').checked;
+  const hasAutoPosition = validTelops.some(t => t.position === 'auto');
+
+  const steps = [];
+  if (faceEnabled && hasAutoPosition) {
+    steps.push({ label: 'face-api.js 読み込み中', state: 'active' });
+    steps.push({ label: '顔検出中', state: '' });
+  }
+  steps.push({ label: 'ffmpeg.wasm 読み込み中', state: faceEnabled && hasAutoPosition ? '' : 'active' });
+  steps.push({ label: 'フォント・動画を準備中', state: '' });
+  steps.push({ label: 'テロップを焼き込み中', state: '' });
   setProgress(steps);
 
   try {
+    let stepIdx = 0;
+
+    // 顔検出
+    if (faceEnabled && hasAutoPosition) {
+      await loadFaceAPI();
+      steps[stepIdx].state = 'done'; stepIdx++;
+      steps[stepIdx].state = 'active'; setProgress(steps);
+
+      const hiddenVideo = document.getElementById('hiddenVideo');
+      for (const t of validTelops) {
+        if (t.position !== 'auto') continue;
+        const faces = await detectFacesAtTime(hiddenVideo, t.start);
+        t.detectedPosition = chooseTopOrBottom(faces, hiddenVideo.videoHeight);
+      }
+      renderTelops();
+      steps[stepIdx].state = 'done'; stepIdx++;
+    }
+
+    // ffmpeg ロード
+    steps[stepIdx].state = 'active'; setProgress(steps);
     const ffmpeg = await loadFfmpeg();
-    steps[0].state = 'done'; steps[1].state = 'active'; setProgress(steps);
+    steps[stepIdx].state = 'done'; stepIdx++;
 
-    // フォント書き込み
-    const fontRes = await fetch('/ffmpeg/font.ttf');
-    const fontBuf = new Uint8Array(await fontRes.arrayBuffer());
-    await ffmpeg.writeFile('font.ttf', fontBuf);
-
-    // 動画書き込み
+    // フォント・動画準備
+    steps[stepIdx].state = 'active'; setProgress(steps);
+    const usedFonts = [...new Set(validTelops.map(t => STYLES[t.style].font))];
+    for (const fontPath of usedFonts) {
+      const fontName = fontPath.split('/').pop();
+      const res = await fetch('/' + fontPath);
+      if (!res.ok) throw new Error(`フォント読み込み失敗: ${fontPath}`);
+      const buf = new Uint8Array(await res.arrayBuffer());
+      await ffmpeg.writeFile(fontName, buf);
+    }
     const inputExt = state.videoFile.name.match(/\.[^.]+$/)?.[0] || '.mp4';
     const inputName = 'input' + inputExt;
     await ffmpeg.writeFile(inputName, await fetchFile(state.videoFile));
+    steps[stepIdx].state = 'done'; stepIdx++;
 
-    // drawtext フィルタ構築
+    // テロップ焼き込み
+    steps[stepIdx].state = 'active'; setProgress(steps);
+
     const filterParts = validTelops.map(t => {
       const style = STYLES[t.style];
-      const position = POSITIONS[t.position];
+      const fontName = style.font.split('/').pop();
+      let positionKey = t.position;
+      if (positionKey === 'auto') {
+        positionKey = t.detectedPosition || 'top';
+      }
+      const position = POSITIONS[positionKey];
       const text = escapeFFText(t.text);
       const params = [
-        `fontfile=/font.ttf`,
+        `fontfile=/${fontName}`,
         `text='${text}'`,
         `fontcolor=${style.fontcolor}`,
         `fontsize=${style.fontsize}`,
@@ -652,13 +790,9 @@ window.processVideo = async function() {
       ].join(':');
       return `drawtext=${params}`;
     });
-
     const vf = filterParts.join(',');
     console.log('Filter:', vf);
 
-    steps[1].state = 'done'; steps[2].state = 'active'; setProgress(steps);
-
-    // ffmpeg 実行
     await ffmpeg.exec([
       '-i', inputName,
       '-vf', vf,
@@ -684,7 +818,7 @@ window.processVideo = async function() {
       a.click();
     };
 
-    steps[2].state = 'done'; setProgress(steps);
+    steps[stepIdx].state = 'done'; setProgress(steps);
     document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
 
   } catch (err) {
@@ -696,7 +830,6 @@ window.processVideo = async function() {
   }
 };
 
-// 初期化: テロップ1つ追加
 addTelop();
 </script>
 
