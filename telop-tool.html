@@ -306,14 +306,91 @@
     margin-top: 8px;
   }
   .style-preview {
-    background: #3a3a3a; min-height: 48px;
-    border-radius: 4px; padding: 12px;
+    background: linear-gradient(90deg, #3a4040 0%, #3a4040 50%, #d8d2c8 50%, #e8e2d8 100%);
+    min-height: 60px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    overflow: hidden; position: relative;
+  }
+  .style-preview::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 8px,
+      rgba(255,255,255,0.02) 8px, rgba(255,255,255,0.02) 16px);
   }
   .style-preview-text {
     padding: 6px 14px; text-align: center; max-width: 100%;
-    word-break: break-all;
+    word-break: break-all; position: relative; z-index: 1;
+  }
+  .color-picker-wrap {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px;
+  }
+  .color-picker-wrap input[type="color"] {
+    width: 36px; height: 36px; padding: 0;
+    border: 1px solid var(--c-line); border-radius: 4px;
+    cursor: pointer; background: white;
+  }
+  .color-picker-wrap label {
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.05em;
+  }
+  .color-picker-wrap .reset-color {
+    background: var(--c-soft); color: var(--c-muted);
+    border: 1px solid var(--c-line);
+    padding: 6px 10px; border-radius: 4px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+  }
+
+  /* フォントカタログモーダル */
+  .catalog-btn {
+    background: var(--c-soft); color: var(--c-primary-dark);
+    border: 1px solid var(--c-line); padding: 8px 14px;
+    border-radius: 4px; font-size: 12px; cursor: pointer;
+    font-family: inherit; margin-bottom: 10px; width: 100%;
+    font-weight: 600;
+  }
+  .catalog-btn:hover { background: var(--c-line); }
+  .catalog-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 1000; display: none;
+    align-items: flex-start; justify-content: center;
+    padding: 20px 16px; overflow-y: auto;
+  }
+  .catalog-modal.open { display: flex; }
+  .catalog-content {
+    background: var(--c-bg); border-radius: 8px;
+    padding: 20px; max-width: 540px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .catalog-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .catalog-header h3 {
+    margin: 0; font-size: 16px; color: var(--c-primary-dark);
+  }
+  .catalog-close {
+    background: var(--c-soft); border: 1px solid var(--c-line);
+    padding: 6px 12px; border-radius: 4px; font-size: 12px;
+    cursor: pointer; font-family: inherit;
+  }
+  .catalog-grid {
+    display: grid; gap: 10px;
+  }
+  .catalog-card {
+    border: 1px solid var(--c-line); border-radius: 4px;
+    background: var(--c-card); overflow: hidden;
+  }
+  .catalog-card .label {
+    padding: 8px 12px; background: var(--c-soft);
+    font-size: 11px; color: var(--c-primary-dark); font-weight: 600;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .catalog-card .sample {
+    background: linear-gradient(90deg, #3a4040 50%, #e8e2d8 50%);
+    min-height: 60px; padding: 12px;
+    display: flex; align-items: center; justify-content: center;
   }
 
   /* スタイル定義（CSSプレビュー用） */
@@ -593,7 +670,9 @@
       </div>
     </label>
 
-    <div class="hint">動画を再生・停止して、テロップを入れたい瞬間で「ここにテロップ追加」を押す → 文字を打つ → 終了タイミングまで進めて「終了をここに」を押す。</div>
+    <div class="hint">動画を再生・停止して、テロップを入れたい瞬間で「ここにテロップ追加」を押す → 文字を打つ → 終了タイミングまで進めて「終了をここに」を押す。長文は自動で改行されます。</div>
+
+    <button class="catalog-btn" onclick="openCatalog()">🎨 全スタイル一覧を見る</button>
 
     <div id="telopList" style="margin-top:12px;"></div>
   </div>
@@ -618,6 +697,17 @@
 
 <!-- 顔検出に使う非表示の動画要素 -->
 <video id="hiddenVideo" style="display:none;" muted playsinline></video>
+
+<!-- フォントカタログモーダル -->
+<div class="catalog-modal" id="catalogModal" onclick="if(event.target===this)closeCatalog()">
+  <div class="catalog-content">
+    <div class="catalog-header">
+      <h3>スタイル一覧</h3>
+      <button class="catalog-close" onclick="closeCatalog()">✕ 閉じる</button>
+    </div>
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </div>
+</div>
 
 <script src="/ffmpeg/ffmpeg.js"></script>
 <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
@@ -844,43 +934,17 @@ const STYLES = {
   }
 };
 
-// アニメーション定義
+// アニメーション定義（動き方向ベース）
+// 入場時: テロップは「motionDir の反対側」から base位置へ移動
+// 退場時: テロップは base位置から「motionDir 方向」へ移動して消える
 const ANIMATIONS = {
-  'fade-soft': {
-    name: 'ふわっとフェード',
-    fadeIn: 0.5, fadeOut: 0.5,
-    slideAxis: null
-  },
-  'fade-quick': {
-    name: 'さっとフェード',
-    fadeIn: 0.18, fadeOut: 0.18,
-    slideAxis: null
-  },
-  'slide-up': {
-    name: '下からふわっと',
-    fadeIn: 0.5, fadeOut: 0.4,
-    slideAxis: 'y-positive', slideDistance: 'h*0.05'
-  },
-  'slide-down': {
-    name: '上からふわっと',
-    fadeIn: 0.5, fadeOut: 0.4,
-    slideAxis: 'y-negative', slideDistance: 'h*0.05'
-  },
-  'slide-from-right': {
-    name: '右からスライド',
-    fadeIn: 0.45, fadeOut: 0.4,
-    slideAxis: 'x-positive', slideDistance: 'w*0.06'
-  },
-  'slide-from-left': {
-    name: '左からスライド',
-    fadeIn: 0.45, fadeOut: 0.4,
-    slideAxis: 'x-negative', slideDistance: 'w*0.06'
-  },
-  'none': {
-    name: 'なし（カット）',
-    fadeIn: 0, fadeOut: 0,
-    slideAxis: null
-  }
+  'fade-soft': { name: 'ふわっとフェード', fadeIn: 0.5, fadeOut: 0.5 },
+  'fade-quick': { name: 'さっとフェード', fadeIn: 0.18, fadeOut: 0.18 },
+  'up': { name: '↑ 上に動く', fadeIn: 0.5, fadeOut: 0.4, motionAxis: 'y', motionDir: -1, distance: 'h*0.05' },
+  'down': { name: '↓ 下に動く', fadeIn: 0.5, fadeOut: 0.4, motionAxis: 'y', motionDir: 1, distance: 'h*0.05' },
+  'left': { name: '← 左に動く', fadeIn: 0.45, fadeOut: 0.4, motionAxis: 'x', motionDir: -1, distance: 'w*0.06' },
+  'right': { name: '→ 右に動く', fadeIn: 0.45, fadeOut: 0.4, motionAxis: 'x', motionDir: 1, distance: 'w*0.06' },
+  'none': { name: 'なし（カット）', fadeIn: 0, fadeOut: 0 }
 };
 
 // 位置の組み合わせ。yは上下、xは左右の位置を指定。
@@ -1037,6 +1101,23 @@ window.seekVideoTo = function(sec) {
   preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
+// フォントカタログ
+window.openCatalog = function() {
+  const grid = document.getElementById('catalogGrid');
+  grid.innerHTML = Object.entries(STYLES).map(([k, v]) => `
+    <div class="catalog-card">
+      <div class="label">${v.name}</div>
+      <div class="sample">
+        <div class="style-preview-text ${v.css}">整える時間</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('catalogModal').classList.add('open');
+};
+window.closeCatalog = function() {
+  document.getElementById('catalogModal').classList.remove('open');
+};
+
 // 現在の動画時刻でテロップを追加
 window.addTelopAtCurrentTime = function() {
   const preview = document.getElementById('previewVideo');
@@ -1045,7 +1126,9 @@ window.addTelopAtCurrentTime = function() {
   state.telops.push({
     id, text: '', start: parseFloat(t.toFixed(1)), duration: 3,
     style: 'utakata-mincho', position: 'auto',
-    animation: 'fade-soft',
+    animationIn: 'fade-soft',
+    animationOut: 'fade-soft',
+    colorOverride: null,
     detectedPosition: null
   });
   renderTelops();
@@ -1075,7 +1158,9 @@ window.addTelop = function() {
   state.telops.push({
     id, text: '', start: 0, duration: 3,
     style: 'utakata-mincho', position: 'auto',
-    animation: 'fade-soft',
+    animationIn: 'fade-soft',
+    animationOut: 'fade-soft',
+    colorOverride: null,
     detectedPosition: null
   });
   renderTelops();
@@ -1178,14 +1263,29 @@ function renderTelops() {
             </select>
           </div>
         </div>
-        <div style="margin-top:8px;">
-          <label style="font-size:10px;color:var(--c-muted);font-weight:600;letter-spacing:0.05em;">アニメーション</label>
-          <select style="width:100%;padding:6px 8px;font-size:12px;border:1px solid var(--c-line);border-radius:4px;background:white;font-family:inherit;margin-top:3px;"
-                  onchange="updateTelop(${t.id}, 'animation', this.value)">
-            ${Object.entries(ANIMATIONS).map(([k, v]) =>
-              `<option value="${k}" ${k === (t.animation || 'fade-soft') ? 'selected' : ''}>${v.name}</option>`
-            ).join('')}
-          </select>
+        <div class="telop-meta" style="grid-template-columns: 1fr 1fr;margin-top:8px;">
+          <div>
+            <label>登場アニメ</label>
+            <select onchange="updateTelop(${t.id}, 'animationIn', this.value)">
+              ${Object.entries(ANIMATIONS).map(([k, v]) =>
+                `<option value="${k}" ${k === (t.animationIn || 'fade-soft') ? 'selected' : ''}>${v.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div>
+            <label>退場アニメ</label>
+            <select onchange="updateTelop(${t.id}, 'animationOut', this.value)">
+              ${Object.entries(ANIMATIONS).map(([k, v]) =>
+                `<option value="${k}" ${k === (t.animationOut || 'fade-soft') ? 'selected' : ''}>${v.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="color-picker-wrap">
+          <label>文字色</label>
+          <input type="color" value="${t.colorOverride || hexFromFFColor(STYLES[t.style].fontcolor)}"
+                 onchange="updateTelop(${t.id}, 'colorOverride', this.value)">
+          ${t.colorOverride ? `<button class="reset-color" onclick="updateTelop(${t.id}, 'colorOverride', null)">スタイル既定に戻す</button>` : '<span style="font-size:11px;color:var(--c-muted);">(スタイル既定の色)</span>'}
         </div>
 
         <div class="telop-actions">
@@ -1212,6 +1312,36 @@ function escapeFFText(text) {
     .replace(/:/g, '\\:')
     .replace(/%/g, '\\%')
     .replace(/,/g, '\\,');
+}
+
+// 長い日本語テキストを自動で改行する
+function wrapJapanese(text, maxChars) {
+  if (!text || maxChars <= 0) return text;
+  const userLines = text.split('\n');
+  const result = [];
+  for (const line of userLines) {
+    if (line.length <= maxChars) {
+      result.push(line);
+    } else {
+      for (let i = 0; i < line.length; i += maxChars) {
+        result.push(line.substring(i, i + maxChars));
+      }
+    }
+  }
+  return result.join('\n');
+}
+
+// HTMLのカラー (#RRGGBB) → ffmpeg形式 (0xRRGGBB)
+function ffColorFromHex(hex) {
+  if (!hex) return null;
+  const cleaned = hex.replace('#', '').toUpperCase();
+  return '0x' + cleaned;
+}
+// ffmpeg形式 (0xRRGGBB or 0xRRGGBB@0.x) → HTML色 (#RRGGBB)
+function hexFromFFColor(ff) {
+  if (!ff) return '#ffffff';
+  const m = ff.match(/0x([0-9A-Fa-f]{6})/);
+  return m ? ('#' + m[1].toLowerCase()) : '#ffffff';
 }
 
 async function loadFfmpeg() {
@@ -1339,9 +1469,13 @@ window.processVideo = async function() {
     // テロップ焼き込み
     steps[stepIdx].state = 'active'; setProgress(steps);
 
+    // 動画幅から自動改行に使う最大文字数を概算（マージン10%）
+    const videoW = state.videoWidth || 1080;
+
     const filterParts = validTelops.map(t => {
       const style = STYLES[t.style];
-      const anim = ANIMATIONS[t.animation || 'fade-soft'] || ANIMATIONS['fade-soft'];
+      const animIn = ANIMATIONS[t.animationIn || 'fade-soft'] || ANIMATIONS['fade-soft'];
+      const animOut = ANIMATIONS[t.animationOut || 'fade-soft'] || ANIMATIONS['fade-soft'];
       const requestedFontPath = style.font;
       const fontPath = loadedFonts.has(requestedFontPath) ? requestedFontPath : fallbackFont;
       const fontName = fontPath.split('/').pop();
@@ -1350,44 +1484,57 @@ window.processVideo = async function() {
         positionKey = (t.detectedPosition === 'bottom') ? 'bottom-center' : 'top-center';
       }
       const position = POSITIONS[positionKey] || POSITIONS['top-center'];
-      const text = escapeFFText(t.text);
+
+      // 自動改行（長い文章対応）
+      const fontSize = style.fontsize;
+      const maxCharsPerLine = Math.max(4, Math.floor((videoW * 0.9) / fontSize));
+      const wrappedText = wrapJapanese(t.text, maxCharsPerLine);
+      const text = escapeFFText(wrappedText);
+
+      // 文字色（テロップ個別 override > スタイル既定）
+      const fontcolor = t.colorOverride ? ffColorFromHex(t.colorOverride) : style.fontcolor;
+
       const startT = t.start;
       const endT = t.start + t.duration;
       const startStr = startT.toFixed(2);
       const endStr = endT.toFixed(2);
+      const fadeIn = animIn.fadeIn;
+      const fadeOut = animOut.fadeOut;
+      const fadeInEndStr = (startT + fadeIn).toFixed(2);
+      const fadeOutStartStr = (endT - fadeOut).toFixed(2);
 
       const params = [
         `fontfile=/${fontName}`,
         `text='${text}'`,
-        `fontcolor=${style.fontcolor}`,
-        `fontsize=${style.fontsize}`
+        `fontcolor=${fontcolor}`,
+        `fontsize=${fontSize}`
       ];
 
-      // x, y の式（スライドアニメーション含む）
-      // フェードイン中に滑らかに目標位置に到達するように補間
-      let xExpr = position.x;
-      let yExpr = position.y;
-      const fadeIn = anim.fadeIn;
-      const fadeOut = anim.fadeOut;
-      const fadeInEndStr = (startT + fadeIn).toFixed(2);
-      const fadeOutStartStr = (endT - fadeOut).toFixed(2);
+      // === 位置 + 入退場スライド ===
+      // 入場: motionDir の反対側からスタート → base へ移動
+      // 退場: base から motionDir 方向へ移動して消える
+      let xOffset = '0';
+      let yOffset = '0';
 
-      if (anim.slideAxis && fadeIn > 0) {
-        // 進行度: 0(開始時)→1(フェードイン完了時) の補間係数 i
-        // offset = (1 - i) * slideDistance
-        // x or y に offset を加算/減算
-        const progressExpr = `max(0\\,min(1\\,(t-${startStr})/${fadeIn.toFixed(2)}))`;
-        const offsetExpr = `(1-${progressExpr})*${anim.slideDistance}`;
-        if (anim.slideAxis === 'y-positive') {
-          yExpr = `(${position.y})+(${offsetExpr})`;
-        } else if (anim.slideAxis === 'y-negative') {
-          yExpr = `(${position.y})-(${offsetExpr})`;
-        } else if (anim.slideAxis === 'x-positive') {
-          xExpr = `(${position.x})+(${offsetExpr})`;
-        } else if (anim.slideAxis === 'x-negative') {
-          xExpr = `(${position.x})-(${offsetExpr})`;
-        }
+      if (animIn.motionAxis && fadeIn > 0) {
+        const prog = `max(0\\,min(1\\,(t-${startStr})/${fadeIn.toFixed(2)}))`;
+        const off = `(1-${prog})*${animIn.distance}`;
+        // 入場時の符号は motionDir の反対（反対側からスタートするため）
+        const sign = animIn.motionDir > 0 ? '-' : '+';
+        if (animIn.motionAxis === 'y') yOffset = `${yOffset}${sign}(${off})`;
+        else xOffset = `${xOffset}${sign}(${off})`;
       }
+
+      if (animOut.motionAxis && fadeOut > 0) {
+        const prog = `max(0\\,min(1\\,(t-${fadeOutStartStr})/${fadeOut.toFixed(2)}))`;
+        const off = `(${prog})*${animOut.distance}`;
+        const sign = animOut.motionDir > 0 ? '+' : '-';
+        if (animOut.motionAxis === 'y') yOffset = `${yOffset}${sign}(${off})`;
+        else xOffset = `${xOffset}${sign}(${off})`;
+      }
+
+      const xExpr = `(${position.x})+(${xOffset})`;
+      const yExpr = `(${position.y})+(${yOffset})`;
       params.push(`x='${xExpr}'`);
       params.push(`y='${yExpr}'`);
 
@@ -1410,8 +1557,7 @@ window.processVideo = async function() {
       }
 
       // フェード alpha
-      if ((fadeIn > 0 || fadeOut > 0) && t.duration > fadeIn + fadeOut + 0.05) {
-        // if (t < fadeInEnd) → (t-start)/fadeIn ; else if (t < fadeOutStart) → 1 ; else → (end-t)/fadeOut
+      if ((fadeIn > 0 || fadeOut > 0) && t.duration > Math.max(0.05, fadeIn + fadeOut)) {
         const alpha = `if(lt(t\\,${fadeInEndStr})\\,(t-${startStr})/${Math.max(0.01, fadeIn).toFixed(2)}\\,if(lt(t\\,${fadeOutStartStr})\\,1\\,(${endStr}-t)/${Math.max(0.01, fadeOut).toFixed(2)}))`;
         params.push(`alpha='${alpha}'`);
       }
