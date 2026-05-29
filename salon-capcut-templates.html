@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた CapCut テンプレ作成指示書</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-code-bg: #2d3838;
+    --c-ok: #6b8b6e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.75; font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+  header {
+    text-align: center; padding: 36px 24px 28px;
+    border-bottom: 1px solid var(--c-line);
+    margin-bottom: 32px;
+  }
+  header .brand {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    margin: 0 0 10px; font-size: 26px; font-weight: 500;
+    color: var(--c-primary-dark); letter-spacing: 0.05em;
+  }
+  header p {
+    margin: 0; font-size: 13px; color: var(--c-muted);
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 12px; color: var(--c-muted); letter-spacing: 0.25em;
+    margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--c-line); font-weight: 600;
+  }
+  .section h2 {
+    margin: 0 0 14px; font-size: 18px; color: var(--c-primary-dark);
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .section .lead {
+    font-size: 14px; line-height: 1.85; margin-bottom: 16px;
+  }
+
+  /* 共通設定カード */
+  .common-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; padding: 18px 22px; margin-bottom: 12px;
+  }
+  .common-card h3 {
+    margin: 0 0 10px; font-size: 14px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .common-card dl {
+    margin: 0; display: grid; grid-template-columns: 110px 1fr; gap: 6px 16px;
+    font-size: 13px;
+  }
+  .common-card dt { color: var(--c-muted); font-size: 11px; padding-top: 2px; letter-spacing: 0.05em; }
+  .common-card dd { margin: 0; }
+
+  /* テンプレカード */
+  .template-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 6px; margin-bottom: 24px; overflow: hidden;
+  }
+  .template-head {
+    background: var(--c-soft); padding: 14px 22px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .template-head .num {
+    font-size: 11px; color: var(--c-accent);
+    letter-spacing: 0.15em; font-weight: 600;
+    font-family: "SF Mono", monospace;
+  }
+  .template-head h3 {
+    margin: 4px 0 6px; font-size: 17px; color: var(--c-primary-dark);
+    font-weight: 600;
+  }
+  .template-head .sub {
+    font-size: 12px; color: var(--c-muted); margin: 0;
+  }
+  .template-body { padding: 20px 22px; }
+
+  .meta-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--c-bg); border-radius: 4px;
+    margin: 12px 0; font-size: 12px;
+  }
+  .meta-table th, .meta-table td {
+    border: 1px solid var(--c-line);
+    padding: 6px 10px; text-align: left;
+  }
+  .meta-table th {
+    background: var(--c-soft); font-size: 10px;
+    color: var(--c-muted); letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  /* タイムライン表 */
+  .timeline-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--c-bg); border-radius: 4px; margin: 12px 0;
+    font-size: 12px; overflow: hidden;
+  }
+  .timeline-table th, .timeline-table td {
+    border: 1px solid var(--c-line);
+    padding: 8px 10px; text-align: left; vertical-align: top;
+  }
+  .timeline-table th {
+    background: var(--c-soft); font-size: 10px;
+    color: var(--c-muted); letter-spacing: 0.1em; font-weight: 600;
+  }
+  .timeline-table .scene-num {
+    color: var(--c-accent); font-weight: 700; width: 30px;
+    font-family: "SF Mono", monospace;
+  }
+  .timeline-table .time {
+    color: var(--c-primary); font-weight: 600; width: 70px;
+    font-family: "SF Mono", monospace;
+  }
+  .timeline-table .telop {
+    font-family: "Hiragino Mincho ProN", serif;
+    color: var(--c-primary-dark); font-weight: 600;
+  }
+  .timeline-table .empty { color: var(--c-muted); font-style: italic; }
+
+  /* CapCut手順 */
+  .step-list {
+    counter-reset: cstep;
+    list-style: none; padding: 0; margin: 8px 0;
+  }
+  .step-list li {
+    counter-increment: cstep;
+    background: var(--c-bg); padding: 10px 14px 10px 38px;
+    margin-bottom: 6px; border-radius: 4px;
+    position: relative; font-size: 13px;
+  }
+  .step-list li::before {
+    content: counter(cstep);
+    position: absolute; left: 12px; top: 10px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--c-primary); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; font-family: "SF Mono", monospace;
+  }
+  .step-list code {
+    background: var(--c-soft); padding: 1px 6px; border-radius: 3px;
+    font-size: 11px; color: var(--c-primary-dark);
+  }
+
+  .sub-title {
+    font-size: 12px; color: var(--c-accent); font-weight: 700;
+    letter-spacing: 0.15em; margin: 16px 0 6px;
+  }
+
+  /* BGM情報 */
+  .bgm-box {
+    background: #f5f1ea; border-left: 3px solid var(--c-accent);
+    padding: 12px 16px; margin: 12px 0; font-size: 12px;
+  }
+  .bgm-box .label {
+    font-size: 10px; color: var(--c-accent); font-weight: 700;
+    letter-spacing: 0.15em; margin-bottom: 4px;
+  }
+  .bgm-box .kw {
+    display: inline-block; background: white;
+    padding: 2px 8px; border-radius: 3px; margin: 2px;
+    font-family: "SF Mono", monospace; font-size: 11px;
+    color: var(--c-primary-dark);
+  }
+
+  /* テロップスペック */
+  .telop-spec {
+    background: var(--c-bg); border: 1px solid var(--c-line);
+    padding: 10px 14px; border-radius: 4px;
+    margin-top: 6px; font-size: 11px;
+  }
+  .telop-spec dl {
+    margin: 0; display: grid; grid-template-columns: 80px 1fr;
+    gap: 3px 10px;
+  }
+  .telop-spec dt {
+    color: var(--c-muted); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.05em;
+  }
+  .telop-spec dd { margin: 0; font-size: 11px; }
+
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  /* 撮影素材リスト */
+  .shot-list {
+    list-style: none; padding: 0; margin: 8px 0;
+  }
+  .shot-list li {
+    padding: 6px 0 6px 24px; position: relative;
+    font-size: 13px; border-bottom: 1px dashed var(--c-line);
+  }
+  .shot-list li:last-child { border-bottom: none; }
+  .shot-list li::before {
+    content: '☐'; position: absolute; left: 0; top: 6px;
+    font-size: 14px; color: var(--c-primary);
+  }
+
+  footer {
+    text-align: center; padding: 32px 0 20px;
+    font-size: 11px; color: var(--c-muted); letter-spacing: 0.1em;
+  }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; }
+    .template-card { break-inside: avoid; }
+    @page { size: A4 portrait; margin: 10mm; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">UTAKATA — CAPCUT TEMPLATE SPEC</div>
+    <h1>CapCut テンプレ作成指示書</h1>
+    <p>うたかた専用の5メニュー分テンプレ（各30秒リール）を CapCut で組み立てるための完全仕様書</p>
+  </header>
+
+  <!-- 使い方 -->
+  <div class="section">
+    <div class="section-title">使い方</div>
+    <h2>この資料の目的</h2>
+    <p class="lead">
+      うたかた向けにデザインした「リール用30秒テンプレ」5つを、CapCutアプリで実際に組み立てるための仕様書です。<br>
+      代表本人 or 動画編集者がこの資料を見ながら CapCut で作業すれば、約30〜60分で1テンプレが完成します。<br>
+      一度作ってしまえば、撮影素材を入れ替えるだけで毎週リールが量産できます。
+    </p>
+
+    <div class="common-card">
+      <h3>必要なもの</h3>
+      <dl>
+        <dt>アプリ</dt><dd>CapCut Mobile（iOS / Android）または CapCut PC</dd>
+        <dt>所要時間</dt><dd>1テンプレあたり 30〜60分（5本で2〜4時間）</dd>
+        <dt>素材</dt><dd>撮影スクリプト通りの動画クリップ7〜8本（各メニュー別）</dd>
+        <dt>BGM</dt><dd>CapCut内蔵 or 別途用意（後述）</dd>
+      </dl>
+    </div>
+  </div>
+
+  <!-- 共通設定 -->
+  <div class="section">
+    <div class="section-title">共通設定</div>
+    <h2>全テンプレで統一する基本設定</h2>
+
+    <div class="common-card">
+      <h3>📐 動画スペック</h3>
+      <dl>
+        <dt>解像度</dt><dd>1080 × 1920（9:16 縦動画）</dd>
+        <dt>フレームレート</dt><dd>30fps</dd>
+        <dt>長さ</dt><dd>30秒（一律）</dd>
+        <dt>書き出し</dt><dd>MP4、1080p、高画質</dd>
+      </dl>
+    </div>
+
+    <div class="common-card">
+      <h3>🎨 うたかたカラーパレット</h3>
+      <dl>
+        <dt>主題文字</dt><dd>チャコール <code>#2C2C2C</code> / クリーム <code>#FAF7F2</code></dd>
+        <dt>文字背景</dt><dd>クリーム <code>#FAF7F2</code>（半透明92%）/ ダーク <code>#2D3838</code>（半透明75%）</dd>
+        <dt>アクセント</dt><dd>ウォームクレイ <code>#B89178</code></dd>
+        <dt>避ける色</dt><dd>原色（赤・黄・蛍光ピンクなど）</dd>
+      </dl>
+    </div>
+
+    <div class="common-card">
+      <h3>✒ フォント設定</h3>
+      <dl>
+        <dt>主題テロップ</dt><dd>明朝系（Hiragino Mincho / Noto Serif JP / 游明朝）</dd>
+        <dt>補足テロップ</dt><dd>細ゴシック（Hiragino Kaku W3 / Noto Sans JP）</dd>
+        <dt>サイズ</dt><dd>主題 56pt前後 / 補足 30pt前後 / CTA 26pt</dd>
+        <dt>装飾</dt><dd>アニメーション = フェードイン/アウト のみ（跳ねる・回転は禁止）</dd>
+      </dl>
+    </div>
+
+    <div class="common-card">
+      <h3>📍 テロップ位置ルール（顔と重ねない）</h3>
+      <dl>
+        <dt>上部30%</dt><dd>主題テロップ「呼吸が浅い日に」など</dd>
+        <dt>中央50%</dt><dd>顔・施術部位エリア（テロップ禁止）</dd>
+        <dt>下部20%</dt><dd>CTA「UTAKATA / ご予約はDMから」</dd>
+      </dl>
+    </div>
+
+    <div class="common-card">
+      <h3>🎬 共通トランジション</h3>
+      <dl>
+        <dt>シーン間</dt><dd>クロスフェード 0.4秒（CapCutの「ディゾルブ」）</dd>
+        <dt>避ける</dt><dd>派手なトランジション（ズーム・回転・グリッチ）</dd>
+        <dt>カラーグレーディング</dt><dd>彩度 -10〜-20 / コントラスト +5 / 暖色気味（うたかた的な落ち着き）</dd>
+      </dl>
+    </div>
+  </div>
+
+  <!-- テンプレ1: オイルマッサージ -->
+  <div class="template-card">
+    <div class="template-head">
+      <div class="num">TEMPLATE 01</div>
+      <h3>① オイルマッサージ — 肩・首の力を抜く時間</h3>
+      <p class="sub">疲れを感じている大人の「呼吸を整えたい」気持ちに寄り添う / 30秒リール</p>
+    </div>
+    <div class="template-body">
+
+      <div class="sub-title">タイムライン</div>
+      <table class="timeline-table">
+        <thead>
+          <tr><th class="scene-num">#</th><th class="time">時刻</th><th>シーン</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="scene-num">1</td><td class="time">0〜3s</td><td>静かな空間、お客様が深く息を吐く瞬間</td><td class="telop">呼吸が浅い日に</td></tr>
+          <tr><td class="scene-num">2</td><td class="time">3〜7s</td><td>オイルを手のひらで温める動き</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">3</td><td class="time">7〜12s</td><td>肩〜首への施術（手元アップ）</td><td class="telop">少し力が抜けていく</td></tr>
+          <tr><td class="scene-num">4</td><td class="time">12〜17s</td><td>背中を流す手の動き（広めの画）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">5</td><td class="time">17〜22s</td><td>お客様の表情・呼吸の様子</td><td class="telop">自分に戻る時間</td></tr>
+          <tr><td class="scene-num">6</td><td class="time">22〜26s</td><td>施術後の静かな空間</td><td class="telop">整える、ということ</td></tr>
+          <tr><td class="scene-num">7</td><td class="time">26〜30s</td><td>サロン情報・案内</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-title">テロップ詳細スペック</div>
+
+      <div class="telop-spec">
+        <strong style="font-size:12px;">「呼吸が浅い日に」「自分に戻る時間」「整える、ということ」（主題系）</strong>
+        <dl>
+          <dt>フォント</dt><dd>Hiragino Mincho ProN または Noto Serif JP</dd>
+          <dt>サイズ</dt><dd>56pt</dd>
+          <dt>色</dt><dd>チャコール <code>#2C2C2C</code></dd>
+          <dt>背景</dt><dd>クリーム <code>#FAF7F2</code> 92%</dd>
+          <dt>位置</dt><dd>上から30%エリア中央（CapCutの「上揃え」+ y余白30%）</dd>
+          <dt>アニメ</dt><dd>フェードイン 0.5s / フェードアウト 0.5s</dd>
+        </dl>
+      </div>
+
+      <div class="telop-spec">
+        <strong style="font-size:12px;">「少し力が抜けていく」（補足）</strong>
+        <dl>
+          <dt>フォント</dt><dd>Hiragino Kaku W3（細ゴシック）</dd>
+          <dt>サイズ</dt><dd>30pt</dd>
+          <dt>色</dt><dd>クリーム <code>#FAF7F2</code></dd>
+          <dt>背景</dt><dd>ダーク <code>#2D3838</code> 75%</dd>
+          <dt>位置</dt><dd>下から20%エリア中央</dd>
+        </dl>
+      </div>
+
+      <div class="telop-spec">
+        <strong style="font-size:12px;">「UTAKATA / ご予約はDMから」（CTA）</strong>
+        <dl>
+          <dt>フォント</dt><dd>Hiragino Kaku W3</dd>
+          <dt>サイズ</dt><dd>26pt</dd>
+          <dt>色</dt><dd>クリーム <code>#FAF7F2</code></dd>
+          <dt>背景</dt><dd>ウォームクレイ <code>#B89178</code> 92%</dd>
+          <dt>位置</dt><dd>下部中央</dd>
+        </dl>
+      </div>
+
+      <div class="bgm-box">
+        <div class="label">🎵 BGM</div>
+        <strong>ジャンル:</strong> スローピアノ / アンビエント（60〜80 BPM）<br>
+        <strong>CapCut内蔵BGM検索キーワード:</strong>
+        <span class="kw">slow piano</span> <span class="kw">peaceful</span> <span class="kw">spa</span> <span class="kw">healing</span><br>
+        <strong>音量:</strong> -10〜-15dB（声がないので大きすぎても小さすぎてもダメ）
+      </div>
+
+      <div class="sub-title">CapCut 操作手順</div>
+      <ol class="step-list">
+        <li>CapCutアプリを開く → 「<code>+ 新しいプロジェクト</code>」</li>
+        <li>シーン1〜7の動画クリップ7本を選択 → 「追加」</li>
+        <li>各クリップをタップ → 右下「分割」or「速度」で時間調整（上表の通り）</li>
+        <li>クリップとクリップの間の白い枠をタップ → 「<code>ディゾルブ</code>」を選択 → 0.4秒に設定</li>
+        <li>シーン1のテロップ追加: タイムライン上部「<code>テキスト</code>」→「<code>テキスト追加</code>」→「呼吸が浅い日に」を入力</li>
+        <li>テロップ書式設定: フォント「明朝」、サイズ56、色 <code>#2C2C2C</code>、背景<code>#FAF7F2 92%</code></li>
+        <li>テロップ位置: 上から30%、中央揃え</li>
+        <li>テロップアニメ: 「<code>イン</code>」→ フェード 0.5s、「<code>アウト</code>」→ フェード 0.5s</li>
+        <li>シーン3, 5, 6, 7 でも同様にテロップ追加（上表参照）</li>
+        <li>BGM追加: 下部「<code>音声</code>」→「<code>楽曲</code>」→ 検索キーワード入力 → 「+」</li>
+        <li>カラー補正: 全クリップに「<code>調整</code>」適用 → 彩度 -15、暖色傾向</li>
+        <li>右上「<code>書き出し</code>」→ 1080p、30fps</li>
+      </ol>
+
+      <div class="tip">
+        <strong>テンプレ化のコツ:</strong>
+        完成後、プロジェクトを長押し → 「<code>テンプレートとして保存</code>」or「<code>複製</code>」。
+        次回からは複製したプロジェクトを開いて、各クリップをタップ → 「<code>クリップを置き換え</code>」で素材だけ入れ替えれば30秒で完成。
+      </div>
+    </div>
+  </div>
+
+  <!-- テンプレ2: ホットストーン -->
+  <div class="template-card">
+    <div class="template-head">
+      <div class="num">TEMPLATE 02</div>
+      <h3>② ホットストーン — 深く整える時間</h3>
+      <p class="sub">温かさと重みで深い呼吸へ / 30秒リール</p>
+    </div>
+    <div class="template-body">
+
+      <div class="sub-title">タイムライン</div>
+      <table class="timeline-table">
+        <thead>
+          <tr><th class="scene-num">#</th><th class="time">時刻</th><th>シーン</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="scene-num">1</td><td class="time">0〜3s</td><td>ストーンが温まる様子（湯気・温度感）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">2</td><td class="time">3〜7s</td><td>静かな空間・キャンドルの灯り</td><td class="telop">ホットストーン</td></tr>
+          <tr><td class="scene-num">3</td><td class="time">7〜12s</td><td>背中にストーンを置く手元</td><td class="telop">重みで肩がほどける</td></tr>
+          <tr><td class="scene-num">4</td><td class="time">12〜17s</td><td>ゆっくり滑らせる動き（ロングショット）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">5</td><td class="time">17〜22s</td><td>お客様の深い呼吸・表情</td><td class="telop">深く整える時間</td></tr>
+          <tr><td class="scene-num">6</td><td class="time">22〜26s</td><td>終わった後の温まった肌・空間</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">7</td><td class="time">26〜30s</td><td>サロン情報</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+
+      <div class="bgm-box">
+        <div class="label">🎵 BGM</div>
+        <strong>ジャンル:</strong> アンビエント / ドローン系（テンポレス〜60 BPM）<br>
+        <strong>キーワード:</strong>
+        <span class="kw">ambient</span> <span class="kw">deep meditation</span> <span class="kw">warm sounds</span> <span class="kw">zen</span><br>
+        <strong>音量:</strong> -12〜-15dB
+      </div>
+
+      <div class="sub-title">テロップ・操作手順（テンプレ1と同じ手順、文言だけ差し替え）</div>
+      <p style="font-size:12px;color:var(--c-muted);">
+        共通設定とCapCut操作手順はテンプレ1を参照。
+        撮影時、ストーンの温度感（湯気・湯沸かしのフォーカス）を強調すると映える。
+      </p>
+    </div>
+  </div>
+
+  <!-- テンプレ3: フェイシャル -->
+  <div class="template-card">
+    <div class="template-head">
+      <div class="num">TEMPLATE 03</div>
+      <h3>③ フェイシャル — 顔の緊張をほどく時間</h3>
+      <p class="sub">顔のこわばりを静かにほどく / 30秒リール</p>
+    </div>
+    <div class="template-body">
+
+      <div class="sub-title">タイムライン</div>
+      <table class="timeline-table">
+        <thead>
+          <tr><th class="scene-num">#</th><th class="time">時刻</th><th>シーン</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="scene-num">1</td><td class="time">0〜3s</td><td>リラックスしたお客様の顔（横向き）</td><td class="telop">顔、緊張していませんか</td></tr>
+          <tr><td class="scene-num">2</td><td class="time">3〜7s</td><td>クレンジング（手元・指先）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">3</td><td class="time">7〜12s</td><td>パック塗布・穏やかな動き</td><td class="telop">肌が静まる</td></tr>
+          <tr><td class="scene-num">4</td><td class="time">12〜17s</td><td>軽いマッサージ（こめかみ・あご周り）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">5</td><td class="time">17〜22s</td><td>仕上がりの肌アップ</td><td class="telop">自分の顔に戻る</td></tr>
+          <tr><td class="scene-num">6</td><td class="time">22〜26s</td><td>お客様の表情（静かな満たされ感）</td><td class="telop">整えた後の静けさ</td></tr>
+          <tr><td class="scene-num">7</td><td class="time">26〜30s</td><td>サロン情報</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+
+      <div class="bgm-box">
+        <div class="label">🎵 BGM</div>
+        <strong>ジャンル:</strong> ライトアコースティック / ソフトピアノ（70〜90 BPM）<br>
+        <strong>キーワード:</strong>
+        <span class="kw">soft acoustic</span> <span class="kw">gentle</span> <span class="kw">minimal piano</span> <span class="kw">aesthetic</span>
+      </div>
+
+      <div class="tip">
+        <strong>顔のアップが多いテンプレ。</strong>
+        テロップ位置は上端or下端に固定。中央エリア（顔）には絶対に被せない。
+        「劇的に変わる」表現は禁止、「静かに整う」感を維持。
+      </div>
+    </div>
+  </div>
+
+  <!-- テンプレ4: キャンドルアロマ -->
+  <div class="template-card">
+    <div class="template-head">
+      <div class="num">TEMPLATE 04</div>
+      <h3>④ キャンドルアロママッサージ — 静かに呼吸を整える時間</h3>
+      <p class="sub">香りと光で呼吸を取り戻す / 30秒リール</p>
+    </div>
+    <div class="template-body">
+
+      <div class="sub-title">タイムライン</div>
+      <table class="timeline-table">
+        <thead>
+          <tr><th class="scene-num">#</th><th class="time">時刻</th><th>シーン</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="scene-num">1</td><td class="time">0〜3s</td><td>キャンドルの炎（ゆらぎ）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">2</td><td class="time">3〜7s</td><td>アロマを選ぶ手元・香りを確かめる様子</td><td class="telop">その日の状態に合わせて</td></tr>
+          <tr><td class="scene-num">3</td><td class="time">7〜12s</td><td>温まったキャンドルオイルを注ぐ瞬間</td><td class="telop">温かなオイル</td></tr>
+          <tr><td class="scene-num">4</td><td class="time">12〜17s</td><td>背中への施術（広めの画）</td><td class="empty">（無テロップ）</td></tr>
+          <tr><td class="scene-num">5</td><td class="time">17〜22s</td><td>お客様の静かな呼吸</td><td class="telop">呼吸がやわらかくなる</td></tr>
+          <tr><td class="scene-num">6</td><td class="time">22〜26s</td><td>終わった後の空間（キャンドル消える）</td><td class="telop">自分に戻る時間</td></tr>
+          <tr><td class="scene-num">7</td><td class="time">26〜30s</td><td>サロン情報</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+
+      <div class="bgm-box">
+        <div class="label">🎵 BGM</div>
+        <strong>ジャンル:</strong> エセリアル / 自然音入り（50〜70 BPM）<br>
+        <strong>キーワード:</strong>
+        <span class="kw">ethereal</span> <span class="kw">candle ambient</span> <span class="kw">cinematic calm</span> <span class="kw">夜</span>
+      </div>
+
+      <div class="tip">
+        <strong>暗めの空間が映えるテンプレ。</strong>
+        撮影時は明かりを落としてキャンドル中心の照明に。
+        カラー補正で「暖色 +15」「シャドウ +10」を加えると深みが出る。
+      </div>
+    </div>
+  </div>
+
+  <!-- テンプレ5: トータル -->
+  <div class="template-card">
+    <div class="template-head">
+      <div class="num">TEMPLATE 05</div>
+      <h3>⑤ トータル「整える時間」 — 全メニュー組み合わせ紹介</h3>
+      <p class="sub">うたかたの世界観を1本で伝える定番リール / 月初・新規向け</p>
+    </div>
+    <div class="template-body">
+
+      <div class="sub-title">タイムライン</div>
+      <table class="timeline-table">
+        <thead>
+          <tr><th class="scene-num">#</th><th class="time">時刻</th><th>シーン</th><th>テロップ案</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="scene-num">1</td><td class="time">0〜3s</td><td>サロン入口・空間の全体感</td><td class="telop">UTAKATA</td></tr>
+          <tr><td class="scene-num">2</td><td class="time">3〜7s</td><td>カウンセリング・状態を見るシーン</td><td class="telop">今日の状態を見る</td></tr>
+          <tr><td class="scene-num">3</td><td class="time">7〜15s</td><td>複数施術のハイライト（各2秒×3〜4本）</td><td class="telop">その日に合わせて整える</td></tr>
+          <tr><td class="scene-num">4</td><td class="time">15〜20s</td><td>お客様の呼吸・表情</td><td class="telop">自分に戻る</td></tr>
+          <tr><td class="scene-num">5</td><td class="time">20〜25s</td><td>静かな空間（キャンドル・テクスチャ）</td><td class="telop">整える、ということ</td></tr>
+          <tr><td class="scene-num">6</td><td class="time">25〜30s</td><td>サロン情報・案内</td><td class="telop">UTAKATA / ご予約はDMから</td></tr>
+        </tbody>
+      </table>
+
+      <div class="bgm-box">
+        <div class="label">🎵 BGM</div>
+        <strong>ジャンル:</strong> シネマティック / 物語感のあるピアノ＋ストリングス（70 BPM）<br>
+        <strong>キーワード:</strong>
+        <span class="kw">cinematic minimal</span> <span class="kw">storytelling</span> <span class="kw">brand sound</span><br>
+        <strong>定番化:</strong> このテンプレは「うたかたの代表曲」として1曲固定推奨。継続使用で「あのサロンの曲」と認知される。
+      </div>
+
+      <div class="tip">
+        <strong>サロン紹介・月のテーマ・新規顧客向けに使う定番リール。</strong>
+        他4テンプレと違い、シーン3だけは「複数施術の早回しハイライト」（2秒×4本）。
+        撮影スクリプトに沿った素材を組み合わせれば、月1ペースで量産可能。
+      </div>
+    </div>
+  </div>
+
+  <!-- 撮影素材チェックリスト -->
+  <div class="section">
+    <div class="section-title">補足</div>
+    <h2>撮影前のチェックリスト</h2>
+    <p class="lead">
+      CapCut で組み立てる前に、撮影素材が揃っているか確認。各テンプレに必要なシーンは「うたかた ハイライト撮影ガイド」と完全一致。
+    </p>
+
+    <div class="common-card">
+      <h3>各テンプレで必要な素材（7〜8カット）</h3>
+      <ul class="shot-list">
+        <li>サロン入口・空間の全体感 → テンプレ全般で使用</li>
+        <li>カウンセリング風景 → トータル用</li>
+        <li>各メニューの「手元アップ」（4種 × 2〜3カット）</li>
+        <li>各メニューの「広めの施術ショット」（4種 × 1〜2カット）</li>
+        <li>お客様の表情・呼吸の様子（許可済み）</li>
+        <li>キャンドル・灯り・道具のディテール</li>
+        <li>施術後の静かな空間</li>
+      </ul>
+    </div>
+
+    <div class="tip">
+      <strong>「ハイライト撮影ガイド」と連動:</strong>
+      各メニューの撮影スクリプト通りに撮影すれば、CapCutに取り込むだけでテンプレが組める設計。
+      撮影とテンプレ作成を別の人が担当する場合、双方の資料を共有しておくとスムーズ。
+    </div>
+  </div>
+
+  <!-- 運用フロー -->
+  <div class="section">
+    <div class="section-title">完成後の運用</div>
+    <h2>月次の量産フロー</h2>
+
+    <div class="common-card">
+      <h3>月初の準備（30分）</h3>
+      <ol style="margin:6px 0;padding-left:20px;">
+        <li>今月のテーマを確認（曜日カレンダー参照）</li>
+        <li>必要な撮影シーンをリストアップ</li>
+        <li>撮影日を決める</li>
+      </ol>
+    </div>
+
+    <div class="common-card">
+      <h3>撮影日（1時間）</h3>
+      <ol style="margin:6px 0;padding-left:20px;">
+        <li>撮影スクリプトを印刷 or スマホに表示</li>
+        <li>4〜5メニュー分の素材を一気にまとめ撮り</li>
+        <li>各シーン2〜3テイク撮影</li>
+      </ol>
+    </div>
+
+    <div class="common-card">
+      <h3>編集日（1時間で4本量産）</h3>
+      <ol style="margin:6px 0;padding-left:20px;">
+        <li>CapCutで該当テンプレプロジェクトを複製</li>
+        <li>各クリップを「クリップを置き換え」で素材入れ替え（5分/本）</li>
+        <li>テロップ文言を当日のテーマに合わせて微修正</li>
+        <li>書き出し → 4本完成</li>
+      </ol>
+    </div>
+
+    <div class="common-card">
+      <h3>投稿日</h3>
+      <ol style="margin:6px 0;padding-left:20px;">
+        <li>Instagram → リール作成 → 既に書き出した動画を選択</li>
+        <li>キャプション・ハッシュタグはプロンプト集で生成</li>
+        <li>予約投稿 or 即投稿</li>
+      </ol>
+    </div>
+
+    <div class="tip">
+      <strong>このフローで実現できること:</strong>
+      ・月1の撮影日 + 月1の編集日 = 月4本のリール量産<br>
+      ・撮影&編集合計2時間で1ヶ月分が完成<br>
+      ・うたかたらしさが毎回ブレずに保てる
+    </div>
+  </div>
+
+  <footer>
+    UTAKATA — CapCut Template Creation Guide
+  </footer>
+
+</div>
+</body>
+</html>
