@@ -370,6 +370,42 @@
     padding: 6px 10px; border-radius: 4px;
     font-size: 11px; cursor: pointer; font-family: inherit;
   }
+  .color-swatches {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+    margin-top: 6px;
+  }
+  .color-swatches .swatch {
+    aspect-ratio: 1; border: 1px solid var(--c-line);
+    border-radius: 4px; cursor: pointer;
+    padding: 0; transition: transform 0.1s;
+  }
+  .color-swatches .swatch:hover { transform: scale(1.1); }
+  .color-swatches .swatch.active {
+    border: 2px solid var(--c-primary);
+    transform: scale(1.05);
+  }
+
+  /* サイズスライダー */
+  .size-row {
+    margin-top: 8px;
+    background: var(--c-soft); padding: 8px 12px; border-radius: 4px;
+  }
+  .size-row .size-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.05em; font-weight: 600; margin-bottom: 4px;
+  }
+  .size-row .size-label strong { color: var(--c-primary-dark); }
+  .size-row input[type="range"] {
+    width: 100%; accent-color: var(--c-primary);
+  }
+  .size-row .reset-size {
+    background: white; color: var(--c-muted);
+    border: 1px solid var(--c-line);
+    padding: 2px 8px; border-radius: 3px;
+    font-size: 10px; cursor: pointer; font-family: inherit;
+    margin-left: 6px;
+  }
 
   /* カスタムスタイルドロップダウン（実際のフォントでオプション表示） */
   .style-dd {
@@ -408,10 +444,19 @@
   .style-dd-option:hover { background: var(--c-soft); }
   .style-dd-option.selected { background: #e6efef; }
   .style-dd-option .opt-sample {
-    background: linear-gradient(90deg, #3a4040 50%, #d8d2c8 50%);
-    padding: 8px; border-radius: 3px; text-align: center;
-    min-height: 42px; display: flex;
-    align-items: center; justify-content: center;
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-radius: 3px; overflow: hidden;
+    min-height: 48px;
+  }
+  .style-dd-option .opt-sample-half {
+    padding: 8px; display: flex; align-items: center;
+    justify-content: center; min-height: 48px;
+  }
+  .style-dd-option .opt-sample-half.dark {
+    background: #3a4040;
+  }
+  .style-dd-option .opt-sample-half.light {
+    background: #ebe5d8;
   }
   .style-dd-option .opt-name {
     font-size: 10px; color: var(--c-muted);
@@ -1106,6 +1151,24 @@ const STYLES = {
   }
 };
 
+// 色プリセット（ワンタップで適用）
+const PRESET_COLORS = [
+  { name: '白', value: '#FFFFFF' },
+  { name: 'クリーム', value: '#FAF7F2' },
+  { name: 'ベージュ', value: '#F0EAD8' },
+  { name: 'クレイ', value: '#B89178' },
+  { name: 'チャコール', value: '#2C2C2C' },
+  { name: '黒', value: '#000000' },
+  { name: 'セージ', value: '#5D7B7C' },
+  { name: 'ローズ', value: '#C47B8A' },
+  { name: 'ピンク', value: '#FF8A9A' },
+  { name: '赤', value: '#E63946' },
+  { name: '黄', value: '#FFD54F' },
+  { name: 'グリーン', value: '#A8E6A3' },
+  { name: 'ブルー', value: '#4A6B85' },
+  { name: 'ブラウン', value: '#6B5238' }
+];
+
 // アニメーション定義（動き方向ベース）
 // 入場時: テロップは「motionDir の反対側」から base位置へ移動
 // 退場時: テロップは base位置から「motionDir 方向」へ移動して消える
@@ -1305,6 +1368,7 @@ window.addTelopAtCurrentTime = function() {
     animationIn: 'fade-soft',
     animationOut: 'fade-soft',
     colorOverride: null,
+    fontSize: null,
     detectedPosition: null
   });
   renderTelops();
@@ -1337,6 +1401,7 @@ window.addTelop = function() {
     animationIn: 'fade-soft',
     animationOut: 'fade-soft',
     colorOverride: null,
+    fontSize: null,
     detectedPosition: null
   });
   renderTelops();
@@ -1350,16 +1415,16 @@ window.removeTelop = function(id) {
 window.updateTelop = function(id, field, value) {
   const t = state.telops.find(t => t.id === id);
   if (!t) return;
-  if (field === 'start' || field === 'duration') {
-    t[field] = parseFloat(value) || 0;
+  if (field === 'start' || field === 'duration' || field === 'fontSize') {
+    t[field] = value === null ? null : parseFloat(value) || (value === null ? null : 0);
   } else {
     t[field] = value;
   }
   // 文字入力やスタイル変更ではDOM全体を再構築せず、プレビューだけ更新する
   // （全体再構築するとtextareaのカーソル位置が失われる）
   if (field === 'text' || field === 'style') updatePreview(id);
-  // 開始秒変更時はラベル表示を更新するため再描画
-  if (field === 'start') renderTelops();
+  // 再描画が必要なケース
+  if (field === 'start' || field === 'colorOverride' || field === 'fontSize' || field === 'animationIn' || field === 'animationOut') renderTelops();
 };
 
 // 終了秒の入力 → 表示時間に変換
@@ -1434,7 +1499,8 @@ function renderTelops() {
                   <div class="style-dd-option ${k === t.style ? 'selected' : ''}"
                        onclick="event.stopPropagation();selectStyle(${t.id}, '${k}')">
                     <div class="opt-sample">
-                      <div class="style-preview-text ${v.css}">整える時間</div>
+                      <div class="opt-sample-half dark"><span class="style-preview-text ${v.css}">整える時間</span></div>
+                      <div class="opt-sample-half light"><span class="style-preview-text ${v.css}">整える時間</span></div>
                     </div>
                     <div class="opt-name">${escapeHtml(v.name)}</div>
                   </div>
@@ -1474,6 +1540,24 @@ function renderTelops() {
           <input type="color" value="${t.colorOverride || hexFromFFColor(STYLES[t.style].fontcolor)}"
                  onchange="updateTelop(${t.id}, 'colorOverride', this.value)">
           ${t.colorOverride ? `<button class="reset-color" onclick="updateTelop(${t.id}, 'colorOverride', null)">スタイル既定に戻す</button>` : '<span style="font-size:11px;color:var(--c-muted);">(スタイル既定の色)</span>'}
+        </div>
+        <div class="color-swatches">
+          ${PRESET_COLORS.map(c => `
+            <button class="swatch ${(t.colorOverride || '').toLowerCase() === c.value.toLowerCase() ? 'active' : ''}"
+                    style="background:${c.value}"
+                    title="${c.name}"
+                    onclick="updateTelop(${t.id}, 'colorOverride', '${c.value}')"></button>
+          `).join('')}
+        </div>
+        <div class="size-row">
+          <div class="size-label">
+            <span>文字サイズ <strong id="sz-${t.id}">${t.fontSize || STYLES[t.style].fontsize}</strong>px</span>
+            ${t.fontSize ? `<button class="reset-size" onclick="updateTelop(${t.id}, 'fontSize', null)">既定に戻す</button>` : ''}
+          </div>
+          <input type="range" min="20" max="120" step="2"
+                 value="${t.fontSize || STYLES[t.style].fontsize}"
+                 oninput="document.getElementById('sz-${t.id}').textContent=this.value"
+                 onchange="updateTelop(${t.id}, 'fontSize', this.value)">
         </div>
 
         <div class="telop-actions">
@@ -1673,8 +1757,9 @@ window.processVideo = async function() {
       }
       const position = POSITIONS[positionKey] || POSITIONS['top-center'];
 
+      // フォントサイズ（テロップ個別 override > スタイル既定）
+      const fontSize = t.fontSize || style.fontsize;
       // 自動改行（長い文章対応）
-      const fontSize = style.fontsize;
       const maxCharsPerLine = Math.max(4, Math.floor((videoW * 0.9) / fontSize));
       const wrappedText = wrapJapanese(t.text, maxCharsPerLine);
       const text = escapeFFText(wrappedText);
