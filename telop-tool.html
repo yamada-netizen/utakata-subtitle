@@ -553,11 +553,13 @@ const STYLES = {
   }
 };
 
+// y は「テロップ上端の位置」。顔と被らない位置を選ぶ。
+// 標準的な9:16動画では顔が 15〜55% 付近にくるため、それを避ける
 const POSITIONS = {
-  'auto': { name: '🤖 AI自動', y: 'h*0.18' },
-  'top': { name: '上部30%', y: 'h*0.18' },
+  'auto': { name: '🤖 AI自動', y: 'h*0.05' },
+  'top': { name: '上端（顔の上）', y: 'h*0.05' },
   'middle': { name: '中央', y: '(h-text_h)/2' },
-  'bottom': { name: '下部20%', y: 'h*0.78' }
+  'bottom': { name: '下端（顔の下）', y: 'h*0.85' }
 };
 
 const state = {
@@ -609,14 +611,39 @@ async function detectFacesAtTime(videoEl, timeSec) {
   }));
 }
 
-// 顔の位置からテロップ位置を決定
-function chooseTopOrBottom(faceBoxes, videoHeight) {
-  if (faceBoxes.length === 0) return 'top';
-  const avgCenterY = faceBoxes.reduce(
-    (sum, b) => sum + b.y + b.height / 2, 0
-  ) / faceBoxes.length;
-  const ratio = avgCenterY / videoHeight;
-  return ratio < 0.5 ? 'bottom' : 'top';
+// 複数フレームで顔の最上端と最下端を集計し、空いている側を選ぶ
+function chooseTopOrBottom(allFaceBoxes, videoHeight) {
+  if (allFaceBoxes.length === 0) return 'top';
+  // 顔の最上端（最も高い位置）と最下端（最も低い位置）
+  const faceTopMin = Math.min(...allFaceBoxes.map(b => b.y));
+  const faceBottomMax = Math.max(...allFaceBoxes.map(b => b.y + b.height));
+  // テロップが必要とする高さの目安（フォントサイズ42 + ボックスパディング18 ≒ 80px相当の比率）
+  // 動画高さに対して約8〜12%とみて、マージン込みで15%確保
+  const telopHeightRatio = 0.15;
+  const safeTopArea = faceTopMin / videoHeight; // 顔の上の空き
+  const safeBottomArea = 1 - (faceBottomMax / videoHeight); // 顔の下の空き
+  // 必要な高さが確保できる側のうち、空きが広い方を選ぶ
+  const topFits = safeTopArea >= telopHeightRatio;
+  const bottomFits = safeBottomArea >= telopHeightRatio;
+  if (topFits && !bottomFits) return 'top';
+  if (bottomFits && !topFits) return 'bottom';
+  return safeTopArea >= safeBottomArea ? 'top' : 'bottom';
+}
+
+// 複数時刻でサンプリングして顔ボックスを集める
+async function sampleFacesDuringTelop(videoEl, startSec, durationSec) {
+  const samples = [];
+  // 開始・中間・終了の3点（長尺なら追加）
+  const points = durationSec >= 4
+    ? [startSec, startSec + durationSec / 3, startSec + 2 * durationSec / 3, startSec + durationSec - 0.1]
+    : [startSec, startSec + durationSec / 2, startSec + durationSec - 0.1];
+  for (const t of points) {
+    try {
+      const faces = await detectFacesAtTime(videoEl, t);
+      samples.push(...faces);
+    } catch (e) { console.warn('顔検出スキップ', t, e); }
+  }
+  return samples;
 }
 
 // 時間フォーマット (秒 → "m:ss.s")
@@ -914,7 +941,7 @@ window.processVideo = async function() {
       const hiddenVideo = document.getElementById('hiddenVideo');
       for (const t of validTelops) {
         if (t.position !== 'auto') continue;
-        const faces = await detectFacesAtTime(hiddenVideo, t.start);
+        const faces = await sampleFacesDuringTelop(hiddenVideo, t.start, t.duration);
         t.detectedPosition = chooseTopOrBottom(faces, hiddenVideo.videoHeight);
       }
       renderTelops();
