@@ -390,7 +390,7 @@ const STYLES = {
   'utakata-mincho': {
     name: 'うたかた標準（主題・明朝）',
     css: 'style-utakata-mincho',
-    font: 'font.ttf',
+    font: 'ffmpeg/font.ttf',
     fontcolor: '0x2C2C2C',
     fontsize: 42,
     box: 1,
@@ -400,7 +400,7 @@ const STYLES = {
   'utakata-sub': {
     name: 'うたかた補足（細ゴシック）',
     css: 'style-utakata-sub',
-    font: 'font.ttf',
+    font: 'ffmpeg/font.ttf',
     fontcolor: '0xFAF7F2',
     fontsize: 30,
     box: 1,
@@ -410,7 +410,7 @@ const STYLES = {
   'utakata-cta': {
     name: 'うたかたCTA（予約案内）',
     css: 'style-utakata-cta',
-    font: 'font.ttf',
+    font: 'ffmpeg/font.ttf',
     fontcolor: '0xFAF7F2',
     fontsize: 26,
     box: 1,
@@ -460,7 +460,7 @@ const STYLES = {
   'yawaraka': {
     name: 'やわらか（淡いピンク）',
     css: 'style-yawaraka',
-    font: 'font.ttf',
+    font: 'ffmpeg/font.ttf',
     fontcolor: '0x5A4040',
     fontsize: 38,
     box: 1,
@@ -470,7 +470,7 @@ const STYLES = {
   'shikku': {
     name: 'シック（黒×アイボリー）',
     css: 'style-shikku',
-    font: 'font.ttf',
+    font: 'ffmpeg/font.ttf',
     fontcolor: '0xF0EAD8',
     fontsize: 38,
     box: 1,
@@ -769,12 +769,32 @@ window.processVideo = async function() {
     // フォント・動画準備
     steps[stepIdx].state = 'active'; setProgress(steps);
     const usedFonts = [...new Set(validTelops.map(t => STYLES[t.style].font))];
+    const fallbackFont = 'ffmpeg/font.ttf';
+    const loadedFonts = new Set();
+    let needFallback = false;
     for (const fontPath of usedFonts) {
       const fontName = fontPath.split('/').pop();
-      const res = await fetch('/' + fontPath);
-      if (!res.ok) throw new Error(`フォント読み込み失敗: ${fontPath}`);
-      const buf = new Uint8Array(await res.arrayBuffer());
-      await ffmpeg.writeFile(fontName, buf);
+      try {
+        const res = await fetch('/' + fontPath);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = new Uint8Array(await res.arrayBuffer());
+        await ffmpeg.writeFile(fontName, buf);
+        loadedFonts.add(fontPath);
+      } catch (e) {
+        console.warn(`フォント読み込み失敗 (${fontPath}): ${e.message}. 標準フォントで代替します`);
+        needFallback = true;
+      }
+    }
+    // フォールバック用にfont.ttfを必ずロード
+    if (needFallback || !loadedFonts.has(fallbackFont)) {
+      try {
+        const res = await fetch('/' + fallbackFont);
+        if (res.ok) {
+          const buf = new Uint8Array(await res.arrayBuffer());
+          await ffmpeg.writeFile('font.ttf', buf);
+          loadedFonts.add(fallbackFont);
+        }
+      } catch (e) { console.warn('標準フォントも読み込めませんでした', e); }
     }
     const inputExt = state.videoFile.name.match(/\.[^.]+$/)?.[0] || '.mp4';
     const inputName = 'input' + inputExt;
@@ -786,7 +806,9 @@ window.processVideo = async function() {
 
     const filterParts = validTelops.map(t => {
       const style = STYLES[t.style];
-      const fontName = style.font.split('/').pop();
+      const requestedFontPath = style.font;
+      const fontPath = loadedFonts.has(requestedFontPath) ? requestedFontPath : fallbackFont;
+      const fontName = fontPath.split('/').pop();
       let positionKey = t.position;
       if (positionKey === 'auto') {
         positionKey = t.detectedPosition || 'top';
