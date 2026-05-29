@@ -108,6 +108,36 @@
     margin-top: 10px; padding: 8px 12px;
     background: var(--c-soft); border-radius: 4px;
   }
+  .preview-video {
+    width: 100%; max-height: 50vh; border-radius: 6px;
+    margin-top: 12px; background: black;
+  }
+  .time-bar {
+    background: var(--c-primary); color: white;
+    padding: 12px 16px; border-radius: 6px;
+    margin: 12px 0 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .time-bar .current-time {
+    font-family: "SF Mono", Monaco, monospace; font-size: 18px;
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .time-bar .add-here {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white; padding: 8px 14px; border-radius: 4px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+    font-weight: 600;
+  }
+  .time-bar .add-here:hover { background: rgba(255,255,255,0.3); }
+  .time-grab-btn {
+    background: var(--c-accent); color: white;
+    border: none; padding: 4px 8px; border-radius: 3px;
+    font-size: 10px; cursor: pointer; font-family: inherit;
+    margin-top: 3px; width: 100%;
+  }
+  .time-grab-btn:hover { opacity: 0.85; }
 
   /* ボタン */
   .btn {
@@ -332,12 +362,13 @@
   <div class="step">
     <div class="step-label">STEP 1</div>
     <h3>動画を選ぶ</h3>
-    <label class="upload-area" for="videoInput">
+    <label class="upload-area" for="videoInput" id="uploadLabel">
       <div class="upload-icon">＋</div>
       <div class="upload-text">タップして動画を選択<br>（縦動画 9:16 推奨 / 90秒以内）</div>
       <input type="file" id="videoInput" accept="video/*">
     </label>
     <div class="file-info" id="fileInfo" style="display:none;"></div>
+    <video id="previewVideo" class="preview-video" controls playsinline style="display:none;"></video>
   </div>
 
   <div class="step" id="step2" style="display:none;">
@@ -352,9 +383,19 @@
       </div>
     </label>
 
-    <div class="hint">表示開始秒・表示時間・スタイル・位置を指定。何個でも追加可能。</div>
+    <div class="time-bar">
+      <div>
+        <div style="font-size:10px;opacity:0.8;letter-spacing:0.1em;">現在の動画時刻</div>
+        <div class="current-time" id="currentTimeDisplay">0:00</div>
+      </div>
+      <button class="add-here" onclick="addTelopAtCurrentTime()">
+        📍 ここにテロップ追加
+      </button>
+    </div>
+    <div class="hint">動画を一時停止した時刻にテロップが追加されます。「⏱ 現在時刻」ボタンでも修正可能。</div>
+
     <div id="telopList" style="margin-top:12px;"></div>
-    <button class="add-btn" onclick="addTelop()">＋ テロップを追加</button>
+    <button class="add-btn" onclick="addTelop()">＋ 手動で時間指定して追加</button>
   </div>
 
   <div class="step" id="step3" style="display:none;">
@@ -545,6 +586,14 @@ function chooseTopOrBottom(faceBoxes, videoHeight) {
   return ratio < 0.5 ? 'bottom' : 'top';
 }
 
+// 時間フォーマット (秒 → "m:ss.s")
+function fmtTime(sec) {
+  if (typeof sec !== 'number' || isNaN(sec)) sec = 0;
+  const m = Math.floor(sec / 60);
+  const s = (sec - m * 60).toFixed(1);
+  return `${m}:${s.padStart(4, '0')}`;
+}
+
 // 動画選択
 document.getElementById('videoInput').addEventListener('change', (e) => {
   const f = e.target.files[0];
@@ -552,21 +601,68 @@ document.getElementById('videoInput').addEventListener('change', (e) => {
   state.videoFile = f;
   if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
   state.videoUrl = URL.createObjectURL(f);
+
+  // 表示用プレビュー
+  const preview = document.getElementById('previewVideo');
+  preview.src = state.videoUrl;
+  preview.style.display = 'block';
+  preview.ontimeupdate = () => {
+    document.getElementById('currentTimeDisplay').textContent = fmtTime(preview.currentTime);
+  };
+  preview.onloadedmetadata = () => {
+    document.getElementById('currentTimeDisplay').textContent = fmtTime(0);
+  };
+
+  // 顔検出用の非表示動画
   const hidden = document.getElementById('hiddenVideo');
   hidden.src = state.videoUrl;
   hidden.onloadedmetadata = () => {
     state.videoWidth = hidden.videoWidth;
     state.videoHeight = hidden.videoHeight;
   };
+
   const mb = (f.size / 1024 / 1024).toFixed(1);
   const info = document.getElementById('fileInfo');
   info.textContent = `${f.name}（${mb} MB）`;
   info.style.display = 'block';
+  document.getElementById('uploadLabel').style.display = 'none';
   document.getElementById('step2').style.display = 'block';
   document.getElementById('step3').style.display = 'block';
   document.getElementById('step4').style.display = 'none';
-  if (state.telops.length === 0) addTelop();
+  // 初期テロップは挿入しない（ユーザが「ここにテロップ追加」で配置する）
 });
+
+// 現在の動画時刻でテロップを追加
+window.addTelopAtCurrentTime = function() {
+  const preview = document.getElementById('previewVideo');
+  const t = preview.currentTime || 0;
+  const id = Date.now() + Math.random();
+  state.telops.push({
+    id, text: '', start: parseFloat(t.toFixed(1)), duration: 3,
+    style: 'utakata-mincho', position: 'auto',
+    detectedPosition: null
+  });
+  renderTelops();
+  // 追加した最後のtextareaにフォーカス
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.telop-row textarea');
+    if (rows.length) rows[rows.length - 1].focus();
+  }, 50);
+};
+
+// 指定IDのテロップの開始/終了秒を現在時刻にセット
+window.useCurrentTime = function(id, field) {
+  const preview = document.getElementById('previewVideo');
+  const t = parseFloat((preview.currentTime || 0).toFixed(1));
+  const tp = state.telops.find(x => x.id === id);
+  if (!tp) return;
+  if (field === 'start') {
+    tp.start = t;
+  } else if (field === 'end') {
+    tp.duration = Math.max(0.5, t - tp.start);
+  }
+  renderTelops();
+};
 
 window.addTelop = function() {
   const id = Date.now() + Math.random();
@@ -594,6 +690,17 @@ window.updateTelop = function(id, field, value) {
   // 文字入力やスタイル変更ではDOM全体を再構築せず、プレビューだけ更新する
   // （全体再構築するとtextareaのカーソル位置が失われる）
   if (field === 'text' || field === 'style') updatePreview(id);
+  // 開始秒変更時はラベル表示を更新するため再描画
+  if (field === 'start') renderTelops();
+};
+
+// 終了秒の入力 → 表示時間に変換
+window.updateTelopEnd = function(id, value) {
+  const t = state.telops.find(x => x.id === id);
+  if (!t) return;
+  const endSec = parseFloat(value) || 0;
+  t.duration = Math.max(0.5, endSec - t.start);
+  renderTelops();
 };
 
 function updatePreview(id) {
@@ -628,14 +735,16 @@ function renderTelops() {
         </div>
         <div class="telop-meta">
           <div>
-            <label>開始秒</label>
-            <input type="number" min="0" step="0.5" value="${t.start}"
+            <label>開始 ${fmtTime(t.start)}</label>
+            <input type="number" min="0" step="0.1" value="${t.start}"
                    onchange="updateTelop(${t.id}, 'start', this.value)">
+            <button class="time-grab-btn" onclick="useCurrentTime(${t.id}, 'start')">⏱ 現在時刻</button>
           </div>
           <div>
-            <label>表示秒数</label>
-            <input type="number" min="0.5" step="0.5" value="${t.duration}"
-                   onchange="updateTelop(${t.id}, 'duration', this.value)">
+            <label>終了 ${fmtTime(t.start + t.duration)}</label>
+            <input type="number" min="0.5" step="0.1" value="${(t.start + t.duration).toFixed(1)}"
+                   onchange="updateTelopEnd(${t.id}, this.value)">
+            <button class="time-grab-btn" onclick="useCurrentTime(${t.id}, 'end')">⏱ 現在時刻</button>
           </div>
           <div>
             <label>位置</label>
@@ -869,7 +978,6 @@ window.processVideo = async function() {
   }
 };
 
-addTelop();
 </script>
 
 </body>
