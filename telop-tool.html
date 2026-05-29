@@ -26,6 +26,36 @@
     src: url('/fonts/ZenMaruGothic-Bold.ttf') format('truetype');
     font-display: swap;
   }
+  @font-face {
+    font-family: 'ShipporiMincho';
+    src: url('/fonts/ShipporiMinchoB1-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'HinaMincho';
+    src: url('/fonts/HinaMincho-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DelaGothic';
+    src: url('/fonts/DelaGothicOne-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'RampartOne';
+    src: url('/fonts/RampartOne-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'DotGothic16';
+    src: url('/fonts/DotGothic16-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'YuseiMagic';
+    src: url('/fonts/YuseiMagic-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
 
   :root {
     --c-primary: #5d7b7c;
@@ -332,6 +362,66 @@
     border-radius: 12px;
     padding: 6px 18px;
   }
+  /* === ボックスなし系：個性的なタイポグラフィ === */
+  .style-mincho-elegant {
+    background: transparent;
+    color: #faf7f2;
+    font-family: 'ShipporiMincho', serif;
+    font-size: 20px; font-weight: 700;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  }
+  .style-mincho-hina {
+    background: transparent;
+    color: #f0ead8;
+    font-family: 'HinaMincho', serif;
+    font-size: 18px; font-weight: 500;
+    letter-spacing: 0.15em;
+    -webkit-text-stroke: 0.5px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+  }
+  .style-dela-impact {
+    background: transparent;
+    color: white;
+    font-family: 'DelaGothic', sans-serif;
+    font-size: 24px; font-weight: 900;
+    letter-spacing: 0.03em;
+    -webkit-text-stroke: 2px #2c2c2c;
+    text-shadow: 4px 4px 0 #2c2c2c;
+  }
+  .style-rampart-3d {
+    background: transparent;
+    color: #ff8a9a;
+    font-family: 'RampartOne', sans-serif;
+    font-size: 22px;
+    text-shadow:
+      2px 2px 0 #c47b8a,
+      4px 4px 0 #8a4a5a;
+  }
+  .style-dot-retro {
+    background: transparent;
+    color: #a8e6a3;
+    font-family: 'DotGothic16', monospace;
+    font-size: 18px; font-weight: 400;
+    text-shadow: 2px 2px 0 #2c4828;
+    letter-spacing: 0.05em;
+  }
+  .style-yusei-pop {
+    background: transparent;
+    color: #b89178;
+    font-family: 'YuseiMagic', cursive;
+    font-size: 22px; font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+  }
+  .style-underline-mincho {
+    background: transparent;
+    color: #faf7f2;
+    font-family: 'ShipporiMincho', serif;
+    font-size: 18px; font-weight: 700;
+    border-bottom: 2px solid #b89178;
+    padding: 2px 0 6px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
 
   /* 進捗 */
   .progress {
@@ -423,6 +513,14 @@
       <div class="ai-toggle-text">
         <div class="ai-toggle-title">🤖 顔検出で自動配置</div>
         <div class="ai-toggle-desc">位置「自動」で顔のない方向にAIがテロップを配置</div>
+      </div>
+    </label>
+
+    <label class="ai-toggle">
+      <input type="checkbox" id="fadeEnabled" checked>
+      <div class="ai-toggle-text">
+        <div class="ai-toggle-title">✨ フェードイン/アウト</div>
+        <div class="ai-toggle-desc">テロップがふわっと現れて消える（おしゃれ度UP）</div>
       </div>
     </label>
 
@@ -550,16 +648,89 @@ const STYLES = {
     box: 1,
     boxcolor: '0x141414@0.85',
     boxborderw: 18
+  },
+  // ==== ボックスなし系：個性的タイポグラフィ ====
+  'mincho-elegant': {
+    name: '【箱なし】エレガント明朝（影付き）',
+    css: 'style-mincho-elegant',
+    font: 'fonts/ShipporiMinchoB1-Bold.ttf',
+    fontcolor: '0xFAF7F2',
+    fontsize: 56,
+    box: 0,
+    shadowx: 3, shadowy: 3, shadowcolor: '0x000000@0.6'
+  },
+  'mincho-hina': {
+    name: '【箱なし】繊細明朝（縁取り）',
+    css: 'style-mincho-hina',
+    font: 'fonts/HinaMincho-Regular.ttf',
+    fontcolor: '0xF0EAD8',
+    fontsize: 44,
+    box: 0,
+    borderw: 2, bordercolor: '0x2C2C2C'
+  },
+  'dela-impact': {
+    name: '【箱なし】極太インパクト',
+    css: 'style-dela-impact',
+    font: 'fonts/DelaGothicOne-Regular.ttf',
+    fontcolor: '0xFFFFFF',
+    fontsize: 60,
+    box: 0,
+    borderw: 5, bordercolor: '0x2C2C2C',
+    shadowx: 5, shadowy: 5, shadowcolor: '0x000000@0.8'
+  },
+  'rampart-3d': {
+    name: '【箱なし】立体ポップ（ピンク）',
+    css: 'style-rampart-3d',
+    font: 'fonts/RampartOne-Regular.ttf',
+    fontcolor: '0xFF8A9A',
+    fontsize: 56,
+    box: 0,
+    shadowx: 5, shadowy: 5, shadowcolor: '0x8A4A5A'
+  },
+  'dot-retro': {
+    name: '【箱なし】レトロピクセル',
+    css: 'style-dot-retro',
+    font: 'fonts/DotGothic16-Regular.ttf',
+    fontcolor: '0xA8E6A3',
+    fontsize: 44,
+    box: 0,
+    shadowx: 3, shadowy: 3, shadowcolor: '0x2C4828'
+  },
+  'yusei-pop': {
+    name: '【箱なし】手書きポップ（クレイ）',
+    css: 'style-yusei-pop',
+    font: 'fonts/YuseiMagic-Regular.ttf',
+    fontcolor: '0xB89178',
+    fontsize: 50,
+    box: 0,
+    shadowx: 2, shadowy: 2, shadowcolor: '0xFFFFFF@0.7'
+  },
+  'shippori-classy': {
+    name: '【上品】Shippori明朝＋クリーム箱',
+    css: 'style-utakata-mincho',
+    font: 'fonts/ShipporiMinchoB1-Bold.ttf',
+    fontcolor: '0x2C2C2C',
+    fontsize: 48,
+    box: 1,
+    boxcolor: '0xFAF7F2@0.92',
+    boxborderw: 18
   }
 };
 
-// y は「テロップ上端の位置」。顔と被らない位置を選ぶ。
-// 標準的な9:16動画では顔が 15〜55% 付近にくるため、それを避ける
+// 位置の組み合わせ。yは上下、xは左右の位置を指定。
+// 'auto'は顔検出で y を上下から選ぶ。
 const POSITIONS = {
-  'auto': { name: '🤖 AI自動', y: 'h*0.05' },
-  'top': { name: '上端（顔の上）', y: 'h*0.05' },
-  'middle': { name: '中央', y: '(h-text_h)/2' },
-  'bottom': { name: '下端（顔の下）', y: 'h*0.85' }
+  'auto': { name: '🤖 AI自動（中央）', y: 'h*0.05', x: '(w-text_w)/2' },
+  'top-center': { name: '上端 中央', y: 'h*0.05', x: '(w-text_w)/2' },
+  'top-left': { name: '上端 左寄せ', y: 'h*0.05', x: 'w*0.06' },
+  'top-right': { name: '上端 右寄せ', y: 'h*0.05', x: 'w-text_w-w*0.06' },
+  'middle-center': { name: '中央', y: '(h-text_h)/2', x: '(w-text_w)/2' },
+  'middle-left': { name: '中央 左寄せ', y: '(h-text_h)/2', x: 'w*0.06' },
+  'one-third': { name: '上から1/3 中央', y: 'h*0.33', x: '(w-text_w)/2' },
+  'two-third': { name: '上から2/3 中央', y: 'h*0.62', x: '(w-text_w)/2' },
+  'bottom-center': { name: '下端 中央', y: 'h*0.85', x: '(w-text_w)/2' },
+  'bottom-left': { name: '下端 左寄せ', y: 'h*0.85', x: 'w*0.06' },
+  'bottom-right': { name: '下端 右寄せ', y: 'h*0.85', x: 'w-text_w-w*0.06' }
 };
 
 const state = {
@@ -991,6 +1162,9 @@ window.processVideo = async function() {
     // テロップ焼き込み
     steps[stepIdx].state = 'active'; setProgress(steps);
 
+    const fadeEnabled = document.getElementById('fadeEnabled').checked;
+    const fadeDur = 0.35; // フェードイン/アウトの時間（秒）
+
     const filterParts = validTelops.map(t => {
       const style = STYLES[t.style];
       const requestedFontPath = style.font;
@@ -998,23 +1172,49 @@ window.processVideo = async function() {
       const fontName = fontPath.split('/').pop();
       let positionKey = t.position;
       if (positionKey === 'auto') {
-        positionKey = t.detectedPosition || 'top';
+        // 顔検出で 'top' or 'bottom' を選んだ場合、'top-center' / 'bottom-center' にマップ
+        positionKey = (t.detectedPosition === 'bottom') ? 'bottom-center' : 'top-center';
       }
-      const position = POSITIONS[positionKey];
+      const position = POSITIONS[positionKey] || POSITIONS['top-center'];
       const text = escapeFFText(t.text);
+      const startT = t.start;
+      const endT = t.start + t.duration;
       const params = [
         `fontfile=/${fontName}`,
         `text='${text}'`,
         `fontcolor=${style.fontcolor}`,
         `fontsize=${style.fontsize}`,
-        `box=${style.box}`,
-        `boxcolor=${style.boxcolor}`,
-        `boxborderw=${style.boxborderw}`,
-        `x=(w-text_w)/2`,
-        `y=${position.y}`,
-        `enable='between(t,${t.start},${t.start + t.duration})'`
-      ].join(':');
-      return `drawtext=${params}`;
+        `x=${position.x}`,
+        `y=${position.y}`
+      ];
+      // ボックス
+      if (style.box) {
+        params.push(`box=1`);
+        params.push(`boxcolor=${style.boxcolor}`);
+        params.push(`boxborderw=${style.boxborderw}`);
+      }
+      // 縁取り
+      if (style.borderw) {
+        params.push(`borderw=${style.borderw}`);
+        if (style.bordercolor) params.push(`bordercolor=${style.bordercolor}`);
+      }
+      // シャドウ
+      if (style.shadowx !== undefined) {
+        params.push(`shadowx=${style.shadowx}`);
+        params.push(`shadowy=${style.shadowy}`);
+        if (style.shadowcolor) params.push(`shadowcolor=${style.shadowcolor}`);
+      }
+      // フェードイン/アウト（alpha式で実現）
+      if (fadeEnabled && t.duration > fadeDur * 2 + 0.1) {
+        const fadeInEnd = (startT + fadeDur).toFixed(2);
+        const fadeOutStart = (endT - fadeDur).toFixed(2);
+        const fadeDurStr = fadeDur.toFixed(2);
+        // if (t < fadeInEnd) -> (t - start) / fadeDur ; else if (t > fadeOutStart) -> (end - t) / fadeDur ; else 1
+        const alpha = `if(lt(t\\,${fadeInEnd})\\,(t-${startT.toFixed(2)})/${fadeDurStr}\\,if(lt(t\\,${fadeOutStart})\\,1\\,(${endT.toFixed(2)}-t)/${fadeDurStr}))`;
+        params.push(`alpha='${alpha}'`);
+      }
+      params.push(`enable='between(t,${startT},${endT})'`);
+      return `drawtext=${params.join(':')}`;
     });
     const vf = filterParts.join(',');
     console.log('Filter:', vf);
