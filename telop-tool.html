@@ -86,6 +86,36 @@
     src: url('/fonts/NewTegomin-Regular.ttf') format('truetype');
     font-display: swap;
   }
+  @font-face {
+    font-family: 'MochiyPop';
+    src: url('/fonts/MochiyPopOne-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Slackside';
+    src: url('/fonts/SlacksideOne-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'KaiseiHarunoUmi';
+    src: url('/fonts/KaiseiHarunoUmi-Bold.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'KosugiMaru';
+    src: url('/fonts/KosugiMaru-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'ZenAntiqueSoft';
+    src: url('/fonts/ZenAntiqueSoft-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Stick';
+    src: url('/fonts/Stick-Regular.ttf') format('truetype');
+    font-display: swap;
+  }
 
   :root {
     --c-primary: #5d7b7c;
@@ -624,6 +654,54 @@
     letter-spacing: 0.04em;
     text-shadow: 0 1px 2px rgba(255,255,255,0.5);
   }
+  .style-mochiy-pop {
+    background: rgba(255, 245, 248, 0.95);
+    color: #c47b8a;
+    font-family: 'MochiyPop', sans-serif;
+    font-size: 16px;
+    border-radius: 20px;
+    padding: 8px 22px;
+    border: 2px solid #f5c0d0;
+  }
+  .style-slackside {
+    background: transparent;
+    color: #5a4040;
+    font-family: 'Slackside', cursive;
+    font-size: 20px;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+  }
+  .style-kaisei-haruno {
+    background: transparent;
+    color: #4a5260;
+    font-family: 'KaiseiHarunoUmi', serif;
+    font-size: 18px; font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    letter-spacing: 0.05em;
+  }
+  .style-kosugi-maru {
+    background: rgba(250, 247, 242, 0.92);
+    color: #2c2c2c;
+    font-family: 'KosugiMaru', sans-serif;
+    font-size: 16px;
+    border-radius: 14px;
+    padding: 6px 18px;
+  }
+  .style-zen-antique-soft {
+    background: rgba(248, 240, 220, 0.92);
+    color: #5a4838;
+    font-family: 'ZenAntiqueSoft', serif;
+    font-size: 17px;
+    padding: 6px 18px;
+    letter-spacing: 0.04em;
+  }
+  .style-stick {
+    background: transparent;
+    color: #6b5238;
+    font-family: 'Stick', sans-serif;
+    font-size: 22px;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+  }
 
   /* 進捗 */
   .progress {
@@ -720,8 +798,6 @@
 
     <div class="hint">動画を再生・停止して、テロップを入れたい瞬間で「ここにテロップ追加」を押す → 文字を打つ → 終了タイミングまで進めて「終了をここに」を押す。長文は自動で改行されます。</div>
 
-    <button class="catalog-btn" onclick="openCatalog()">🎨 全スタイル一覧を見る</button>
-
     <div id="telopList" style="margin-top:12px;"></div>
   </div>
 
@@ -746,16 +822,6 @@
 <!-- 顔検出に使う非表示の動画要素 -->
 <video id="hiddenVideo" style="display:none;" muted playsinline></video>
 
-<!-- フォントカタログモーダル -->
-<div class="catalog-modal" id="catalogModal" onclick="if(event.target===this)closeCatalog()">
-  <div class="catalog-content">
-    <div class="catalog-header">
-      <h3>スタイル一覧</h3>
-      <button class="catalog-close" onclick="closeCatalog()">✕ 閉じる</button>
-    </div>
-    <div class="catalog-grid" id="catalogGrid"></div>
-  </div>
-</div>
 
 <script src="/ffmpeg/ffmpeg.js"></script>
 <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
@@ -979,6 +1045,64 @@ const STYLES = {
     fontsize: 50,
     box: 0,
     shadowx: 0, shadowy: 1, shadowcolor: '0xFFFFFF@0.5'
+  },
+  // ==== 可愛い系フォント6種追加 ====
+  'mochiy-pop': {
+    name: 'Mochiyぷっくりピンク',
+    css: 'style-mochiy-pop',
+    font: 'fonts/MochiyPopOne-Regular.ttf',
+    fontcolor: '0xC47B8A',
+    fontsize: 46,
+    box: 1,
+    boxcolor: '0xFFF5F8@0.95',
+    boxborderw: 22
+  },
+  'slackside': {
+    name: 'Slackside手書き草',
+    css: 'style-slackside',
+    font: 'fonts/SlacksideOne-Regular.ttf',
+    fontcolor: '0x5A4040',
+    fontsize: 54,
+    box: 0,
+    shadowx: 2, shadowy: 2, shadowcolor: '0xFFFFFF@0.7'
+  },
+  'kaisei-haruno': {
+    name: 'Kaisei春の海・明朝',
+    css: 'style-kaisei-haruno',
+    font: 'fonts/KaiseiHarunoUmi-Bold.ttf',
+    fontcolor: '0x4A5260',
+    fontsize: 50,
+    box: 0,
+    shadowx: 2, shadowy: 2, shadowcolor: '0x000000@0.4'
+  },
+  'kosugi-maru': {
+    name: 'Kosugi丸・シンプル',
+    css: 'style-kosugi-maru',
+    font: 'fonts/KosugiMaru-Regular.ttf',
+    fontcolor: '0x2C2C2C',
+    fontsize: 44,
+    box: 1,
+    boxcolor: '0xFAF7F2@0.92',
+    boxborderw: 18
+  },
+  'zen-antique-soft': {
+    name: 'Zen Antiqueレトロやわらか',
+    css: 'style-zen-antique-soft',
+    font: 'fonts/ZenAntiqueSoft-Regular.ttf',
+    fontcolor: '0x5A4838',
+    fontsize: 46,
+    box: 1,
+    boxcolor: '0xF8F0DC@0.92',
+    boxborderw: 18
+  },
+  'stick': {
+    name: 'Stick細手書き',
+    css: 'style-stick',
+    font: 'fonts/Stick-Regular.ttf',
+    fontcolor: '0x6B5238',
+    fontsize: 56,
+    box: 0,
+    shadowx: 0, shadowy: 1, shadowcolor: '0xFFFFFF@0.5'
   }
 };
 
@@ -1169,22 +1293,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// フォントカタログ
-window.openCatalog = function() {
-  const grid = document.getElementById('catalogGrid');
-  grid.innerHTML = Object.entries(STYLES).map(([k, v]) => `
-    <div class="catalog-card">
-      <div class="label">${v.name}</div>
-      <div class="sample">
-        <div class="style-preview-text ${v.css}">整える時間</div>
-      </div>
-    </div>
-  `).join('');
-  document.getElementById('catalogModal').classList.add('open');
-};
-window.closeCatalog = function() {
-  document.getElementById('catalogModal').classList.remove('open');
-};
 
 // 現在の動画時刻でテロップを追加
 window.addTelopAtCurrentTime = function() {
