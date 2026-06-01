@@ -29,182 +29,261 @@
   .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
 
   header {
-    text-align: center; padding: 28px 20px 24px;
+    text-align: center; padding: 24px 20px;
     border-bottom: 1px solid var(--c-line); margin-bottom: 28px;
   }
   header .brand {
     font-size: 11px; color: var(--c-muted);
-    letter-spacing: 0.3em; margin-bottom: 10px;
+    letter-spacing: 0.3em; margin-bottom: 8px;
   }
   header h1 {
-    margin: 0 0 8px; font-size: 24px; font-weight: 500;
+    margin: 0 0 6px; font-size: 22px; font-weight: 500;
     color: var(--c-primary-dark); letter-spacing: 0.05em;
     font-family: "Hiragino Mincho ProN", serif;
   }
   header p {
-    margin: 0; font-size: 13px; color: var(--c-muted);
-    max-width: 520px; margin: 0 auto;
+    margin: 0; font-size: 12px; color: var(--c-muted);
   }
 
-  .step-title {
-    font-size: 11px; color: var(--c-accent); letter-spacing: 0.25em;
-    margin: 0 0 8px; font-weight: 700;
-  }
-  .step-heading {
-    font-size: 16px; color: var(--c-primary-dark);
-    font-weight: 600; margin: 0 0 16px;
-  }
-
-  /* テンプレ選択 */
-  .template-grid {
+  /* メインレイアウト */
+  .editor {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
   }
-  .template-card {
-    background: var(--c-card);
-    border: 2px solid var(--c-line);
-    border-radius: 6px; padding: 14px 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .template-card:hover {
-    border-color: var(--c-accent);
-    transform: translateY(-1px);
-  }
-  .template-card.selected {
-    border-color: var(--c-primary);
-    background: var(--c-soft);
-  }
-  .template-card .num {
-    font-size: 10px; color: var(--c-accent);
-    letter-spacing: 0.2em; font-weight: 700;
-    font-family: "SF Mono", monospace;
-  }
-  .template-card .name {
-    font-size: 14px; color: var(--c-primary-dark);
-    font-weight: 600; margin: 4px 0 2px;
-  }
-  .template-card .sub {
-    font-size: 11px; color: var(--c-muted); margin: 0;
+  @media (max-width: 800px) {
+    .editor { grid-template-columns: 1fr; }
   }
 
-  /* シーンスロット */
-  .scenes-section { display: none; margin-top: 28px; }
-  .scenes-section.active { display: block; }
-
-  .scene-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 14px;
-  }
-  .scene-slot {
+  /* 左: プレビュー列 */
+  .preview-col {
     background: var(--c-card);
     border: 1px solid var(--c-line);
-    border-radius: 6px;
-    overflow: hidden;
+    border-radius: 8px;
+    padding: 18px;
+    position: sticky; top: 16px;
   }
-  .scene-slot .scene-head {
-    background: var(--c-soft); padding: 8px 12px;
-    display: flex; align-items: center; gap: 8px;
-    border-bottom: 1px solid var(--c-line);
+  .preview-col h3 {
+    margin: 0 0 12px; font-size: 12px;
+    color: var(--c-muted); letter-spacing: 0.15em;
+    font-weight: 700;
   }
-  .scene-slot .scene-num {
-    background: var(--c-primary); color: white;
-    width: 22px; height: 22px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700;
-    font-family: "SF Mono", monospace;
-  }
-  .scene-slot .scene-time {
-    font-family: "SF Mono", monospace;
-    font-size: 11px; color: var(--c-muted);
-  }
-  .scene-slot .scene-tag {
-    font-size: 10px; color: var(--c-accent); font-weight: 600;
-    letter-spacing: 0.05em;
-    margin-left: auto;
-  }
-  .scene-slot .upload-zone {
+  .preview {
+    width: 100%;
+    max-width: 264px;
     aspect-ratio: 9/16;
-    background: var(--c-bg);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; position: relative;
+    background: #000;
+    margin: 0 auto 14px;
+    position: relative;
     overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
-  .scene-slot .upload-zone:hover {
-    background: #f0ebe1;
-  }
-  .scene-slot .upload-zone.has-clip {
-    background: black; cursor: pointer;
-  }
-  .scene-slot .upload-zone video {
-    width: 100%; height: 100%; object-fit: cover;
-  }
-  .scene-slot .upload-empty {
-    text-align: center; color: var(--c-muted);
-    font-size: 12px; padding: 12px;
-  }
-  .scene-slot .upload-empty .icon {
-    font-size: 24px; margin-bottom: 6px; opacity: 0.5;
-  }
-  .scene-slot .telop-preview {
-    position: absolute; left: 8px; right: 8px;
-    padding: 6px 8px; border-radius: 3px;
-    font-size: 11px; text-align: center; pointer-events: none;
-    font-family: "Hiragino Mincho ProN", serif;
+  /* 上下のテロップ枠（14.6% = 280/1920） */
+  .preview-frame {
+    position: absolute;
+    left: 0; right: 0;
+    height: 14.6%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    z-index: 2;
+    padding: 4px 10px;
     white-space: pre-line;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1.3;
   }
-  .scene-slot .telop-preview.main {
-    top: 18%;
-    background: rgba(250, 247, 242, 0.92);
-    color: #2C2C2C; font-weight: 600;
+  .preview-frame.top { top: 0; font-family: "Hiragino Mincho ProN", serif; font-weight: 600; }
+  .preview-frame.bot { bottom: 0; font-family: "Hiragino Kaku Gothic ProN", sans-serif; font-weight: 500; }
+  .preview-frame .telop-text {
+    font-size: 12px;
+    transition: opacity 0.2s;
   }
-  .scene-slot .telop-preview.sub {
-    bottom: 18%;
-    background: rgba(45, 56, 56, 0.75);
-    color: #FAF7F2;
-    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
-    font-weight: 300;
+  .preview-frame.large .telop-text { font-size: 14px; }
+  .preview-frame.empty .telop-text {
+    color: var(--c-muted) !important;
+    font-style: italic;
+    opacity: 0.5;
+    font-size: 10px;
   }
-  .scene-slot .telop-preview.cta {
-    bottom: 10%;
-    background: rgba(184, 145, 120, 0.92);
-    color: #FAF7F2;
-    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
-    font-weight: 500;
+  .preview-video {
+    position: absolute;
+    top: 14.6%; bottom: 14.6%; left: 0; right: 0;
+    background: #1a1a1a;
+    overflow: hidden;
+    z-index: 1;
   }
-  .scene-slot .scene-foot {
-    padding: 8px 12px;
-    font-size: 11px; color: var(--c-muted);
-    border-top: 1px solid var(--c-line);
-    background: white;
+  .preview-video video {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
   }
-  .scene-slot .scene-foot .label-text {
-    color: var(--c-primary-dark); font-weight: 600;
+  .preview-video .placeholder {
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.4); font-size: 11px;
+    text-align: center; padding: 0 12px;
   }
 
-  /* BGM */
-  .bgm-row {
-    background: var(--c-card); border: 1px solid var(--c-line);
-    border-radius: 6px; padding: 16px 18px;
-    display: flex; align-items: center; gap: 16px;
+  /* スクラブバー */
+  .scrubber {
+    margin-top: 8px;
   }
-  .bgm-row .label {
-    font-size: 12px; color: var(--c-muted);
-    letter-spacing: 0.05em; min-width: 80px;
+  .scrubber input[type=range] {
+    width: 100%;
+    margin: 0;
   }
-  .bgm-row .bgm-status {
-    flex: 1; font-size: 13px;
+  .scrubber .time-info {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--c-muted);
+    font-family: "SF Mono", monospace;
+    margin-top: 4px;
   }
-  .bgm-row .bgm-status .file-name {
+
+  /* 右: コントロール列 */
+  .control-col { display: flex; flex-direction: column; gap: 14px; }
+
+  .section-card {
+    background: var(--c-card);
+    border: 1px solid var(--c-line);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .section-card h2 {
+    margin: 0 0 12px;
+    font-size: 14px; color: var(--c-primary-dark);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-card h2 .step-tag {
+    font-size: 9px; color: var(--c-accent);
+    letter-spacing: 0.15em; font-weight: 700;
+    background: var(--c-soft);
+    padding: 2px 6px; border-radius: 2px;
+    font-family: "SF Mono", monospace;
+  }
+  .section-card .help {
+    font-size: 11px; color: var(--c-muted);
+    margin-bottom: 10px;
+  }
+
+  /* 動画選択 */
+  .video-info {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--c-bg); padding: 10px 12px;
+    border-radius: 4px; font-size: 12px;
+  }
+  .video-info .name { font-family: "SF Mono", monospace; font-size: 11px; color: var(--c-primary-dark); }
+  .video-info .duration {
     font-family: "SF Mono", monospace; font-size: 11px;
-    color: var(--c-primary-dark);
+    color: var(--c-accent); font-weight: 700; margin-left: auto;
   }
-  .bgm-row .bgm-status .none {
-    color: var(--c-muted); font-style: italic;
+  .video-info .none { color: var(--c-muted); font-style: italic; }
+
+  /* 枠スタイル選択 */
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
-  .bgm-controls { display: flex; gap: 8px; align-items: center; }
+  .style-card {
+    border: 2px solid var(--c-line);
+    border-radius: 4px;
+    padding: 8px 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s;
+  }
+  .style-card.selected { border-color: var(--c-primary); background: var(--c-soft); }
+  .style-card .mini {
+    height: 40px;
+    border-radius: 2px;
+    display: grid;
+    grid-template-rows: 14.6% 70.8% 14.6%;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .style-card .mini > div { width: 100%; }
+  .style-card .mini .mid { background: #2a2a2a; }
+  .style-card .label {
+    font-size: 10px; color: var(--c-text);
+    font-weight: 600; letter-spacing: 0.03em;
+  }
+
+  /* テロップリスト */
+  .telop-section {
+    border-top: 1px dashed var(--c-line);
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+  .telop-section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+  .telop-section .pos-header {
+    display: flex; align-items: center;
+    margin-bottom: 8px;
+  }
+  .telop-section .pos-name {
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.15em; font-weight: 700;
+  }
+  .telop-section .pos-name .icon {
+    color: var(--c-accent); margin-right: 4px;
+  }
+  .telop-section .add-btn {
+    margin-left: auto;
+    background: transparent; border: 1px solid var(--c-line);
+    color: var(--c-primary);
+    padding: 4px 10px; font-size: 11px;
+    border-radius: 3px; cursor: pointer;
+    font-weight: 600;
+  }
+  .telop-section .add-btn:hover {
+    background: var(--c-soft); border-color: var(--c-primary);
+  }
+
+  .telop-card {
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: start;
+  }
+  .telop-card.empty { color: var(--c-muted); font-style: italic; font-size: 11px; text-align: center; padding: 12px; }
+  .telop-card .telop-text-input {
+    width: 100%;
+    border: 1px solid var(--c-line);
+    background: white;
+    padding: 6px 8px; font-size: 12px;
+    border-radius: 3px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 30px;
+  }
+  .telop-card .time-row {
+    display: flex; gap: 6px;
+    margin-top: 6px; align-items: center;
+    font-size: 11px;
+  }
+  .telop-card .time-row label {
+    color: var(--c-muted); font-size: 10px;
+  }
+  .telop-card .time-row input {
+    width: 50px;
+    border: 1px solid var(--c-line);
+    padding: 3px 5px; font-size: 11px;
+    border-radius: 3px;
+    text-align: center;
+    font-family: "SF Mono", monospace;
+  }
+  .telop-card .delete-btn {
+    background: transparent; border: none;
+    color: var(--c-muted); cursor: pointer;
+    padding: 4px 6px; font-size: 14px;
+    line-height: 1;
+  }
+  .telop-card .delete-btn:hover { color: var(--c-err); }
 
   /* ボタン */
   .btn {
@@ -215,10 +294,7 @@
     transition: background 0.15s;
   }
   .btn:hover { background: var(--c-primary-dark); }
-  .btn:disabled {
-    background: var(--c-line); color: var(--c-muted);
-    cursor: not-allowed;
-  }
+  .btn:disabled { background: var(--c-line); color: var(--c-muted); cursor: not-allowed; }
   .btn.accent { background: var(--c-accent); }
   .btn.accent:hover { background: var(--c-accent-dark); }
   .btn.ghost {
@@ -227,135 +303,102 @@
     color: var(--c-text);
   }
   .btn.ghost:hover { background: var(--c-soft); }
-  .btn.large {
-    padding: 14px 36px; font-size: 14px;
-    letter-spacing: 0.1em;
-  }
+  .btn.large { padding: 12px 24px; font-size: 13px; letter-spacing: 0.08em; }
 
-  /* オプション */
-  .options-row {
-    background: var(--c-card); border: 1px solid var(--c-line);
-    border-radius: 6px; padding: 14px 18px;
-    display: flex; flex-wrap: wrap; gap: 20px;
-    align-items: center;
-  }
-  .option-item {
-    display: flex; align-items: center; gap: 6px;
+  /* BGM行 */
+  .bgm-row {
+    display: flex; align-items: center; gap: 12px;
     font-size: 12px;
   }
-  .option-item label {
-    font-size: 12px; color: var(--c-muted);
+  .bgm-row .label { color: var(--c-muted); font-size: 11px; }
+  .bgm-row .bgm-status .file-name {
+    font-family: "SF Mono", monospace; font-size: 11px; color: var(--c-primary-dark);
   }
-  .option-item input[type="text"],
-  .option-item input[type="number"] {
-    border: 1px solid var(--c-line); border-radius: 3px;
-    padding: 5px 8px; font-size: 12px;
-    background: var(--c-bg); width: 80px;
-  }
-  .option-item input[type="checkbox"] { cursor: pointer; }
+  .bgm-row .bgm-status .none { color: var(--c-muted); font-style: italic; }
+  .bgm-row .controls { display: flex; gap: 6px; }
 
-  /* ビルドボタン */
-  .build-section {
-    text-align: center; padding: 28px 0;
-    border-top: 1px solid var(--c-line);
-    margin-top: 28px;
-  }
+  /* ビルド */
+  .build-area { text-align: center; }
   .build-status {
-    font-size: 12px; color: var(--c-muted);
-    margin-top: 12px; min-height: 18px;
+    font-size: 11px; color: var(--c-muted);
+    margin-top: 10px; min-height: 16px;
   }
 
   /* 進捗 */
   .progress {
     background: var(--c-card); border: 1px solid var(--c-line);
-    border-radius: 6px; padding: 16px 22px; margin: 16px auto;
-    max-width: 480px; display: none;
+    border-radius: 6px; padding: 14px 18px; margin: 14px 0;
+    display: none;
   }
   .progress.active { display: block; }
   .progress-row {
     display: flex; align-items: center; gap: 10px;
-    padding: 5px 0; font-size: 13px;
+    padding: 4px 0; font-size: 12px;
   }
   .progress-dot {
-    width: 14px; height: 14px; border-radius: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
     border: 2px solid var(--c-line);
     flex-shrink: 0;
   }
   .progress-dot.active {
-    border-color: var(--c-accent);
-    background: var(--c-accent);
+    border-color: var(--c-accent); background: var(--c-accent);
     animation: pulse 1.2s infinite;
   }
-  .progress-dot.done {
-    background: var(--c-ok); border-color: var(--c-ok);
-  }
-  .progress-dot.error {
-    background: var(--c-err); border-color: var(--c-err);
-  }
+  .progress-dot.done { background: var(--c-ok); border-color: var(--c-ok); }
+  .progress-dot.error { background: var(--c-err); border-color: var(--c-err); }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
 
   /* 出力 */
-  .output-section {
-    display: none; text-align: center;
+  .output-area {
+    display: none;
+    text-align: center;
     background: var(--c-card); border: 1px solid var(--c-line);
-    border-radius: 6px; padding: 24px;
-    margin-top: 24px;
+    border-radius: 8px; padding: 18px;
   }
-  .output-section.active { display: block; }
-  .output-section video {
-    max-width: 320px; max-height: 560px;
+  .output-area.active { display: block; }
+  .output-area video {
+    max-width: 220px; max-height: 392px;
     border: 1px solid var(--c-line);
     background: black;
-    margin: 16px auto;
+    margin: 12px auto;
     display: block;
   }
-  .output-section .download {
+  .output-area .download {
     display: inline-block;
     background: var(--c-accent); color: white;
-    padding: 10px 24px; border-radius: 4px;
+    padding: 10px 22px; border-radius: 4px;
     text-decoration: none; font-size: 13px;
     font-weight: 600; letter-spacing: 0.05em;
-    margin-top: 12px;
+    margin-top: 8px;
   }
-  .output-section .download:hover { background: var(--c-accent-dark); }
+  .output-area .download:hover { background: var(--c-accent-dark); }
 
   /* エラー */
   .error-box {
     display: none;
     background: #fde9e6; border-left: 3px solid var(--c-err);
-    padding: 12px 16px; margin: 16px 0;
-    font-size: 13px; color: #803a35;
+    padding: 12px 14px; margin: 12px 0;
+    font-size: 12px; color: #803a35;
     border-radius: 3px;
   }
   .error-box.active { display: block; }
 
-  /* ヘルプ・注意 */
-  .info-box {
-    background: var(--c-soft);
-    border-left: 3px solid var(--c-accent);
-    padding: 12px 16px; margin: 14px 0;
-    font-size: 12px;
+  /* テロップ追加用テンプレ集 */
+  .quick-add {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 6px;
   }
-  .info-box strong { color: var(--c-accent); }
-
-  /* セクション分け */
-  .section {
-    margin-bottom: 32px;
+  .quick-add .chip {
+    background: var(--c-soft); border: 1px solid var(--c-line);
+    border-radius: 12px; padding: 2px 9px;
+    font-size: 10px; cursor: pointer;
+    color: var(--c-primary-dark);
+    font-family: "Hiragino Mincho ProN", serif;
   }
-  .section-line {
-    border-bottom: 1px solid var(--c-line);
-    margin: 28px 0;
-  }
-
-  /* レスポンシブ */
-  @media (max-width: 600px) {
-    .scene-list { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-    .bgm-row { flex-wrap: wrap; }
-    .options-row { gap: 12px; }
-  }
+  .quick-add .chip:hover { background: var(--c-accent); color: white; border-color: var(--c-accent); }
 
   input[type="file"] { display: none; }
 </style>
@@ -366,88 +409,126 @@
   <header>
     <div class="brand">UTAKATA — REEL EDITOR</div>
     <h1>うたかた リール エディター</h1>
-    <p>テンプレを選んで → クリップを並べて → BGM を入れて → 30秒MP4 を書き出す</p>
+    <p>動画を入れて、上下の枠に文字を打つだけ</p>
   </header>
 
-  <!-- STEP 1: テンプレ選択 -->
-  <div class="section">
-    <div class="step-title">STEP 1</div>
-    <h2 class="step-heading">テンプレートを選ぶ</h2>
-    <div class="template-grid" id="templateGrid"></div>
-  </div>
+  <div class="editor">
 
-  <!-- STEP 2: シーン -->
-  <div class="section scenes-section" id="scenesSection">
-    <div class="step-title">STEP 2</div>
-    <h2 class="step-heading">各シーンに動画クリップを入れる</h2>
-    <div class="info-box">
-      <strong>使い方:</strong> 各スロットをクリックして動画ファイル（.mp4 / .mov）を選択。
-      スロットに表示されている長さに自動で先頭から切り出されます。同じクリップを複数スロットに使うこともOK。
-    </div>
-    <div class="scene-list" id="sceneList"></div>
-  </div>
-
-  <!-- STEP 3: BGM -->
-  <div class="section scenes-section" id="bgmSection">
-    <div class="step-title">STEP 3</div>
-    <h2 class="step-heading">BGM を選ぶ</h2>
-    <div class="bgm-row">
-      <span class="label">BGM</span>
-      <div class="bgm-status" id="bgmStatus">
-        <span class="none">未選択（無音で書き出します）</span>
+    <!-- 左: プレビュー -->
+    <div class="preview-col">
+      <h3>プレビュー</h3>
+      <div class="preview">
+        <div class="preview-frame top" id="prevTop">
+          <div class="telop-text">（上の枠）</div>
+        </div>
+        <div class="preview-video" id="prevVideo">
+          <div class="placeholder">動画を選んでください</div>
+        </div>
+        <div class="preview-frame bot" id="prevBot">
+          <div class="telop-text">（下の枠）</div>
+        </div>
       </div>
-      <div class="bgm-controls">
-        <button class="btn ghost" onclick="document.getElementById('bgmInput').click()">音楽ファイルを選ぶ</button>
-        <button class="btn ghost" onclick="clearBgm()" id="bgmClearBtn" style="display:none">クリア</button>
-        <input type="file" id="bgmInput" accept="audio/*" onchange="onBgmSelect(event)">
+      <div class="scrubber">
+        <input type="range" id="scrubber" min="0" max="30" step="0.1" value="0" disabled>
+        <div class="time-info">
+          <span id="curTime">0.0s</span>
+          <span id="maxTime">--</span>
+        </div>
       </div>
     </div>
-    <div class="info-box">
-      <strong>音量:</strong> 自動で -15dB に下げます。テンプレ毎の推奨BGMジャンルは
-      <a href="/salon-bgm-guide.html" target="_blank" style="color:var(--c-accent)">うたかたBGMガイド</a> 参照。
+
+    <!-- 右: コントロール -->
+    <div class="control-col">
+
+      <!-- STEP 1: 動画 -->
+      <div class="section-card">
+        <h2><span class="step-tag">STEP 1</span>動画を選ぶ</h2>
+        <div class="video-info" id="videoInfo">
+          <span class="none">未選択</span>
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="btn ghost" onclick="document.getElementById('videoInput').click()">動画ファイルを選ぶ</button>
+          <input type="file" id="videoInput" accept="video/*" onchange="onVideoSelect(event)">
+        </div>
+      </div>
+
+      <!-- STEP 2: 枠スタイル -->
+      <div class="section-card">
+        <h2><span class="step-tag">STEP 2</span>枠のスタイル</h2>
+        <div class="help">動画の上下にできる固定枠の色を選びます。テロップはこの枠の中に表示されます。</div>
+        <div class="style-grid" id="styleGrid"></div>
+      </div>
+
+      <!-- STEP 3: テロップ -->
+      <div class="section-card">
+        <h2><span class="step-tag">STEP 3</span>テロップを設定</h2>
+        <div class="help">上枠・下枠それぞれに、表示する文字と時間帯を設定できます。複数追加可能。</div>
+
+        <div class="telop-section">
+          <div class="pos-header">
+            <div class="pos-name"><span class="icon">▲</span>上枠のテロップ</div>
+            <button class="add-btn" onclick="addTelop('top')">+ 追加</button>
+          </div>
+          <div id="topTelopList"></div>
+          <div class="quick-add">
+            <span class="chip" onclick="quickAddTelop('top', '呼吸が浅い日に')">呼吸が浅い日に</span>
+            <span class="chip" onclick="quickAddTelop('top', '自分に戻る時間')">自分に戻る時間</span>
+            <span class="chip" onclick="quickAddTelop('top', '整える、ということ')">整える、ということ</span>
+            <span class="chip" onclick="quickAddTelop('top', 'ホットストーン')">ホットストーン</span>
+            <span class="chip" onclick="quickAddTelop('top', '深く整える時間')">深く整える時間</span>
+          </div>
+        </div>
+
+        <div class="telop-section">
+          <div class="pos-header">
+            <div class="pos-name"><span class="icon">▼</span>下枠のテロップ</div>
+            <button class="add-btn" onclick="addTelop('bot')">+ 追加</button>
+          </div>
+          <div id="botTelopList"></div>
+          <div class="quick-add">
+            <span class="chip" onclick="quickAddTelop('bot', 'UTAKATA')">UTAKATA</span>
+            <span class="chip" onclick="quickAddTelop('bot', 'ご予約はDMから')">ご予約はDMから</span>
+            <span class="chip" onclick="quickAddTelop('bot', 'UTAKATA\\nご予約はDMから')">UTAKATA / DM</span>
+            <span class="chip" onclick="quickAddTelop('bot', '少し力が抜けていく')">少し力が抜けていく</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: BGM -->
+      <div class="section-card">
+        <h2><span class="step-tag">STEP 4</span>BGM（任意）</h2>
+        <div class="bgm-row">
+          <span class="label">BGM:</span>
+          <div class="bgm-status" id="bgmStatus" style="flex:1">
+            <span class="none">未選択（無音で書き出します）</span>
+          </div>
+          <div class="controls">
+            <button class="btn ghost" onclick="document.getElementById('bgmInput').click()">音楽を選ぶ</button>
+            <button class="btn ghost" onclick="clearBgm()" id="bgmClearBtn" style="display:none">クリア</button>
+            <input type="file" id="bgmInput" accept="audio/*" onchange="onBgmSelect(event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- 書き出し -->
+      <div class="section-card build-area">
+        <button class="btn accent large" id="buildBtn" onclick="buildVideo()" disabled>MP4 を書き出す</button>
+        <div class="build-status" id="buildStatus">動画を選んでください</div>
+      </div>
+
+      <div class="progress" id="progress"></div>
+      <div class="error-box" id="errorBox"></div>
+
+      <div class="output-area" id="outputArea">
+        <h3 style="margin:0;color:var(--c-primary-dark);font-size:14px;">書き出し完了</h3>
+        <video id="outputVideo" controls playsinline></video>
+        <div>
+          <a href="#" class="download" id="downloadLink" download="utakata-reel.mp4">📥 ダウンロード</a>
+        </div>
+      </div>
+
     </div>
   </div>
-
-  <!-- STEP 4: オプション -->
-  <div class="section scenes-section" id="optionsSection">
-    <div class="step-title">STEP 4（任意）</div>
-    <h2 class="step-heading">微調整</h2>
-    <div class="options-row">
-      <div class="option-item">
-        <input type="checkbox" id="optGrading" checked>
-        <label for="optGrading">うたかた的カラー補正（彩度-15 / 暖色寄り）</label>
-      </div>
-      <div class="option-item">
-        <label for="optBgmVolume">BGM音量(dB)</label>
-        <input type="number" id="optBgmVolume" value="-15" min="-30" max="0" step="1">
-      </div>
-    </div>
-    <div class="info-box" style="margin-top:12px;">
-      <strong>動作のヒント:</strong> 各クリップはシーンの先頭から指定秒数を使います。
-      長すぎる動画はブラウザが重くなるので、5〜10秒程度に事前トリミングするのがおすすめ。
-    </div>
-  </div>
-
-  <!-- STEP 5: 書き出し -->
-  <div class="section scenes-section" id="buildSection">
-    <div class="build-section">
-      <button class="btn accent large" id="buildBtn" onclick="buildVideo()" disabled>30秒MP4 を書き出す</button>
-      <div class="build-status" id="buildStatus">テンプレートを選んでクリップをアップロードしてください</div>
-    </div>
-
-    <div class="progress" id="progress"></div>
-
-    <div class="error-box" id="errorBox"></div>
-
-    <div class="output-section" id="outputSection">
-      <h3 style="margin:0 0 8px;color:var(--c-primary-dark);font-size:16px;">書き出し完了</h3>
-      <video id="outputVideo" controls playsinline></video>
-      <div>
-        <a href="#" class="download" id="downloadLink" download="utakata-reel.mp4">📥 MP4 をダウンロード</a>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script src="/ffmpeg/ffmpeg.js"></script>
@@ -456,215 +537,263 @@
 const { FFmpeg } = FFmpegWASM;
 const { fetchFile } = FFmpegUtil;
 
-// ===== テンプレートデータ =====
-const TEMPLATES = {
-  oil: {
-    num: 'TEMPLATE 01',
-    name: 'オイルマッサージ',
-    sub: '肩・首の力を抜く時間',
-    scenes: [
-      { start: 0,  end: 3,  shot: '静かな空間 / お客様が深く息を吐く',     telop: { text: '呼吸が浅い日に',     style: 'main' } },
-      { start: 3,  end: 7,  shot: 'オイルを手のひらで温める',                telop: null },
-      { start: 7,  end: 12, shot: '肩〜首への施術（手元アップ）',           telop: { text: '少し力が抜けていく', style: 'sub'  } },
-      { start: 12, end: 17, shot: '背中を流す手の動き',                      telop: null },
-      { start: 17, end: 22, shot: 'お客様の表情・呼吸',                      telop: { text: '自分に戻る時間',     style: 'main' } },
-      { start: 22, end: 26, shot: '施術後の静かな空間',                      telop: { text: '整える、ということ', style: 'main' } },
-      { start: 26, end: 30, shot: 'サロン情報・案内',                        telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
-    ]
+// ===== 枠スタイル定義 =====
+const FRAME_STYLES = {
+  washi: {
+    name: '和紙風',
+    top: { bg: '#FAF7F2', text: '#2C2C2C' },
+    bot: { bg: '#F0EBE1', text: '#2C2C2C' }
   },
-  stone: {
-    num: 'TEMPLATE 02',
-    name: 'ホットストーン',
-    sub: '深く整える時間',
-    scenes: [
-      { start: 0,  end: 3,  shot: 'ストーンが温まる様子（湯気）',     telop: null },
-      { start: 3,  end: 7,  shot: '静かな空間・キャンドルの灯り',     telop: { text: 'ホットストーン',         style: 'main' } },
-      { start: 7,  end: 12, shot: '背中にストーンを置く手元',         telop: { text: '重みで肩がほどける',     style: 'sub'  } },
-      { start: 12, end: 17, shot: 'ゆっくり滑らせる動き',             telop: null },
-      { start: 17, end: 22, shot: 'お客様の深い呼吸・表情',           telop: { text: '深く整える時間',         style: 'main' } },
-      { start: 22, end: 26, shot: '終わった後の温まった肌・空間',     telop: null },
-      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
-    ]
+  contrast: {
+    name: 'コントラスト',
+    top: { bg: '#FAF7F2', text: '#2C2C2C' },
+    bot: { bg: '#2D3838', text: '#FAF7F2' }
   },
-  facial: {
-    num: 'TEMPLATE 03',
-    name: 'フェイシャル',
-    sub: '顔の緊張をほどく時間',
-    scenes: [
-      { start: 0,  end: 3,  shot: 'リラックスしたお客様の顔',         telop: { text: '顔、緊張していませんか', style: 'main' } },
-      { start: 3,  end: 7,  shot: 'クレンジング（手元・指先）',       telop: null },
-      { start: 7,  end: 12, shot: 'パック塗布・穏やかな動き',         telop: { text: '肌が静まる',             style: 'sub'  } },
-      { start: 12, end: 17, shot: '軽いマッサージ',                   telop: null },
-      { start: 17, end: 22, shot: '仕上がりの肌アップ',               telop: { text: '自分の顔に戻る',         style: 'main' } },
-      { start: 22, end: 26, shot: 'お客様の表情（満たされ感）',       telop: { text: '整えた後の静けさ',       style: 'main' } },
-      { start: 26, end: 30, shot: 'サロン情報・案内',                 telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
-    ]
-  },
-  candle: {
-    num: 'TEMPLATE 04',
-    name: 'キャンドルアロマ',
-    sub: '静かに呼吸を整える時間',
-    scenes: [
-      { start: 0,  end: 3,  shot: 'キャンドルの炎（ゆらぎ）',          telop: null },
-      { start: 3,  end: 7,  shot: 'アロマを選ぶ手元',                  telop: { text: 'その日の状態に合わせて', style: 'main' } },
-      { start: 7,  end: 12, shot: '温まったオイルを注ぐ瞬間',          telop: { text: '温かなオイル',           style: 'sub'  } },
-      { start: 12, end: 17, shot: '背中への施術（広めの画）',          telop: null },
-      { start: 17, end: 22, shot: 'お客様の静かな呼吸',                telop: { text: '呼吸がやわらかくなる',   style: 'main' } },
-      { start: 22, end: 26, shot: '終わった後の空間',                  telop: { text: '自分に戻る時間',         style: 'main' } },
-      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
-    ]
-  },
-  total: {
-    num: 'TEMPLATE 05',
-    name: 'トータル「整える時間」',
-    sub: '全メニュー組み合わせ紹介',
-    scenes: [
-      { start: 0,  end: 3,  shot: 'サロン入口・空間の全体感',         telop: { text: 'UTAKATA',                style: 'main' } },
-      { start: 3,  end: 7,  shot: 'カウンセリング・状態を見る',       telop: { text: '今日の状態を見る',       style: 'sub'  } },
-      { start: 7,  end: 12, shot: '施術ハイライト 1',                  telop: null },
-      { start: 12, end: 17, shot: '施術ハイライト 2',                  telop: { text: 'その日に合わせて整える', style: 'main' } },
-      { start: 17, end: 22, shot: 'お客様の呼吸・表情',                telop: { text: '自分に戻る',             style: 'main' } },
-      { start: 22, end: 26, shot: '静かな空間（キャンドル）',          telop: { text: '整える、ということ',     style: 'main' } },
-      { start: 26, end: 30, shot: 'サロン情報・案内',                  telop: { text: 'UTAKATA\nご予約はDMから', style: 'cta' } }
-    ]
+  clay: {
+    name: 'クレイ',
+    top: { bg: '#FAF7F2', text: '#2C2C2C' },
+    bot: { bg: '#B89178', text: '#FAF7F2' }
   }
 };
 
-// ===== テロップスタイル定義（FFmpegパラメータ） =====
-const TELOP_STYLES = {
-  // 主題（明朝 / クリーム背景）
-  main: {
-    fontsize: 56,
-    fontcolor: '0x2C2C2C',
-    boxcolor: '0xFAF7F2@0.92',
-    boxborderw: 22,
-    // y position from top: 18% of height
-    y: 'h*0.18'
-  },
-  // 補足（細ゴシック / ダーク背景）
-  sub: {
-    fontsize: 30,
-    fontcolor: '0xFAF7F2',
-    boxcolor: '0x2D3838@0.75',
-    boxborderw: 16,
-    // y position from bottom: 22% from bottom
-    y: 'h*0.72'
-  },
-  // CTA（細ゴシック / クレイ背景）
-  cta: {
-    fontsize: 26,
-    fontcolor: '0xFAF7F2',
-    boxcolor: '0xB89178@0.92',
-    boxborderw: 14,
-    // y position from bottom
-    y: 'h*0.80'
-  }
+// ===== レイアウト定数（1080×1920ベース） =====
+const LAYOUT = {
+  W: 1080, H: 1920,
+  TOP_H: 280,
+  VIDEO_H: 1360,
+  BOT_H: 280,
+  TOP_FONT_SIZE: 64,
+  BOT_FONT_SIZE: 52,
+  FADE: 0.4
 };
 
-// ===== 状態管理 =====
+// ===== 状態 =====
 const state = {
-  template: null,
-  clips: {},      // sceneIndex -> { file, url, name }
-  bgm: null,      // { file, name } or null
+  video: null,           // { file, url, duration }
+  bgm: null,             // { file, name }
+  style: 'washi',
+  topTelops: [],         // [{ id, text, start, end }]
+  botTelops: [],
   ffmpeg: null,
   ffmpegLoaded: false,
-  building: false
+  building: false,
+  scrubTime: 0
 };
 
-// ===== 初期化: テンプレ一覧 =====
-function renderTemplates() {
-  const grid = document.getElementById('templateGrid');
+let telopIdCounter = 1;
+
+// ===== 初期化: 枠スタイル =====
+function renderStyles() {
+  const grid = document.getElementById('styleGrid');
   grid.innerHTML = '';
-  for (const key of Object.keys(TEMPLATES)) {
-    const t = TEMPLATES[key];
+  for (const [key, s] of Object.entries(FRAME_STYLES)) {
     const card = document.createElement('div');
-    card.className = 'template-card';
+    card.className = 'style-card' + (state.style === key ? ' selected' : '');
     card.dataset.key = key;
     card.innerHTML = `
-      <div class="num">${t.num}</div>
-      <div class="name">${t.name}</div>
-      <div class="sub">${t.sub}</div>
+      <div class="mini">
+        <div style="background:${s.top.bg}"></div>
+        <div class="mid"></div>
+        <div style="background:${s.bot.bg}"></div>
+      </div>
+      <div class="label">${s.name}</div>
     `;
-    card.addEventListener('click', () => selectTemplate(key));
+    card.addEventListener('click', () => selectStyle(key));
     grid.appendChild(card);
   }
 }
 
-function selectTemplate(key) {
-  state.template = key;
-  state.clips = {};
-  document.querySelectorAll('.template-card').forEach(c => {
+function selectStyle(key) {
+  state.style = key;
+  document.querySelectorAll('.style-card').forEach(c => {
     c.classList.toggle('selected', c.dataset.key === key);
   });
-  renderScenes();
-  document.getElementById('scenesSection').classList.add('active');
-  document.getElementById('bgmSection').classList.add('active');
-  document.getElementById('optionsSection').classList.add('active');
-  document.getElementById('buildSection').classList.add('active');
-  updateBuildButton();
+  applyStyleToPreview();
 }
 
-// ===== シーン一覧描画 =====
-function renderScenes() {
-  const tpl = TEMPLATES[state.template];
-  const list = document.getElementById('sceneList');
-  list.innerHTML = '';
+function applyStyleToPreview() {
+  const s = FRAME_STYLES[state.style];
+  const top = document.getElementById('prevTop');
+  const bot = document.getElementById('prevBot');
+  top.style.background = s.top.bg;
+  top.style.color = s.top.text;
+  bot.style.background = s.bot.bg;
+  bot.style.color = s.bot.text;
+}
 
-  tpl.scenes.forEach((scene, i) => {
-    const dur = scene.end - scene.start;
-    const hasClip = !!state.clips[i];
-    const clip = state.clips[i];
+// ===== 動画選択 =====
+function onVideoSelect(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (state.video?.url) URL.revokeObjectURL(state.video.url);
+  const url = URL.createObjectURL(f);
+  const probeVideo = document.createElement('video');
+  probeVideo.preload = 'metadata';
+  probeVideo.src = url;
+  probeVideo.onloadedmetadata = () => {
+    const duration = Math.min(probeVideo.duration, 60);
+    state.video = { file: f, url, duration, name: f.name };
+    renderVideoInfo();
+    setupPreviewVideo();
+    updateBuildButton();
+  };
+}
 
-    const slot = document.createElement('div');
-    slot.className = 'scene-slot';
-    slot.innerHTML = `
-      <div class="scene-head">
-        <div class="scene-num">${i + 1}</div>
-        <div class="scene-time">${dur.toFixed(1)}s</div>
-        ${scene.telop ? `<div class="scene-tag">テロップ</div>` : ''}
-      </div>
-      <div class="upload-zone ${hasClip ? 'has-clip' : ''}" data-scene="${i}">
-        ${hasClip
-          ? `<video src="${clip.url}" muted playsinline preload="metadata"></video>`
-          : `<div class="upload-empty">
-              <div class="icon">＋</div>
-              <div>クリップを選ぶ</div>
-              <div style="font-size:10px;margin-top:4px;opacity:0.7">${dur.toFixed(1)}秒で切り出し</div>
-            </div>`
-        }
-        ${scene.telop
-          ? `<div class="telop-preview ${scene.telop.style}">${escapeHtml(scene.telop.text)}</div>`
-          : ''}
-      </div>
-      <div class="scene-foot">
-        <div class="label-text">${escapeHtml(scene.shot)}</div>
-        ${hasClip ? `<div style="margin-top:3px;font-size:10px;">${escapeHtml(clip.name)}</div>` : ''}
-      </div>
-    `;
-    slot.querySelector('.upload-zone').addEventListener('click', () => pickClip(i));
-    list.appendChild(slot);
+function renderVideoInfo() {
+  const el = document.getElementById('videoInfo');
+  if (!state.video) {
+    el.innerHTML = '<span class="none">未選択</span>';
+    return;
+  }
+  el.innerHTML = `
+    <span class="name">${escapeHtml(state.video.name)}</span>
+    <span class="duration">${state.video.duration.toFixed(1)}秒</span>
+  `;
+}
+
+function setupPreviewVideo() {
+  const prevVideo = document.getElementById('prevVideo');
+  prevVideo.innerHTML = `<video id="prevVideoEl" src="${state.video.url}" muted playsinline preload="metadata"></video>`;
+  const v = document.getElementById('prevVideoEl');
+  v.addEventListener('loadedmetadata', () => {
+    const scrubber = document.getElementById('scrubber');
+    scrubber.max = state.video.duration;
+    scrubber.disabled = false;
+    document.getElementById('maxTime').textContent = state.video.duration.toFixed(1) + 's';
+    updateTelopForTime(0);
+  });
+  v.addEventListener('timeupdate', () => {
+    const scrubber = document.getElementById('scrubber');
+    scrubber.value = v.currentTime;
+    state.scrubTime = v.currentTime;
+    document.getElementById('curTime').textContent = v.currentTime.toFixed(1) + 's';
+    updateTelopForTime(v.currentTime);
   });
 }
 
-function pickClip(sceneIdx) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'video/*';
-  input.onchange = (e) => {
-    const f = e.target.files[0];
-    if (!f) return;
-    if (state.clips[sceneIdx] && state.clips[sceneIdx].url) {
-      URL.revokeObjectURL(state.clips[sceneIdx].url);
-    }
-    state.clips[sceneIdx] = {
-      file: f,
-      url: URL.createObjectURL(f),
-      name: f.name
-    };
-    renderScenes();
-    updateBuildButton();
-  };
-  input.click();
+// プレビュー部のクリックで再生/停止（初期化時に1回だけ登録）
+document.getElementById('prevVideo').addEventListener('click', () => {
+  const v = document.getElementById('prevVideoEl');
+  if (!v) return;
+  if (v.paused) v.play().catch(() => {}); else v.pause();
+});
+
+// ===== スクラブバー =====
+document.getElementById('scrubber').addEventListener('input', (e) => {
+  const t = parseFloat(e.target.value);
+  state.scrubTime = t;
+  document.getElementById('curTime').textContent = t.toFixed(1) + 's';
+  const v = document.getElementById('prevVideoEl');
+  if (v) v.currentTime = t;
+  updateTelopForTime(t);
+});
+
+// ===== テロップ管理 =====
+function addTelop(pos) {
+  const list = pos === 'top' ? state.topTelops : state.botTelops;
+  const duration = state.video?.duration || 30;
+  // 既存の最後の終了時刻から開始
+  const lastEnd = list.length > 0 ? list[list.length - 1].end : 0;
+  const start = lastEnd;
+  const end = Math.min(start + 5, duration);
+  list.push({
+    id: telopIdCounter++,
+    text: '',
+    start: start,
+    end: end
+  });
+  renderTelopList(pos);
+  updateTelopForTime(state.scrubTime);
+}
+
+function quickAddTelop(pos, text) {
+  const list = pos === 'top' ? state.topTelops : state.botTelops;
+  const duration = state.video?.duration || 30;
+  const lastEnd = list.length > 0 ? list[list.length - 1].end : 0;
+  const start = lastEnd;
+  const end = Math.min(start + 5, duration);
+  list.push({
+    id: telopIdCounter++,
+    text: text.replace(/\\n/g, '\n'),
+    start: start,
+    end: end
+  });
+  renderTelopList(pos);
+  updateTelopForTime(state.scrubTime);
+}
+
+function deleteTelop(pos, id) {
+  if (pos === 'top') {
+    state.topTelops = state.topTelops.filter(t => t.id !== id);
+  } else {
+    state.botTelops = state.botTelops.filter(t => t.id !== id);
+  }
+  renderTelopList(pos);
+  updateTelopForTime(state.scrubTime);
+}
+
+function updateTelopField(pos, id, field, value) {
+  const list = pos === 'top' ? state.topTelops : state.botTelops;
+  const t = list.find(t => t.id === id);
+  if (!t) return;
+  if (field === 'text') {
+    t[field] = value;
+  } else {
+    t[field] = parseFloat(value) || 0;
+  }
+  updateTelopForTime(state.scrubTime);
+}
+
+function renderTelopList(pos) {
+  const list = pos === 'top' ? state.topTelops : state.botTelops;
+  const containerId = pos === 'top' ? 'topTelopList' : 'botTelopList';
+  const container = document.getElementById(containerId);
+  if (list.length === 0) {
+    container.innerHTML = '<div class="telop-card empty">テロップなし（クイック追加 ↓ または「+ 追加」）</div>';
+    return;
+  }
+  container.innerHTML = list.map(t => `
+    <div class="telop-card">
+      <div>
+        <textarea class="telop-text-input" rows="1" placeholder="テキストを入力（改行可）"
+          oninput="updateTelopField('${pos}', ${t.id}, 'text', this.value)">${escapeHtml(t.text)}</textarea>
+        <div class="time-row">
+          <label>表示</label>
+          <input type="number" step="0.1" min="0" value="${t.start.toFixed(1)}"
+            oninput="updateTelopField('${pos}', ${t.id}, 'start', this.value)">
+          <span>〜</span>
+          <input type="number" step="0.1" min="0" value="${t.end.toFixed(1)}"
+            oninput="updateTelopField('${pos}', ${t.id}, 'end', this.value)">
+          <label>秒</label>
+        </div>
+      </div>
+      <button class="delete-btn" onclick="deleteTelop('${pos}', ${t.id})" title="削除">×</button>
+    </div>
+  `).join('');
+}
+
+// ===== プレビュー: 現在時刻のテロップ表示 =====
+function updateTelopForTime(t) {
+  const topActive = state.topTelops.find(tp => t >= tp.start && t < tp.end && tp.text);
+  const botActive = state.botTelops.find(tp => t >= tp.start && t < tp.end && tp.text);
+
+  const topEl = document.getElementById('prevTop');
+  const botEl = document.getElementById('prevBot');
+
+  if (topActive) {
+    topEl.querySelector('.telop-text').textContent = topActive.text;
+    topEl.classList.remove('empty');
+  } else {
+    topEl.querySelector('.telop-text').textContent = state.topTelops.length ? '' : '（上の枠）';
+    topEl.classList.add('empty');
+  }
+  if (botActive) {
+    botEl.querySelector('.telop-text').textContent = botActive.text;
+    botEl.classList.remove('empty');
+  } else {
+    botEl.querySelector('.telop-text').textContent = state.botTelops.length ? '' : '（下の枠）';
+    botEl.classList.add('empty');
+  }
 }
 
 // ===== BGM =====
@@ -685,27 +814,20 @@ function clearBgm() {
   document.getElementById('bgmInput').value = '';
 }
 
-// ===== ビルドボタン制御 =====
+// ===== ビルドボタン状態 =====
 function updateBuildButton() {
   const btn = document.getElementById('buildBtn');
   const status = document.getElementById('buildStatus');
-  if (!state.template) {
+  if (!state.video) {
     btn.disabled = true;
-    status.textContent = 'テンプレートを選んでください';
-    return;
-  }
-  const tpl = TEMPLATES[state.template];
-  const missing = [];
-  for (let i = 0; i < tpl.scenes.length; i++) {
-    if (!state.clips[i]) missing.push(i + 1);
-  }
-  if (missing.length > 0) {
-    btn.disabled = true;
-    status.textContent = `シーン ${missing.join(', ')} のクリップが未設定（残り${missing.length}本）`;
+    status.textContent = '動画を選んでください';
     return;
   }
   btn.disabled = state.building;
-  status.textContent = '準備OK。書き出しを開始できます。';
+  const totalTelops = state.topTelops.length + state.botTelops.length;
+  status.textContent = totalTelops > 0
+    ? `動画 ${state.video.duration.toFixed(1)}秒 / テロップ ${totalTelops}個`
+    : `動画 ${state.video.duration.toFixed(1)}秒 / テロップなし（動画だけ枠付きで書き出します）`;
 }
 
 // ===== Util =====
@@ -715,17 +837,20 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// drawtext用のテキストエスケープ
 function escapeDrawtext(text) {
   return text
     .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\\\'")
+    .replace(/'/g, "\\'")
     .replace(/:/g, '\\:')
     .replace(/,/g, '\\,')
     .replace(/\[/g, '\\[')
     .replace(/\]/g, '\\]')
     .replace(/%/g, '\\%')
     .replace(/\n/g, '\\n');
+}
+
+function hexToFFcolor(hex) {
+  return '0x' + hex.replace('#', '').toUpperCase();
 }
 
 function showError(msg) {
@@ -738,7 +863,7 @@ function hideError() {
   document.getElementById('errorBox').classList.remove('active');
 }
 
-// ===== 進捗表示 =====
+// ===== 進捗 =====
 let progressSteps = [];
 function setProgress(steps) {
   progressSteps = steps;
@@ -748,14 +873,14 @@ function setProgress(steps) {
     `<div class="progress-row"><div class="progress-dot ${s.state}"></div><div>${s.label}</div></div>`
   ).join('');
 }
-function markStep(idx, stepState) {
+function markStep(idx, st) {
   if (progressSteps[idx]) {
-    progressSteps[idx].state = stepState;
+    progressSteps[idx].state = st;
     setProgress(progressSteps);
   }
 }
 
-// ===== FFmpeg ロード =====
+// ===== FFmpeg =====
 async function loadFfmpeg() {
   if (state.ffmpegLoaded) return state.ffmpeg;
   const ffmpeg = new FFmpeg();
@@ -770,48 +895,55 @@ async function loadFfmpeg() {
   return ffmpeg;
 }
 
-// ===== シーン毎にフィルタ文字列を構築 =====
-// （pre-trim 段階で既に scale/crop/fps 済みなので、ここでは色補正とテロップのみ）
-function buildSceneFilter(sceneIdx, scene, opts) {
-  const dur = scene.end - scene.start;
-  let chain = [];
-  if (opts.grading) {
-    chain.push(`eq=saturation=0.85:contrast=1.05:gamma_r=1.04:gamma_b=0.96`);
-  }
-  if (scene.telop) {
-    const style = TELOP_STYLES[scene.telop.style];
-    const text = escapeDrawtext(scene.telop.text);
-    const fadeIn = 0.5;
-    const fadeOut = 0.5;
-    const alphaExpr = `if(lt(t\\,${fadeIn})\\,t/${fadeIn}\\,if(gt(t\\,${(dur - fadeOut).toFixed(2)})\\,(${dur}-t)/${fadeOut}\\,1))`;
-    chain.push(
-      `drawtext=fontfile=font.ttf:text='${text}':fontsize=${style.fontsize}:fontcolor=${style.fontcolor}:x=(w-text_w)/2:y=${style.y}:box=1:boxcolor=${style.boxcolor}:boxborderw=${style.boxborderw}:line_spacing=10:alpha='${alphaExpr}'`
+// ===== drawtext フィルタ生成 =====
+function buildDrawtextChain(telops, position, frameStyle) {
+  // position: 'top' or 'bot'
+  // y座標: top枠 = (TOP_H - text_h)/2 (枠中央)
+  //        bot枠 = h - BOT_H + (BOT_H - text_h)/2 = h - 140 - text_h/2
+  const yExpr = position === 'top'
+    ? `(${LAYOUT.TOP_H}-text_h)/2`
+    : `h-${LAYOUT.BOT_H}+(${LAYOUT.BOT_H}-text_h)/2`;
+  const textColor = position === 'top'
+    ? hexToFFcolor(frameStyle.top.text)
+    : hexToFFcolor(frameStyle.bot.text);
+  const fontSize = position === 'top' ? LAYOUT.TOP_FONT_SIZE : LAYOUT.BOT_FONT_SIZE;
+  const fontFile = position === 'top' ? 'top.ttf' : 'bot.ttf';
+
+  const filters = [];
+  for (const t of telops) {
+    if (!t.text.trim()) continue;
+    const text = escapeDrawtext(t.text);
+    const fadeIn = LAYOUT.FADE;
+    const fadeOut = LAYOUT.FADE;
+    const fadeOutStart = (t.end - fadeOut).toFixed(2);
+    const dur = (t.end - t.start).toFixed(2);
+    const offsetIn = t.start.toFixed(2);
+    // 表示時刻を絶対時間で
+    const alphaExpr = `if(lt(t\\,${(t.start + fadeIn).toFixed(2)})\\,(t-${offsetIn})/${fadeIn}\\,if(gt(t\\,${fadeOutStart})\\,(${t.end.toFixed(2)}-t)/${fadeOut}\\,1))`;
+    const enableExpr = `between(t\\,${offsetIn}\\,${t.end.toFixed(2)})`;
+    filters.push(
+      `drawtext=fontfile=${fontFile}:text='${text}':fontsize=${fontSize}:fontcolor=${textColor}:x=(w-text_w)/2:y=${yExpr}:line_spacing=14:enable='${enableExpr}':alpha='${alphaExpr}'`
     );
   }
-  // フィルタが何もなければ null フィルタを入れる
-  if (chain.length === 0) chain.push('null');
-  return `[${sceneIdx}:v]${chain.join(',')}[v${sceneIdx}]`;
+  return filters;
 }
 
-// ===== メイン: 動画ビルド =====
+// ===== メイン: ビルド =====
 window.buildVideo = async function() {
   if (state.building) return;
+  if (!state.video) return;
   hideError();
   state.building = true;
   document.getElementById('buildBtn').disabled = true;
-  document.getElementById('outputSection').classList.remove('active');
+  document.getElementById('outputArea').classList.remove('active');
 
-  const tpl = TEMPLATES[state.template];
-  const opts = {
-    grading: document.getElementById('optGrading').checked,
-    bgmDb: parseInt(document.getElementById('optBgmVolume').value, 10) || -15
-  };
+  const dur = state.video.duration;
+  const frameStyle = FRAME_STYLES[state.style];
 
   const steps = [
     { label: 'FFmpeg.wasm を読み込み中', state: 'active' },
-    { label: 'フォント・クリップを準備中', state: '' },
-    { label: 'BGM を準備中', state: '' },
-    { label: '動画を合成中（時間がかかります）', state: '' },
+    { label: 'フォント・動画を準備中', state: '' },
+    { label: '枠付き動画を合成中（時間がかかります）', state: '' },
     { label: '完了', state: '' }
   ];
   setProgress(steps);
@@ -820,125 +952,121 @@ window.buildVideo = async function() {
     const ffmpeg = await loadFfmpeg();
     markStep(0, 'done'); markStep(1, 'active');
 
-    // フォント
-    const fontRes = await fetch('/ffmpeg/font.ttf');
-    if (!fontRes.ok) throw new Error('フォントの読み込みに失敗しました');
-    await ffmpeg.writeFile('font.ttf', new Uint8Array(await fontRes.arrayBuffer()));
+    // フォントを2種類書き込む（明朝 / ゴシック）
+    const topFontRes = await fetch('/fonts/ShipporiMinchoB1-Bold.ttf');
+    if (!topFontRes.ok) throw new Error('明朝フォントの読み込みに失敗');
+    await ffmpeg.writeFile('top.ttf', new Uint8Array(await topFontRes.arrayBuffer()));
 
-    // クリップ毎にトリム → 中間ファイル化（事前に短く切ってからフィルタに渡す）
-    for (let i = 0; i < tpl.scenes.length; i++) {
-      const scene = tpl.scenes[i];
-      const dur = scene.end - scene.start;
-      const clip = state.clips[i];
-      const inName = `in_${i}.mp4`;
-      const outName = `clip_${i}.mp4`;
-      await ffmpeg.writeFile(inName, await fetchFile(clip.file));
+    const botFontRes = await fetch('/ffmpeg/font.ttf');
+    if (!botFontRes.ok) throw new Error('ゴシックフォントの読み込みに失敗');
+    await ffmpeg.writeFile('bot.ttf', new Uint8Array(await botFontRes.arrayBuffer()));
 
-      await ffmpeg.exec([
-        '-i', inName,
-        '-t', String(dur + 0.1),
-        '-an',
-        '-c:v', 'libx264',
-        '-preset', 'ultrafast',
-        '-pix_fmt', 'yuv420p',
-        '-vf', `scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30`,
-        '-y',
-        outName
-      ]);
-      await ffmpeg.deleteFile(inName);
-    }
-    markStep(1, 'done'); markStep(2, 'active');
+    // 動画
+    await ffmpeg.writeFile('input.video', await fetchFile(state.video.file));
 
     // BGM
     if (state.bgm) {
-      await ffmpeg.writeFile('bgm.in', await fetchFile(state.bgm.file));
+      await ffmpeg.writeFile('bgm.audio', await fetchFile(state.bgm.file));
     }
-    markStep(2, 'done'); markStep(3, 'active');
 
-    // フィルタ文字列を構築（テロップ + 連結）
-    const filterParts = [];
-    for (let i = 0; i < tpl.scenes.length; i++) {
-      filterParts.push(buildSceneFilter(i, tpl.scenes[i], opts));
+    markStep(1, 'done'); markStep(2, 'active');
+
+    // フィルタ構築
+    const topFilters = buildDrawtextChain(state.topTelops, 'top', frameStyle);
+    const botFilters = buildDrawtextChain(state.botTelops, 'bot', frameStyle);
+    const allDrawtexts = [...topFilters, ...botFilters];
+
+    const topColor = hexToFFcolor(frameStyle.top.bg);
+    const botColor = hexToFFcolor(frameStyle.bot.bg);
+
+    // メインフィルタチェーン
+    // 1. 動画を 1080x1360 にスケール+クロップ
+    // 2. 上下に色帯を作成
+    // 3. vstack で連結
+    // 4. drawtext を順に適用
+    const videoFilter = `[0:v]scale=${LAYOUT.W}:${LAYOUT.VIDEO_H}:force_original_aspect_ratio=increase,crop=${LAYOUT.W}:${LAYOUT.VIDEO_H},trim=duration=${dur.toFixed(2)},setpts=PTS-STARTPTS,fps=30[v_mid]`;
+    const topBand = `color=c=${topColor}:s=${LAYOUT.W}x${LAYOUT.TOP_H}:d=${dur.toFixed(2)}:r=30[v_top]`;
+    const botBand = `color=c=${botColor}:s=${LAYOUT.W}x${LAYOUT.BOT_H}:d=${dur.toFixed(2)}:r=30[v_bot]`;
+    const stack = `[v_top][v_mid][v_bot]vstack=inputs=3[v_stacked]`;
+
+    let lastLabel = '[v_stacked]';
+    const drawParts = [];
+    if (allDrawtexts.length > 0) {
+      // 全drawtextを1チェインで(カンマ区切り)
+      drawParts.push(`${lastLabel}${allDrawtexts.join(',')}[v_out]`);
+      lastLabel = '[v_out]';
+    } else {
+      drawParts.push(`${lastLabel}null[v_out]`);
+      lastLabel = '[v_out]';
     }
-    const concatInputs = tpl.scenes.map((_, i) => `[v${i}]`).join('');
-    filterParts.push(`${concatInputs}concat=n=${tpl.scenes.length}:v=1:a=0[outv]`);
 
-    const filterComplex = filterParts.join(';');
+    let filter = [videoFilter, topBand, botBand, stack, ...drawParts].join(';');
 
-    // filter_complex は1つにまとめる（複数渡しは不可）
-    let fullFilter = filterComplex;
+    // BGM
     if (state.bgm) {
-      const bgmGain = Math.pow(10, opts.bgmDb / 20);
-      const bgmIdx = tpl.scenes.length;
-      fullFilter += `;[${bgmIdx}:a]volume=${bgmGain.toFixed(3)},atrim=duration=30,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st=29.2:d=0.8[outa]`;
+      const bgmGain = Math.pow(10, -15 / 20);  // -15dB
+      filter += `;[1:a]volume=${bgmGain.toFixed(3)},atrim=duration=${dur.toFixed(2)},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st=${(dur - 0.8).toFixed(2)}:d=0.8[outa]`;
     }
 
-    const finalArgs = [];
-    for (let i = 0; i < tpl.scenes.length; i++) {
-      finalArgs.push('-i', `clip_${i}.mp4`);
-    }
-    if (state.bgm) {
-      finalArgs.push('-i', 'bgm.in');
-    }
-    finalArgs.push('-filter_complex', fullFilter);
-    finalArgs.push('-map', '[outv]');
-    if (state.bgm) {
-      finalArgs.push('-map', '[outa]');
-    }
-    finalArgs.push(
+    // 引数組み立て
+    const args = ['-i', 'input.video'];
+    if (state.bgm) args.push('-i', 'bgm.audio');
+    args.push('-filter_complex', filter);
+    args.push('-map', '[v_out]');
+    if (state.bgm) args.push('-map', '[outa]');
+    args.push(
       '-c:v', 'libx264',
       '-preset', 'ultrafast',
       '-pix_fmt', 'yuv420p',
       '-r', '30'
     );
-    if (state.bgm) {
-      finalArgs.push('-c:a', 'aac', '-b:a', '128k');
-    }
-    finalArgs.push('-t', '30', '-y', 'output.mp4');
+    if (state.bgm) args.push('-c:a', 'aac', '-b:a', '128k');
+    args.push('-t', dur.toFixed(2), '-y', 'output.mp4');
 
-    console.log('FFmpeg args:', finalArgs);
-    console.log('Filter complex:', fullFilter);
+    console.log('FFmpeg args:', args);
+    console.log('Filter:', filter);
 
-    await ffmpeg.exec(finalArgs);
-    markStep(3, 'done'); markStep(4, 'active');
+    await ffmpeg.exec(args);
 
-    // 出力読み込み
+    markStep(2, 'done'); markStep(3, 'active');
+
     const data = await ffmpeg.readFile('output.mp4');
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     const url = URL.createObjectURL(blob);
 
-    const video = document.getElementById('outputVideo');
-    video.src = url;
+    const outVideo = document.getElementById('outputVideo');
+    outVideo.src = url;
     document.getElementById('downloadLink').href = url;
-    const fileName = `utakata-${tpl.name.replace(/[^a-zA-Z0-9一-龯ぁ-んァ-ヶー]/g, '_')}-${Date.now()}.mp4`;
-    document.getElementById('downloadLink').download = fileName;
-    document.getElementById('outputSection').classList.add('active');
+    document.getElementById('downloadLink').download = `utakata-reel-${Date.now()}.mp4`;
+    document.getElementById('outputArea').classList.add('active');
 
-    markStep(4, 'done');
+    markStep(3, 'done');
 
     // クリーンアップ
-    for (let i = 0; i < tpl.scenes.length; i++) {
-      try { await ffmpeg.deleteFile(`clip_${i}.mp4`); } catch (e) {}
-    }
+    try { await ffmpeg.deleteFile('input.video'); } catch(e) {}
+    try { await ffmpeg.deleteFile('output.mp4'); } catch(e) {}
     if (state.bgm) {
-      try { await ffmpeg.deleteFile('bgm.in'); } catch (e) {}
+      try { await ffmpeg.deleteFile('bgm.audio'); } catch(e) {}
     }
-    try { await ffmpeg.deleteFile('output.mp4'); } catch (e) {}
 
   } catch (err) {
     console.error(err);
     showError(`書き出しに失敗しました: ${err.message || err}`);
-    const activeIdx = progressSteps.findIndex(s => s.state === 'active');
-    if (activeIdx >= 0) markStep(activeIdx, 'error');
+    const idx = progressSteps.findIndex(s => s.state === 'active');
+    if (idx >= 0) markStep(idx, 'error');
   } finally {
     state.building = false;
-    document.getElementById('buildBtn').disabled = false;
     updateBuildButton();
   }
 };
 
 // ===== 初期化 =====
-renderTemplates();
+renderStyles();
+applyStyleToPreview();
+renderTelopList('top');
+renderTelopList('bot');
+updateTelopForTime(0);
+updateBuildButton();
 </script>
 </body>
 </html>
