@@ -141,10 +141,10 @@ def slide_cover():
              align=PP_ALIGN.CENTER, bold=True)
     # メインタイトル
     add_text(slide, 0, Inches(2.9), SW, Inches(0.9),
-             "SNS運用", font=F_MINCHO, size=40, color=C_PRIMARY_DK,
+             "SNS運用ご提案", font=F_MINCHO, size=40, color=C_PRIMARY_DK,
              align=PP_ALIGN.CENTER, line_spacing=1.2)
     add_text(slide, 0, Inches(3.8), SW, Inches(0.9),
-             "ご提案・第2回", font=F_MINCHO, size=40, color=C_PRIMARY_DK,
+             "第2回", font=F_MINCHO, size=40, color=C_PRIMARY_DK,
              align=PP_ALIGN.CENTER, line_spacing=1.2)
     # 装飾ライン
     deco = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
@@ -153,11 +153,11 @@ def slide_cover():
     deco.line.fill.background()
     # サブ
     add_text(slide, 0, Inches(5.2), SW, Inches(0.5),
-             "前回のヒアリング振り返り ＆ 次の打ち手のご報告",
+             "前回ヒアリングの振り返りと提案",
              font=F_MINCHO, size=13, color=C_TEXT, align=PP_ALIGN.CENTER)
     # メタ
     add_text(slide, 0, Inches(6.5), SW, Inches(0.3),
-             "PRESENTED BY  山田     /     2026",
+             "山田     /     2026",
              font=F_MONO, size=9, color=C_MUTED, align=PP_ALIGN.CENTER)
 
 # ============================================================
@@ -166,14 +166,14 @@ def slide_cover():
 def slide_agenda():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA", "02 / 12")
-    add_title_block(slide, "本日お話しすること",
-                    "前回お聞きしたお悩みをもとに、整理したものをご報告します")
+    add_title_block(slide, "アジェンダ",
+                    "前回ヒアリングの振り返りと、今回の提案2点")
 
     items = [
-        ("01", "前回のヒアリング振り返り",        "どんなお悩みが出てきたか、その整理"),
-        ("02", "【提案①】プロンプト一覧のご紹介", "ChatGPTで投稿の言葉づくりを楽にする道具"),
-        ("03", "【提案②】動画エディタの使い方レクチャー", "テロップ位置を悩まずに済む、ブラウザツール"),
-        ("04", "次回までのアクション",            "3週間で無理なく取り入れる順番"),
+        ("01", "前回ヒアリングの振り返り",  "前回出た課題の整理"),
+        ("02", "提案① プロンプト一覧",     "投稿の言葉づくり用ツール"),
+        ("03", "提案② 動画エディタ",       "テロップ位置調整不要の編集ツール"),
+        ("04", "次回までのアクション",      "3週間の導入計画"),
     ]
     y = Inches(2.5)
     for num, title, desc in items:
@@ -186,7 +186,7 @@ def slide_agenda():
         add_hline(slide, Inches(0.7), y + Inches(0.85), Inches(8.6))
         y += Inches(1.0)
 
-    add_footer(slide, "30分のお時間で、ゆっくりお話しできればと思います")
+    add_footer(slide, "所要 約30分")
 
 # ============================================================
 # スライド 03: ヒアリング振り返り（お悩み4枚）
@@ -194,8 +194,8 @@ def slide_agenda():
 def slide_pains():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  振り返り", "03 / 12")
-    add_title_block(slide, "前回のヒアリングで見えてきたこと",
-                    "うたかた様から伺ったお悩み・違和感を、4つに整理しました")
+    add_title_block(slide, "前回ヒアリングで出た課題",
+                    "ヒアリング内容を4点に整理")
 
     pains = [
         ("PAIN 01", "リール投稿の続け方が分からない。\n月1本がやっと"),
@@ -222,7 +222,7 @@ def slide_pains():
         add_text(slide, x + Inches(0.25), y + Inches(0.6), card_w - Inches(0.4), Inches(1.2),
                  text, font=F_MINCHO, size=13, color=C_TEXT, line_spacing=1.5)
 
-    add_footer(slide, "※ 前回のメモから抜粋。漏れがあれば後ほど追記します")
+    add_footer(slide, "※ ヒアリングメモから抜粋")
 
 # ============================================================
 # スライド 04: 3つの軸
@@ -230,8 +230,8 @@ def slide_pains():
 def slide_axes():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  振り返り", "04 / 12")
-    add_title_block(slide, "大事にしていらっしゃること",
-                    "これを軸に、すべての提案を組み立てています")
+    add_title_block(slide, "ブランドの軸",
+                    "提案の判断基準")
 
     axes = [
         ("静", "静かに整える", "派手な表現ではなく、\n呼吸が落ち着くような\n言葉と画"),
@@ -258,7 +258,7 @@ def slide_axes():
                  desc, font=F_GOTHIC, size=10, color=C_MUTED,
                  align=PP_ALIGN.CENTER, line_spacing=1.6)
 
-    add_footer(slide, "この3つの軸から外れたものはご提案しません", accent=True)
+    add_footer(slide, "提案はこの軸に沿って組み立て", accent=True)
 
 # ============================================================
 # スライド 05: 解決の方向性
@@ -266,8 +266,8 @@ def slide_axes():
 def slide_approach():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  解決の方向性", "05 / 12")
-    add_title_block(slide, "3つのアプローチで楽にしていきます",
-                    "「すべてAI任せ」ではなく、人の判断は残しつつ手間だけ減らす")
+    add_title_block(slide, "3つのアプローチ",
+                    "AI任せにせず、人の判断を残す設計")
 
     steps = [
         ("① 言葉づくり", "ChatGPTを\n道具として使う\nうたかた専用プロンプト"),
@@ -293,7 +293,7 @@ def slide_approach():
                      align=PP_ALIGN.CENTER)
     # 補足
     add_text(slide, Inches(0.7), Inches(5.4), Inches(8.6), Inches(0.6),
-             "本日は ① と ② をご紹介します。\n③（撮影設計）は別途お渡ししたガイドをご覧ください。",
+             "本日は ① と ② を扱う。\n③（撮影設計）は別資料を参照。",
              font=F_MINCHO, size=12, color=C_TEXT, line_spacing=1.7)
 
     add_footer(slide, "参考資料:  salon-highlight-guide.html")
@@ -314,14 +314,14 @@ def slide_proposal_1():
     add_text(slide, bx + Inches(0.5), by + Inches(0.75), bw, Inches(0.7),
              "プロンプト一覧", font=F_MINCHO, size=26, color=C_WHITE)
     add_text(slide, bx + Inches(0.5), by + Inches(1.45), bw, Inches(0.4),
-             "「何を投稿しよう？」を5秒で解決する道具箱",
+             "ChatGPTで投稿の言葉づくりを高速化",
              font=F_GOTHIC, size=11, color=C_SUBTLE)
 
     # 本文
     add_text(slide, Inches(0.7), Inches(3.7), Inches(8.6), Inches(2.5),
-             "ChatGPTに「リール5本」と打つだけで、\n"
-             "うたかたらしい台本が5本まとめて生成される、というイメージです。\n\n"
-             "毎回ゼロから考える必要がなくなります。",
+             "ChatGPTに「リール5本」のような短いトリガー語を打つと、\n"
+             "ブランドに沿った投稿案がまとめて出力される仕組み。\n\n"
+             "投稿のたびにゼロから考える時間を削減。",
              font=F_MINCHO, size=14, color=C_TEXT, line_spacing=1.9)
 
     add_footer(slide, "実物: salon-prompts.html  /  15種類のトリガー（次ページ）")
@@ -333,7 +333,7 @@ def slide_triggers():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  提案 ①", "07 / 12")
     add_title_block(slide, "15種類のトリガー",
-                    "用途別に短い言葉を1つ打つだけで、必要な発信素材が出てきます")
+                    "用途別のトリガー語を15種類用意")
 
     triggers = [
         ("リール5本", "REEL"), ("フィード3本", "FEED"), ("ストーリーズ", "STORY"),
@@ -361,7 +361,7 @@ def slide_triggers():
                  en, font=F_MONO, size=8, color=C_ACCENT,
                  align=PP_ALIGN.CENTER, bold=True)
 
-    add_footer(slide, "たとえば「今月どうしよう」→「月次テーマ」と打つだけ", accent=True)
+    add_footer(slide, "例: 月の方針が定まらない時は「月次テーマ」", accent=True)
 
 # ============================================================
 # スライド 08: 使い方フロー
@@ -370,7 +370,7 @@ def slide_prompt_flow():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  提案 ①", "08 / 12")
     add_title_block(slide, "使い方は3ステップ",
-                    "難しい操作は不要。事前準備は1回だけ。")
+                    "事前準備は1回のみ")
 
     steps = [
         ("1", "事前準備",   "ChatGPTに\nプロジェクト用\nプロンプトを貼る\n（最初の1回だけ）"),
@@ -407,10 +407,10 @@ def slide_prompt_flow():
                      align=PP_ALIGN.CENTER)
     # フッターメッセージ
     add_text(slide, 0, Inches(6.15), SW, Inches(0.4),
-             "投稿1本あたり 3〜5分 で言葉が決まります",
+             "1投稿あたり 3〜5分 で完成",
              font=F_GOTHIC, size=11, color=C_MUTED, align=PP_ALIGN.CENTER)
 
-    add_footer(slide, "本日その場で1回試してみましょう")
+    add_footer(slide, "本日デモを実施")
 
 # ============================================================
 # スライド 09: 提案②バナー
@@ -428,16 +428,16 @@ def slide_proposal_2():
     add_text(slide, bx + Inches(0.5), by + Inches(0.75), bw, Inches(0.7),
              "動画エディタ", font=F_MINCHO, size=26, color=C_WHITE)
     add_text(slide, bx + Inches(0.5), by + Inches(1.45), bw, Inches(0.4),
-             "テロップ位置を悩まずに済む、ブラウザで動く編集ツール",
+             "テロップ位置を悩まないブラウザ完結ツール",
              font=F_GOTHIC, size=11, color=C_SUBTLE)
 
     # 本文
     add_text(slide, Inches(0.7), Inches(3.7), Inches(8.6), Inches(2.8),
              "動画にテロップを重ねるのではなく、\n"
-             "動画の上下に固定された枠に文字を入れる仕組みです。\n\n"
-             "→ テロップが顔に被る心配がない\n"
-             "→ 位置調整がいらない\n"
-             "→ うたかたらしい統一感を保ったまま量産できる",
+             "動画の上下に固定の枠を設けて文字を入れる仕組み。\n\n"
+             "・テロップが顔に被らない\n"
+             "・位置調整が不要\n"
+             "・ブランドの統一感を保ったまま量産可能",
              font=F_MINCHO, size=13, color=C_TEXT, line_spacing=1.8)
 
     add_footer(slide, "アクセス: utakata-subtitle.vercel.app/salon-editor.html")
@@ -449,7 +449,7 @@ def slide_editor_visual():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  提案 ②", "10 / 12")
     add_title_block(slide, "エディタの仕組み",
-                    "3つのエリアが固定され、その中で動画とテロップが流れます")
+                    "上下の固定枠と中央の動画エリアの3層構造")
 
     # 左: モック (9:16)
     mock_x = Inches(0.9); mock_y = Inches(2.5)
@@ -481,11 +481,11 @@ def slide_editor_visual():
         ("上の枠（明朝）に主題テロップ",
          "例:「呼吸が浅い日に」「自分に戻る時間」"),
         ("真ん中に動画",
-         "撮影素材をそのまま入れるだけ"),
+         "撮影素材をそのまま入力"),
         ("下の枠（ゴシック）にCTA",
          "例:「UTAKATA / ご予約はDMから」"),
         ("時間で切り替え可能",
-         "0〜15秒は文言A、15〜30秒は文言Bのように"),
+         "0〜15秒は文言A、15〜30秒は文言B"),
     ]
     fx = Inches(3.6); fy = Inches(2.5); fw = Inches(5.7)
     for title, desc in feats:
@@ -497,7 +497,7 @@ def slide_editor_visual():
                  desc, font=F_GOTHIC, size=10, color=C_MUTED)
         fy += Inches(0.95)
 
-    add_footer(slide, "テロップが動画に被らない構造 → 顔出しシーンも安心", accent=True)
+    add_footer(slide, "テロップが動画に被らない構造", accent=True)
 
 # ============================================================
 # スライド 11: エディタ4ステップ
@@ -506,13 +506,13 @@ def slide_editor_steps():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  提案 ②", "11 / 12")
     add_title_block(slide, "使い方は4ステップ",
-                    "本日その場で一緒に1本作ってみましょう")
+                    "本日デモで実演")
 
     steps = [
-        ("STEP 1", "動画を選ぶ", "スマホで撮った\n動画ファイルを1本選択。\n30秒前後がベスト。"),
-        ("STEP 2", "枠を選ぶ",   "和紙風 / コントラスト /\nクレイの3種から\n雰囲気を選ぶ。"),
+        ("STEP 1", "動画を選ぶ", "スマホで撮った\n動画ファイルを1本選択。\n30秒前後が目安。"),
+        ("STEP 2", "枠を選ぶ",   "和紙風 / コントラスト /\nクレイの3種から選択。"),
         ("STEP 3", "テロップを入れる", "上枠・下枠それぞれ、\n時間と文字を入力。\nチップで定型文も。"),
-        ("STEP 4", "書き出し",   "ボタン1つでMP4が完成。\nそのままインスタに\nアップ可能。"),
+        ("STEP 4", "書き出し",   "ボタン1つでMP4が出力。\nそのままインスタに\nアップ可能。"),
     ]
     cw = Inches(2.0); ch = Inches(2.7)
     gap = Inches(0.15)
@@ -536,7 +536,7 @@ def slide_editor_steps():
                  desc, font=F_GOTHIC, size=10, color=C_MUTED, line_spacing=1.6)
 
     add_text(slide, 0, Inches(5.55), SW, Inches(0.4),
-             "慣れれば 1本あたり10分 で完成します",
+             "1本あたり目安 10分",
              font=F_GOTHIC, size=11, color=C_MUTED, align=PP_ALIGN.CENTER)
 
     add_footer(slide, "※ アプリのインストール不要。スマホのSafari/Chromeで使えます")
@@ -548,15 +548,15 @@ def slide_roadmap():
     slide = add_blank_slide()
     add_header(slide, "UTAKATA  —  次のアクション", "12 / 12")
     add_title_block(slide, "次回までの3週間ロードマップ",
-                    "無理せず、まずは小さく試すところから")
+                    "段階的に導入")
 
     weeks = [
         ("WEEK 01", "プロンプトを試す",
-         "・ChatGPTにプロジェクト用プロンプトを貼る\n・「リール5本」を1回試す\n・気になった案を1つ選ぶ"),
+         "・ChatGPTにプロジェクト用プロンプトを設定\n・「リール5本」を1回実行\n・出力から1案を選定"),
         ("WEEK 02", "エディタで1本作る",
-         "・普段の撮影素材を1本用意\n・エディタで枠付き動画にする\n・書き出してインスタに投稿"),
-        ("WEEK 03", "慣れる・調整",
-         "・もう1〜2本作ってみる\n・使いにくい部分をメモ\n・次回ご相談"),
+         "・撮影素材を1本用意\n・エディタで枠付き動画化\n・書き出してインスタに投稿"),
+        ("WEEK 03", "運用に乗せる",
+         "・もう1〜2本作成\n・使いにくい部分をメモ\n・次回ヒアリングで共有"),
     ]
     card_w = Inches(2.7); card_h = Inches(3.4)
     gap = Inches(0.2)
@@ -572,28 +572,25 @@ def slide_roadmap():
         add_text(slide, x + Inches(0.25), y + Inches(1.4), card_w - Inches(0.5), Inches(1.8),
                  desc, font=F_GOTHIC, size=10, color=C_TEXT, line_spacing=1.7)
 
-    add_footer(slide, "次回お会いした時に「やってみてどうだったか」を一緒に振り返ります",
-               accent=True)
+    add_footer(slide, "次回ヒアリングで運用状況を確認", accent=True)
 
 # ============================================================
 # スライド 13: 終わり
 # ============================================================
 def slide_closing():
     slide = add_blank_slide(C_DEEP)
-    add_text(slide, 0, Inches(2.5), SW, Inches(1.0),
-             "うたかたが続くように", font=F_MINCHO, size=36, color=C_WHITE,
+    add_text(slide, 0, Inches(3.0), SW, Inches(1.0),
+             "以上", font=F_MINCHO, size=36, color=C_WHITE,
              align=PP_ALIGN.CENTER)
     # 装飾ライン
     deco = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-        Inches(4.7), Inches(4.0), Inches(0.6), Emu(9525))
+        Inches(4.7), Inches(4.2), Inches(0.6), Emu(9525))
     deco.fill.solid(); deco.fill.fore_color.rgb = C_ACCENT
     deco.line.fill.background()
-    add_text(slide, 0, Inches(4.5), SW, Inches(2.0),
-             "「整える時間」を、整えながら届けられるように。\n"
-             "無理せず、長く続けられる仕組みを\n"
-             "これからも一緒に組み立てさせてください。",
+    add_text(slide, 0, Inches(4.7), SW, Inches(0.6),
+             "ご質問・ご意見をお願いします",
              font=F_GOTHIC, size=12, color=C_SUBTLE,
-             align=PP_ALIGN.CENTER, line_spacing=2.0)
+             align=PP_ALIGN.CENTER)
 
 # ===== 実行 =====
 slide_cover()
