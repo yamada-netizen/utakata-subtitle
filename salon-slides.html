@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた SNS運用ご提案 第2回</title>
+<style>
+  :root {
+    --c-primary: #5d7b7c;
+    --c-primary-dark: #45615f;
+    --c-accent: #b89178;
+    --c-accent-dark: #a07a62;
+    --c-bg: #faf7f2;
+    --c-card: #ffffff;
+    --c-text: #2c2c2c;
+    --c-muted: #7a7a7a;
+    --c-line: #e8e2d8;
+    --c-soft: #f5f1ea;
+    --c-deep: #2d3838;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #ebe6db;
+    color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN",
+                 "Hiragino Kaku Gothic ProN", "Yu Mincho", "Yu Gothic", "Meiryo", serif;
+    line-height: 1.7; letter-spacing: 0.02em;
+  }
+
+  /* スライド本体: 4:3 = 1024x768 */
+  .deck { padding: 24px; }
+  .slide {
+    width: 1024px; height: 768px;
+    background: var(--c-bg);
+    margin: 0 auto 32px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    padding: 56px 72px;
+    position: relative;
+    display: flex; flex-direction: column;
+    page-break-after: always;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  /* スライド共通: ヘッダー */
+  .slide-header {
+    border-bottom: 1px solid var(--c-line);
+    padding-bottom: 12px; margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .slide-header .brand {
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.3em; font-weight: 600;
+    font-family: "SF Mono", monospace;
+  }
+  .slide-header .page-num {
+    font-size: 11px; color: var(--c-muted);
+    font-family: "SF Mono", monospace;
+    letter-spacing: 0.1em;
+  }
+
+  /* スライドタイトル */
+  .slide h1, .slide h2 {
+    color: var(--c-primary-dark);
+    margin: 0; letter-spacing: 0.05em;
+  }
+  .slide h2.slide-title {
+    font-size: 28px; font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .slide .subtitle {
+    font-size: 13px; color: var(--c-muted);
+    margin: 0 0 28px;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+
+  /* 表紙 */
+  .slide.cover {
+    background: linear-gradient(135deg, var(--c-bg) 0%, var(--c-soft) 100%);
+    justify-content: center; align-items: center;
+    text-align: center;
+    padding: 80px 100px;
+  }
+  .slide.cover .brand-mark {
+    font-size: 14px; color: var(--c-muted);
+    letter-spacing: 0.5em; margin-bottom: 40px;
+  }
+  .slide.cover h1 {
+    font-size: 52px; font-weight: 500;
+    letter-spacing: 0.15em; line-height: 1.4;
+    margin-bottom: 16px;
+  }
+  .slide.cover .cover-sub {
+    font-size: 18px; color: var(--c-text);
+    letter-spacing: 0.15em; margin: 12px 0 60px;
+  }
+  .slide.cover .cover-meta {
+    font-size: 13px; color: var(--c-muted);
+    letter-spacing: 0.2em;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+  .slide.cover .cover-deco {
+    width: 60px; height: 1px;
+    background: var(--c-accent);
+    margin: 40px auto;
+  }
+
+  /* アジェンダ */
+  .agenda-list {
+    list-style: none; padding: 0; margin: 20px 0;
+    counter-reset: agenda;
+  }
+  .agenda-list li {
+    counter-increment: agenda;
+    padding: 16px 0 16px 56px;
+    position: relative;
+    border-bottom: 1px dashed var(--c-line);
+    font-size: 17px;
+    color: var(--c-text);
+    line-height: 1.5;
+  }
+  .agenda-list li:last-child { border-bottom: none; }
+  .agenda-list li::before {
+    content: counter(agenda, decimal-leading-zero);
+    position: absolute; left: 0; top: 16px;
+    width: 40px;
+    font-family: "SF Mono", monospace;
+    font-size: 13px;
+    color: var(--c-accent);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .agenda-list .desc {
+    display: block; font-size: 12px; color: var(--c-muted);
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+    margin-top: 4px;
+  }
+
+  /* ヒアリング振り返り */
+  .pain-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin: 20px 0;
+  }
+  .pain-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-accent);
+    padding: 16px 20px; border-radius: 4px;
+  }
+  .pain-card .label {
+    font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.2em; font-weight: 700;
+    font-family: "SF Mono", monospace;
+    margin-bottom: 6px;
+  }
+  .pain-card .text {
+    font-size: 15px; line-height: 1.6;
+    color: var(--c-text);
+  }
+
+  /* 軸カード */
+  .axis-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin: 24px 0;
+  }
+  .axis-card {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 24px 18px;
+    text-align: center;
+  }
+  .axis-card .icon {
+    font-size: 24px; color: var(--c-accent);
+    margin-bottom: 12px;
+    font-family: "Hiragino Mincho ProN", serif;
+  }
+  .axis-card h3 {
+    margin: 0 0 8px; font-size: 16px;
+    color: var(--c-primary-dark); font-weight: 600;
+  }
+  .axis-card p {
+    margin: 0; font-size: 12px;
+    color: var(--c-muted); line-height: 1.6;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+
+  /* 解決の3軸 */
+  .approach-flow {
+    display: grid; grid-template-columns: 1fr 30px 1fr 30px 1fr;
+    gap: 0; align-items: center;
+    margin: 28px 0;
+  }
+  .approach-step {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    padding: 18px 16px; border-radius: 4px;
+    text-align: center;
+  }
+  .approach-step h3 {
+    margin: 0 0 6px; font-size: 14px;
+    color: var(--c-primary-dark); font-weight: 600;
+  }
+  .approach-step p {
+    font-size: 11px; color: var(--c-muted);
+    margin: 0; line-height: 1.5;
+  }
+  .approach-arrow {
+    color: var(--c-accent); font-size: 20px;
+    text-align: center;
+  }
+
+  /* 提案バナー */
+  .proposal-banner {
+    background: var(--c-deep); color: var(--c-bg);
+    padding: 28px 36px; border-radius: 4px;
+    margin: 20px 0 24px;
+  }
+  .proposal-banner .label {
+    font-size: 11px; color: var(--c-accent);
+    letter-spacing: 0.3em; font-weight: 700;
+    font-family: "SF Mono", monospace;
+    margin-bottom: 8px;
+  }
+  .proposal-banner h2 {
+    color: white; font-size: 26px; margin: 0;
+    letter-spacing: 0.1em;
+    font-family: "Hiragino Mincho ProN", serif;
+    font-weight: 500;
+  }
+  .proposal-banner .sub {
+    font-size: 13px; color: rgba(250, 247, 242, 0.7);
+    margin-top: 8px;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+
+  /* トリガー一覧グリッド */
+  .trigger-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+  }
+  .trigger-chip {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    padding: 10px 8px; border-radius: 4px;
+    text-align: center; font-size: 12px;
+    color: var(--c-primary-dark);
+    font-family: "Hiragino Mincho ProN", serif;
+    font-weight: 600;
+  }
+  .trigger-chip .en {
+    display: block; font-size: 9px;
+    color: var(--c-accent);
+    font-family: "SF Mono", monospace;
+    letter-spacing: 0.1em; margin-top: 2px;
+  }
+
+  /* 使い方フロー */
+  .step-flow {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    gap: 0; align-items: center;
+    margin: 28px 0 16px;
+  }
+  .step-flow .step {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    padding: 22px 16px; border-radius: 4px;
+    text-align: center;
+  }
+  .step-flow .step .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--c-primary); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    font-family: "SF Mono", monospace;
+    margin: 0 auto 10px;
+  }
+  .step-flow .step h4 {
+    margin: 0 0 4px; font-size: 13px;
+    color: var(--c-primary-dark);
+  }
+  .step-flow .step p {
+    font-size: 11px; color: var(--c-muted);
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+  .step-flow .arrow {
+    color: var(--c-accent); font-size: 18px;
+    text-align: center;
+  }
+
+  /* Edit エディタ紹介 */
+  .editor-visual {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 28px;
+    margin: 20px 0;
+    align-items: center;
+  }
+  .editor-mock {
+    aspect-ratio: 9/16;
+    background: white; border: 1px solid var(--c-line);
+    border-radius: 6px;
+    display: grid;
+    grid-template-rows: 14.6% 1fr 14.6%;
+    overflow: hidden;
+  }
+  .editor-mock .frame-top {
+    background: var(--c-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Hiragino Mincho ProN", serif;
+    font-size: 12px; color: var(--c-text);
+    font-weight: 600;
+  }
+  .editor-mock .frame-vid {
+    background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+    color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .editor-mock .frame-bot {
+    background: var(--c-accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+  .editor-features { font-size: 14px; line-height: 1.9; }
+  .editor-features li {
+    margin-bottom: 8px; list-style: none;
+    position: relative; padding-left: 22px;
+  }
+  .editor-features li::before {
+    content: '○'; position: absolute; left: 0;
+    color: var(--c-accent); font-weight: 700;
+  }
+  .editor-features li strong {
+    color: var(--c-primary-dark);
+  }
+
+  /* エディタ4ステップ */
+  .editor-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .editor-step {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-top: 3px solid var(--c-primary);
+    padding: 16px 14px; border-radius: 4px;
+  }
+  .editor-step .step-tag {
+    font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.2em; font-weight: 700;
+    font-family: "SF Mono", monospace;
+    margin-bottom: 6px;
+  }
+  .editor-step h4 {
+    margin: 0 0 6px; font-size: 14px;
+    color: var(--c-primary-dark);
+  }
+  .editor-step p {
+    margin: 0; font-size: 11px; color: var(--c-muted);
+    line-height: 1.6;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+
+  /* ロードマップ */
+  .roadmap {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 24px 0;
+  }
+  .roadmap-week {
+    background: var(--c-card); border: 1px solid var(--c-line);
+    padding: 20px 18px; border-radius: 4px;
+  }
+  .roadmap-week .week-tag {
+    font-size: 10px; color: var(--c-accent);
+    letter-spacing: 0.2em; font-weight: 700;
+    font-family: "SF Mono", monospace;
+    margin-bottom: 8px;
+  }
+  .roadmap-week h4 {
+    margin: 0 0 10px; font-size: 14px;
+    color: var(--c-primary-dark);
+  }
+  .roadmap-week ul {
+    margin: 0; padding-left: 16px;
+    font-size: 12px; color: var(--c-text);
+    line-height: 1.7;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+
+  /* クロージング */
+  .slide.closing {
+    background: linear-gradient(135deg, var(--c-deep) 0%, #1f2828 100%);
+    color: var(--c-bg);
+    justify-content: center; align-items: center;
+    text-align: center;
+  }
+  .slide.closing h1 {
+    font-size: 44px; color: white;
+    letter-spacing: 0.2em; font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .slide.closing .msg {
+    font-size: 15px; color: rgba(250, 247, 242, 0.75);
+    letter-spacing: 0.1em; line-height: 2;
+    max-width: 520px;
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+  }
+  .slide.closing .deco-line {
+    width: 60px; height: 1px;
+    background: var(--c-accent);
+    margin: 24px auto;
+  }
+
+  /* キャプション (フッター) */
+  .slide-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed var(--c-line);
+    font-size: 11px; color: var(--c-muted);
+    font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+    letter-spacing: 0.05em;
+  }
+  .slide-footer.tip {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+
+  /* ナビゲーション (画面用のみ) */
+  .nav {
+    position: fixed; top: 16px; right: 16px;
+    background: var(--c-card); border: 1px solid var(--c-line);
+    border-radius: 4px; padding: 8px 14px;
+    font-size: 11px; color: var(--c-muted);
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-family: "SF Mono", monospace;
+  }
+  .nav a {
+    color: var(--c-primary); text-decoration: none;
+    margin-left: 8px;
+  }
+  .nav a:hover { text-decoration: underline; }
+
+  /* 印刷時 */
+  @media print {
+    body { background: white; }
+    .deck { padding: 0; }
+    .slide {
+      box-shadow: none;
+      margin: 0;
+      page-break-after: always;
+    }
+    .nav { display: none; }
+    @page { size: 1024px 768px; margin: 0; }
+  }
+
+  /* スクリーン小サイズ時 */
+  @media (max-width: 1100px) {
+    .slide {
+      transform-origin: top left;
+      transform: scale(0.85);
+      margin-bottom: -100px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  🖨 印刷でPDF保存可
+  <a href="#s1">先頭</a>
+  <a href="#s12">最後</a>
+</div>
+
+<div class="deck">
+
+  <!-- スライド 1: 表紙 -->
+  <div class="slide cover" id="s1">
+    <div class="brand-mark">UTAKATA</div>
+    <h1>SNS運用<br>ご提案・第2回</h1>
+    <div class="cover-deco"></div>
+    <div class="cover-sub">前回のヒアリング振り返り<br>＆ 次の打ち手のご報告</div>
+    <div class="cover-meta">PRESENTED BY 山田 / 2026</div>
+  </div>
+
+  <!-- スライド 2: アジェンダ -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <span class="brand">UTAKATA</span>
+      <span class="page-num">02 / 12</span>
+    </div>
+    <h2 class="slide-title">本日お話しすること</h2>
+    <p class="subtitle">前回お聞きしたお悩みをもとに、整理したものをご報告します</p>
+
+    <ol class="agenda-list">
+      <li>
+        前回のヒアリング振り返り
+        <span class="desc">どんなお悩みが出てきたか、その整理</span>
+      </li>
+      <li>
+        【提案①】プロンプト一覧のご紹介
+        <span class="desc">ChatGPTで投稿の言葉づくりを楽にする道具</span>
+      </li>
+      <li>
+        【提案②】動画エディタの使い方レクチャー
+        <span class="desc">テロップ位置を悩まずに済む、ブラウザツール</span>
+      </li>
+      <li>
+        次回までのアクション
+        <span class="desc">3週間で無理なく取り入れる順番</span>
+      </li>
+    </ol>
+
+    <div class="slide-footer">
+      30分のお時間で、ゆっくりお話しできればと思います
+    </div>
+  </div>
+
+  <!-- スライド 3: 前回ヒアリングで出たお悩み -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 振り返り</span>
+      <span class="page-num">03 / 12</span>
+    </div>
+    <h2 class="slide-title">前回のヒアリングで見えてきたこと</h2>
+    <p class="subtitle">うたかた様から伺ったお悩み・違和感を、4つに整理しました</p>
+
+    <div class="pain-list">
+      <div class="pain-card">
+        <div class="label">PAIN 01</div>
+        <div class="text">リール投稿の<strong>続け方</strong>が分からない。月1本がやっと</div>
+      </div>
+      <div class="pain-card">
+        <div class="label">PAIN 02</div>
+        <div class="text">編集に<strong>時間がかかりすぎる</strong>。テロップ位置に悩む</div>
+      </div>
+      <div class="pain-card">
+        <div class="label">PAIN 03</div>
+        <div class="text">「うたかたらしさ」を<strong>ブレずに保ちたい</strong></div>
+      </div>
+      <div class="pain-card">
+        <div class="label">PAIN 04</div>
+        <div class="text">「劇的変化」を煽る発信に<strong>違和感がある</strong></div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      ※ 前回のメモから抜粋。漏れがあれば後ほど追記します
+    </div>
+  </div>
+
+  <!-- スライド 4: うたかたの軸 -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 振り返り</span>
+      <span class="page-num">04 / 12</span>
+    </div>
+    <h2 class="slide-title">大事にしていらっしゃること</h2>
+    <p class="subtitle">これを軸に、すべての提案を組み立てています</p>
+
+    <div class="axis-grid">
+      <div class="axis-card">
+        <div class="icon">静</div>
+        <h3>静かに整える</h3>
+        <p>派手な表現ではなく、<br>呼吸が落ち着くような<br>言葉と画</p>
+      </div>
+      <div class="axis-card">
+        <div class="icon">間</div>
+        <h3>押し売りしない</h3>
+        <p>来てください、より<br>「そういう時間がある」と<br>そっと置いておく</p>
+      </div>
+      <div class="axis-card">
+        <div class="icon">続</div>
+        <h3>無理なく続ける</h3>
+        <p>毎日張り切る必要はない<br>月3〜4本のリズムで<br>長く続ける</p>
+      </div>
+    </div>
+
+    <div class="slide-footer tip">
+      この3つの軸から外れたものはご提案しません
+    </div>
+  </div>
+
+  <!-- スライド 5: 解決の方向性 -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 解決の方向性</span>
+      <span class="page-num">05 / 12</span>
+    </div>
+    <h2 class="slide-title">3つのアプローチで楽にしていきます</h2>
+    <p class="subtitle">「すべてAI任せ」ではなく、人の判断は残しつつ手間だけ減らす</p>
+
+    <div class="approach-flow">
+      <div class="approach-step">
+        <h3>① 言葉づくり</h3>
+        <p>ChatGPTを<br>道具として使う<br>うたかた専用プロンプト</p>
+      </div>
+      <div class="approach-arrow">▶</div>
+      <div class="approach-step">
+        <h3>② 動画編集</h3>
+        <p>テロップ位置を<br>悩まないツール<br>ブラウザで完結</p>
+      </div>
+      <div class="approach-arrow">▶</div>
+      <div class="approach-step">
+        <h3>③ 撮影設計</h3>
+        <p>1シーン1動画で<br>短く分けて撮影<br>編集が10分に</p>
+      </div>
+    </div>
+
+    <p style="font-size:13px;margin:24px 0 0;line-height:1.9;">
+      本日は <strong style="color:var(--c-primary-dark);">①と②</strong> をご紹介します。<br>
+      ③（撮影設計）は別途お渡ししたガイドをご覧ください。
+    </p>
+
+    <div class="slide-footer">
+      参考資料: salon-highlight-guide.html
+    </div>
+  </div>
+
+  <!-- スライド 6: 提案① プロンプト一覧 -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ①</span>
+      <span class="page-num">06 / 12</span>
+    </div>
+
+    <div class="proposal-banner">
+      <div class="label">PROPOSAL 01</div>
+      <h2>プロンプト一覧</h2>
+      <div class="sub">「何を投稿しよう？」を5秒で解決する道具箱</div>
+    </div>
+
+    <p style="font-size:14px;line-height:1.9;">
+      ChatGPTに「<strong style="color:var(--c-accent);">リール5本</strong>」と打つだけで、<br>
+      うたかたらしい台本が5本まとめて生成される、というイメージです。<br><br>
+      <strong style="color:var(--c-primary-dark);">毎回ゼロから考える必要がなくなります。</strong>
+    </p>
+
+    <div class="slide-footer">
+      実物: <strong>salon-prompts.html</strong>　/　15種類のトリガー（次ページ）
+    </div>
+  </div>
+
+  <!-- スライド 7: トリガー15種 -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ①</span>
+      <span class="page-num">07 / 12</span>
+    </div>
+    <h2 class="slide-title">15種類のトリガー</h2>
+    <p class="subtitle">用途別に短い言葉を1つ打つだけで、必要な発信素材が出てきます</p>
+
+    <div class="trigger-grid">
+      <div class="trigger-chip">リール5本<span class="en">REEL</span></div>
+      <div class="trigger-chip">フィード3本<span class="en">FEED</span></div>
+      <div class="trigger-chip">ストーリーズ<span class="en">STORY</span></div>
+      <div class="trigger-chip">キャプション<span class="en">CAPTION</span></div>
+      <div class="trigger-chip">ハッシュタグ<span class="en">HASH</span></div>
+
+      <div class="trigger-chip">月次テーマ<span class="en">MONTH</span></div>
+      <div class="trigger-chip">週次テーマ<span class="en">WEEK</span></div>
+      <div class="trigger-chip">部位別投稿<span class="en">PART</span></div>
+      <div class="trigger-chip">悩み言語化<span class="en">PAIN</span></div>
+      <div class="trigger-chip">考え方を伝える<span class="en">VOICE</span></div>
+
+      <div class="trigger-chip">予約導線<span class="en">CTA</span></div>
+      <div class="trigger-chip">LINE配信<span class="en">LINE</span></div>
+      <div class="trigger-chip">お客様の声<span class="en">VOC</span></div>
+      <div class="trigger-chip">季節投稿<span class="en">SEASON</span></div>
+      <div class="trigger-chip">NGチェック<span class="en">NG</span></div>
+    </div>
+
+    <div class="slide-footer tip">
+      たとえば「今月どうしよう」→「月次テーマ」と打つだけ
+    </div>
+  </div>
+
+  <!-- スライド 8: 使い方フロー -->
+  <div class="slide" id="s8">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ①</span>
+      <span class="page-num">08 / 12</span>
+    </div>
+    <h2 class="slide-title">使い方は3ステップ</h2>
+    <p class="subtitle">難しい操作は不要。事前準備は1回だけ。</p>
+
+    <div class="step-flow">
+      <div class="step">
+        <div class="num">1</div>
+        <h4>事前準備</h4>
+        <p>ChatGPTに<br>プロジェクト用<br>プロンプトを貼る<br>（最初の1回だけ）</p>
+      </div>
+      <div class="arrow">▶</div>
+      <div class="step">
+        <div class="num">2</div>
+        <h4>毎日の使用</h4>
+        <p>トリガー語を<br>1〜2語打つ<br>例:「リール5本」</p>
+      </div>
+      <div class="arrow">▶</div>
+      <div class="step">
+        <div class="num">3</div>
+        <h4>微調整</h4>
+        <p>出てきた案から<br>使える1つを選んで<br>言葉を少し直す</p>
+      </div>
+    </div>
+
+    <p style="font-size:13px;margin:24px 0 0;text-align:center;color:var(--c-muted);">
+      投稿1本あたり <strong style="color:var(--c-accent);">3〜5分</strong> で言葉が決まります
+    </p>
+
+    <div class="slide-footer">
+      本日その場で1回試してみましょう
+    </div>
+  </div>
+
+  <!-- スライド 9: 提案② Edit ツール -->
+  <div class="slide" id="s9">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ②</span>
+      <span class="page-num">09 / 12</span>
+    </div>
+
+    <div class="proposal-banner">
+      <div class="label">PROPOSAL 02</div>
+      <h2>動画エディタ</h2>
+      <div class="sub">テロップ位置を悩まずに済む、ブラウザで動く編集ツール</div>
+    </div>
+
+    <p style="font-size:14px;line-height:1.9;">
+      動画にテロップを<strong>重ねる</strong>のではなく、<br>
+      動画の<strong style="color:var(--c-accent);">上下に固定された枠</strong>に文字を入れる仕組みです。<br><br>
+      → テロップが顔に被る心配がない<br>
+      → 位置調整がいらない<br>
+      → うたかたらしい統一感を保ったまま量産できる
+    </p>
+
+    <div class="slide-footer">
+      アクセス: <strong>utakata-subtitle.vercel.app/salon-editor.html</strong>
+    </div>
+  </div>
+
+  <!-- スライド 10: エディタのレイアウト -->
+  <div class="slide" id="s10">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ②</span>
+      <span class="page-num">10 / 12</span>
+    </div>
+    <h2 class="slide-title">エディタの仕組み</h2>
+    <p class="subtitle">3つのエリアが固定され、その中で動画とテロップが流れます</p>
+
+    <div class="editor-visual">
+      <div class="editor-mock">
+        <div class="frame-top">呼吸が浅い日に</div>
+        <div class="frame-vid">▶ 動画が流れる場所</div>
+        <div class="frame-bot">UTAKATA / DM</div>
+      </div>
+      <ul class="editor-features">
+        <li><strong>上の枠（明朝）</strong>に主題テロップ<br>
+          例:「呼吸が浅い日に」「自分に戻る時間」</li>
+        <li><strong>真ん中</strong>に動画<br>
+          撮影素材をそのまま入れるだけ</li>
+        <li><strong>下の枠（ゴシック）</strong>にCTA<br>
+          例:「UTAKATA / ご予約はDMから」</li>
+        <li><strong>時間で切り替え可能</strong><br>
+          0〜15秒は文言A、15〜30秒は文言B のように</li>
+      </ul>
+    </div>
+
+    <div class="slide-footer tip">
+      テロップが動画に被らない構造 → 顔出しシーンも安心
+    </div>
+  </div>
+
+  <!-- スライド 11: エディタ4ステップ -->
+  <div class="slide" id="s11">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 提案 ②</span>
+      <span class="page-num">11 / 12</span>
+    </div>
+    <h2 class="slide-title">使い方は4ステップ</h2>
+    <p class="subtitle">本日その場で一緒に1本作ってみましょう</p>
+
+    <div class="editor-steps">
+      <div class="editor-step">
+        <div class="step-tag">STEP 1</div>
+        <h4>動画を選ぶ</h4>
+        <p>スマホで撮った動画ファイルを1本選択。30秒前後がベスト。</p>
+      </div>
+      <div class="editor-step">
+        <div class="step-tag">STEP 2</div>
+        <h4>枠を選ぶ</h4>
+        <p>和紙風 / コントラスト / クレイの3種から雰囲気を選ぶ。</p>
+      </div>
+      <div class="editor-step">
+        <div class="step-tag">STEP 3</div>
+        <h4>テロップを入れる</h4>
+        <p>上枠・下枠それぞれ、時間と文字を入力。チップで定型文も。</p>
+      </div>
+      <div class="editor-step">
+        <div class="step-tag">STEP 4</div>
+        <h4>書き出し</h4>
+        <p>ボタン1つでMP4が完成。そのままインスタにアップ可。</p>
+      </div>
+    </div>
+
+    <p style="font-size:13px;margin:18px 0 0;text-align:center;color:var(--c-muted);">
+      慣れれば <strong style="color:var(--c-accent);">1本あたり10分</strong> で完成します
+    </p>
+
+    <div class="slide-footer">
+      ※ アプリのインストール不要。スマホのSafari/Chromeで使えます
+    </div>
+  </div>
+
+  <!-- スライド 12: 次回までのアクション -->
+  <div class="slide" id="s12">
+    <div class="slide-header">
+      <span class="brand">UTAKATA — 次のアクション</span>
+      <span class="page-num">12 / 12</span>
+    </div>
+    <h2 class="slide-title">次回までの3週間ロードマップ</h2>
+    <p class="subtitle">無理せず、まずは小さく試すところから</p>
+
+    <div class="roadmap">
+      <div class="roadmap-week">
+        <div class="week-tag">WEEK 01</div>
+        <h4>プロンプトを試す</h4>
+        <ul>
+          <li>ChatGPTにプロジェクト用プロンプトを貼る</li>
+          <li>「リール5本」を1回試す</li>
+          <li>気になった案を1つ選ぶ</li>
+        </ul>
+      </div>
+      <div class="roadmap-week">
+        <div class="week-tag">WEEK 02</div>
+        <h4>エディタで1本作る</h4>
+        <ul>
+          <li>普段の撮影素材を1本用意</li>
+          <li>エディタで枠付き動画にする</li>
+          <li>書き出してインスタに投稿</li>
+        </ul>
+      </div>
+      <div class="roadmap-week">
+        <div class="week-tag">WEEK 03</div>
+        <h4>慣れる・調整</h4>
+        <ul>
+          <li>もう1〜2本作ってみる</li>
+          <li>使いにくい部分をメモ</li>
+          <li>次回ご相談</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slide-footer tip">
+      次回お会いした時に「やってみてどうだったか」を一緒に振り返ります
+    </div>
+  </div>
+
+  <!-- スライド 13: 終わり -->
+  <div class="slide closing">
+    <h1>うたかたが続くように</h1>
+    <div class="deco-line"></div>
+    <div class="msg">
+      「整える時間」を、整えながら届けられるように。<br>
+      無理せず、長く続けられる仕組みを<br>
+      これからも一緒に組み立てさせてください。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
