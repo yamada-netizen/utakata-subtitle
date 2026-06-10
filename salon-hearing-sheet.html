@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うたかた 業務フロー詳細ヒアリングシート</title>
+<style>
+  :root {
+    --c-text: #2c2c2c;
+    --c-muted: #6f6f6f;
+    --c-line: #d8d2c8;
+    --c-soft: #f5f1ea;
+    --c-bg: #faf7f2;
+    --c-accent: #b89178;
+    --c-head: #45615f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--c-bg); color: var(--c-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.7; font-size: 13px;
+  }
+  .container { max-width: 920px; margin: 0 auto; padding: 32px 28px 64px; }
+
+  header {
+    border-bottom: 2px solid var(--c-head);
+    padding-bottom: 18px; margin-bottom: 26px;
+  }
+  header .label {
+    font-size: 11px; color: var(--c-muted);
+    letter-spacing: 0.25em; margin-bottom: 8px; font-weight: 600;
+  }
+  header h1 {
+    margin: 0 0 8px; font-size: 22px;
+    color: var(--c-head); letter-spacing: 0.05em;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-weight: 600;
+  }
+  header .meta {
+    font-size: 11px; color: var(--c-muted);
+    display: flex; gap: 16px; margin-top: 8px;
+  }
+
+  h2 {
+    font-size: 16px; color: var(--c-head);
+    border-left: 4px solid var(--c-accent);
+    padding: 4px 0 4px 12px;
+    margin: 36px 0 14px;
+    font-weight: 600;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  }
+  h3 {
+    font-size: 14px; color: var(--c-text);
+    margin: 22px 0 10px;
+    font-weight: 600;
+  }
+  h3 .num {
+    display: inline-block;
+    background: var(--c-head); color: white;
+    width: 22px; text-align: center;
+    border-radius: 3px; margin-right: 8px;
+    font-family: "SF Mono", monospace; font-size: 11px;
+    padding: 1px 0; font-weight: 700;
+  }
+  p { margin: 8px 0; }
+  .lead { font-size: 13px; line-height: 1.8; color: var(--c-text); }
+  .lead-box {
+    background: white; border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-accent);
+    padding: 14px 18px; margin: 12px 0 20px;
+    font-size: 13px; line-height: 1.85;
+  }
+
+  /* 工程別テーブル */
+  table.phase-table {
+    width: 100%; border-collapse: collapse;
+    margin: 6px 0 20px; background: white;
+    page-break-inside: avoid;
+  }
+  table.phase-table th, table.phase-table td {
+    border: 1px solid var(--c-line);
+    padding: 9px 12px; text-align: left;
+    vertical-align: top;
+    font-size: 12px; line-height: 1.75;
+  }
+  table.phase-table th {
+    background: var(--c-soft);
+    color: var(--c-head);
+    font-weight: 600;
+    width: 130px;
+    white-space: nowrap;
+  }
+  table.phase-table ol, table.phase-table ul {
+    margin: 0; padding-left: 18px;
+  }
+  table.phase-table ol li, table.phase-table ul li {
+    margin-bottom: 3px;
+  }
+
+  /* チェックリスト */
+  table.check-table {
+    width: 100%; border-collapse: collapse;
+    margin: 10px 0 20px; background: white;
+    font-size: 12px;
+  }
+  table.check-table th, table.check-table td {
+    border: 1px solid var(--c-line);
+    padding: 8px 10px; text-align: left;
+    vertical-align: top;
+  }
+  table.check-table th {
+    background: var(--c-soft); color: var(--c-head);
+    font-weight: 600; font-size: 11px;
+  }
+  table.check-table td.chk {
+    width: 40px; text-align: center; font-size: 14px;
+  }
+  table.check-table td.memo { width: 240px; color: var(--c-muted); }
+
+  /* 成果物一覧 */
+  table.deliverable {
+    width: 100%; border-collapse: collapse;
+    margin: 10px 0 20px; background: white;
+    font-size: 12px;
+  }
+  table.deliverable th, table.deliverable td {
+    border: 1px solid var(--c-line);
+    padding: 8px 12px; text-align: left;
+    vertical-align: top;
+  }
+  table.deliverable th {
+    background: var(--c-soft); color: var(--c-head);
+    font-weight: 600; font-size: 11px;
+  }
+  table.deliverable td.cat {
+    background: #fbf8f3;
+    font-weight: 600; width: 130px;
+  }
+
+  .tip {
+    background: var(--c-soft); border-left: 3px solid var(--c-accent);
+    padding: 12px 16px; margin: 14px 0;
+    font-size: 12px; line-height: 1.8;
+  }
+  .tip strong { color: var(--c-accent); }
+
+  .toc {
+    background: white; border: 1px solid var(--c-line);
+    padding: 14px 20px; margin: 12px 0 26px;
+    font-size: 12px;
+  }
+  .toc ul { margin: 4px 0; padding-left: 18px; columns: 2; column-gap: 24px; }
+  .toc li { margin-bottom: 3px; break-inside: avoid; }
+  .toc strong { color: var(--c-head); }
+
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0 14px; max-width: none; }
+    h2 { page-break-after: avoid; }
+    h3 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+    @page { size: A4 portrait; margin: 14mm 14mm 16mm; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="label">UTAKATA — 業務フロー詳細ヒアリングシート</div>
+    <h1>うたかた 業務フロー詳細ヒアリングシート</h1>
+    <div class="meta">
+      <span>対象: 代表 / 個人エステサロン</span>
+      <span>形式: 訪問ヒアリング用 / 所要 約60〜90分</span>
+    </div>
+  </header>
+
+  <!-- ヒアリングの目的 -->
+  <h2>1. このシートについて</h2>
+  <div class="lead-box">
+    今回は、今後の方向性や理念をお聞きするのではなく、<strong>普段の業務の流れを一つずつ確認</strong>し、
+    時間を短縮できる部分や、仕組みにできる部分がないかを一緒に整理するためのヒアリングです。<br>
+    「できていないこと探し」ではなく、<strong>仕組みにすることで丁寧さを保ちやすくする</strong>視点で進めます。
+  </div>
+
+  <!-- ヒアリングの進め方 -->
+  <h2>2. ヒアリングの進め方</h2>
+  <p class="lead">
+    抽象的に「普段どうしていますか？」と聞くのではなく、<strong>最近来店された具体的なお客様お1人</strong>を思い浮かべていただき、
+    その方が予約する前から、来店、施術、会計、次回案内、記録、フォローまでを時系列で確認していきます。
+  </p>
+
+  <table class="phase-table">
+    <tr><th>思い浮かべるお客様</th><td>
+      最近来店された方の中で、<strong>新規 or 直近のリピーターから1名</strong>を選んでください（記名不要、頭の中だけでOK）
+    </td></tr>
+    <tr><th>確認の順序</th><td>
+      予約前 → 問い合わせ → 予約確定 → 来店前 → 来店 → 施術 → 会計 → 次回案内 → 記録 → フォロー → その後の管理 まで時系列で
+    </td></tr>
+    <tr><th>確認しないこと</th><td>
+      理念・将来像・お悩み相談（別の機会に伺います）
+    </td></tr>
+  </table>
+
+  <!-- 目次 -->
+  <h2>3. 工程一覧</h2>
+  <div class="toc">
+    <ul>
+      <li><strong>01</strong> 認知・問い合わせ前</li>
+      <li><strong>02</strong> 問い合わせ・初回相談</li>
+      <li><strong>03</strong> 予約受付・日程調整</li>
+      <li><strong>04</strong> 予約確定・来店前案内</li>
+      <li><strong>05</strong> 来店前準備</li>
+      <li><strong>06</strong> 来店・受付</li>
+      <li><strong>07</strong> カウンセリング</li>
+      <li><strong>08</strong> 施術準備</li>
+      <li><strong>09</strong> 施術中</li>
+      <li><strong>10</strong> 施術後の説明</li>
+      <li><strong>11</strong> 会計</li>
+      <li><strong>12</strong> 次回予約・来店目安の案内</li>
+      <li><strong>13</strong> 施術内容の記録</li>
+      <li><strong>14</strong> お礼・フォロー連絡</li>
+      <li><strong>15</strong> 顧客管理</li>
+      <li><strong>16</strong> SNS・LINE配信への活用</li>
+      <li><strong>17</strong> 備品・在庫・消耗品管理</li>
+      <li><strong>18</strong> 売上記録・会計処理</li>
+      <li><strong>19</strong> 月次の振り返り</li>
+    </ul>
+  </div>
+
+  <!-- 工程別ヒアリング項目 -->
+  <h2>4. 工程別ヒアリング項目</h2>
+
+  <!-- 01 -->
+  <h3><span class="num">01</span>認知・問い合わせ前</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>お客様がうたかたをどこで知り、何を見てから問い合わせに至るか。予約導線の現状。</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>直近で来てくださった新規のお客様は、どこでうたかたを知ったとおっしゃっていましたか？</li>
+        <li>Instagramのプロフィール・ハイライト・固定投稿で、「来店前にこれは見ておいてほしい」と思っている情報は何でしょうか？</li>
+        <li>料金表や予約フォームは、今どの導線から辿れるようになっていますか？</li>
+        <li>「問い合わせ前にここを見てから来た」と分かるお客様はいらっしゃいますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>Instagramプロフィール / ハイライト / 固定投稿 / 予約フォーム or 予約導線リンク</td></tr>
+    <tr><th>改善余地のポイント</th><td>予約導線がInstagram内で完結しているか / 料金や所要時間の表示が古くなっていないか / 初回FAQが分散していないか</td></tr>
+    <tr><th>想定される提案例</th><td>「来店前にご覧いただきたいこと」をまとめた固定投稿 / プロフィール下のリンク集（リットリンク等）整理 / 初回向けハイライト再構成</td></tr>
+  </table>
+
+  <!-- 02 -->
+  <h3><span class="num">02</span>問い合わせ・初回相談</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>問い合わせから初回予約までのやりとり方法、毎回手入力している説明文の有無</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>そのお客様、最初のご連絡はDM・LINE・電話のどれでしたか？</li>
+        <li>「初めてです」と言われた時に、必ず案内している内容はありますか？</li>
+        <li>予約が確定するまで、平均何往復くらいやりとりが発生しますか？</li>
+        <li>同じ説明を毎回手で打って案内している、と感じる場面はありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>直近のDM / LINE のやりとり履歴（記名部分は飛ばしてOK）</td></tr>
+    <tr><th>改善余地のポイント</th><td>初回対応で毎回同じ説明を手入力していないか / 返信に時間がかかっていないか / 質問の取りこぼしがないか</td></tr>
+    <tr><th>想定される提案例</th><td>初回問い合わせ返信テンプレ（DM / LINE 別） / よくある質問の定型文セット / 初回案内PDF</td></tr>
+  </table>
+
+  <!-- 03 -->
+  <h3><span class="num">03</span>予約受付・日程調整</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>空き枠の管理方法、日程調整にかかるやりとり、重複や漏れのリスク</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>空き状況は何で管理していますか？（Googleカレンダー / 紙の予約表 / 予約システム など）</li>
+        <li>ご希望の日時を伺ってから、最終確定まで何往復しますか？</li>
+        <li>過去にダブルブッキングや書き間違いが起きたことはありますか？</li>
+        <li>直前のキャンセル・変更には、どう対応していますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>予約カレンダー or 予約ノート / 予約システムの管理画面</td></tr>
+    <tr><th>改善余地のポイント</th><td>予約情報が一か所で見えているか / 日程調整のやりとりが減らせるか / キャンセル時の空き枠が活かせているか</td></tr>
+    <tr><th>想定される提案例</th><td>予約システム導入（STORES予約 / RESERVA 等） / Googleカレンダーの空き共有リンク / キャンセル待ちリスト</td></tr>
+  </table>
+
+  <!-- 04 -->
+  <h3><span class="num">04</span>予約確定・来店前案内</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>予約確定後にお客様へ案内する内容と方法</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>予約確定のメッセージは、毎回どんな内容を送っていますか？</li>
+        <li>来店場所・道順・駐車場の案内は、どこに書いてありますか？</li>
+        <li>来店前に「これだけは伝えたい」ことはありますか？（服装、メイク、食事など）</li>
+        <li>前日や当日のリマインドは送っていますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>予約確定メッセージのテンプレ / 地図・道順の案内文</td></tr>
+    <tr><th>改善余地のポイント</th><td>毎回手入力していないか / 伝え漏れがないか / 前日リマインドの抜けがないか</td></tr>
+    <tr><th>想定される提案例</th><td>予約確定テンプレ / 来店前案内文（地図リンク・服装・食事案内まで網羅） / 前日リマインドの半自動化</td></tr>
+  </table>
+
+  <!-- 05 -->
+  <h3><span class="num">05</span>来店前準備</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>お客様到着前に代表が行う準備作業の中身と時間</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>そのお客様の来店前、どんな準備をされましたか？（部屋、香り、音楽、温度、リネンなど）</li>
+        <li>準備にかかった時間はどのくらいでしたか？</li>
+        <li>「前回〇〇だったから今回はこうしよう」という調整はされましたか？</li>
+        <li>準備の途中で「あれを忘れていた」と気づくことはありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>準備のチェックリスト（あれば） / 前回の施術メモ</td></tr>
+    <tr><th>改善余地のポイント</th><td>頭の中だけで管理していないか / 前回情報が準備に活かされているか / 抜け漏れリスク</td></tr>
+    <tr><th>想定される提案例</th><td>来店前準備チェックリスト / お客様カードの「直前に見るメモ」欄 / リピーター用準備テンプレ</td></tr>
+  </table>
+
+  <!-- 06 -->
+  <h3><span class="num">06</span>来店・受付</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>お迎えから施術開始準備までの動線</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>そのお客様が来店された時、最初に行うことは何ですか？（お声がけ、上着、お茶、お手洗い案内など）</li>
+        <li>初回のお客様で、書いていただく書類はありますか？</li>
+        <li>受付からカウンセリング開始までは、どのくらい時間がかかりますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>お客様情報シート / 同意書 / 初回アンケート</td></tr>
+    <tr><th>改善余地のポイント</th><td>紙の書類が電子化できないか / お客様情報を来店前に取れないか</td></tr>
+    <tr><th>想定される提案例</th><td>来店時の流れカード / 来店前にスマホで記入できる事前フォーム（Googleフォーム等）</td></tr>
+  </table>
+
+  <!-- 07 -->
+  <h3><span class="num">07</span>カウンセリング</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>その日の状態確認と施術内容決定のプロセス、前回情報の参照方法</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>その日の体調やお肌の状態は、どのように伺っていますか？</li>
+        <li>カウンセリングシートのようなものはありますか？</li>
+        <li>初回と2回目以降で、聞く内容は変えていますか？</li>
+        <li>そのお客様の前回の状態は、どこで参照しましたか？（記憶 / カルテ / 写真 など）</li>
+        <li>カウンセリングの時間は、平均どのくらいですか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>カウンセリングシート / 前回のカルテ・メモ</td></tr>
+    <tr><th>改善余地のポイント</th><td>同じことを毎回ゼロから聞いていないか / 前回情報がすぐ参照できる仕組みがあるか / 記憶頼りになっていないか</td></tr>
+    <tr><th>想定される提案例</th><td>初回 / リピーター別のカウンセリングシート / 顧客カードに「前回の気づきメモ」欄 / カウンセリング項目チェック式</td></tr>
+  </table>
+
+  <!-- 08 -->
+  <h3><span class="num">08</span>施術準備</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>カウンセリング後、施術開始までの準備動作</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>その日の施術内容が決まってから、開始までに何分くらいかかりますか？</li>
+        <li>オイル・ストーン・キャンドルなどの準備は、どのタイミングで行いますか？</li>
+        <li>同じメニューでも、お客様によって変える部分はありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>メニュー別の準備手順メモ（あれば）</td></tr>
+    <tr><th>改善余地のポイント</th><td>動線にロスがないか / 何度も部屋を出入りしていないか</td></tr>
+    <tr><th>想定される提案例</th><td>メニュー別準備チェックリスト / 道具の配置マップ</td></tr>
+  </table>
+
+  <!-- 09 -->
+  <h3><span class="num">09</span>施術中</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>施術中の気づきと記録、SNS素材の取り扱い</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>施術中に「次回伝えたい」と思うことはありますか？それはどこに記録していますか？</li>
+        <li>お客様の反応で印象に残ったことを、後で思い出せる仕組みはありますか？</li>
+        <li>施術中に動画や写真を撮ることはありますか？お客様の許可はどうしていますか？</li>
+        <li>撮影した素材は、どこに保管していますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>施術中のメモ / 撮影素材フォルダ</td></tr>
+    <tr><th>改善余地のポイント</th><td>気づきが頭の中だけで消えていないか / SNS素材を取りこぼしていないか / 撮影許可の仕組みがあるか</td></tr>
+    <tr><th>想定される提案例</th><td>施術中の気づきメモ用テンプレ / 撮影許可の文面 / 許可済みお客様リスト / 素材の即時保存フロー</td></tr>
+  </table>
+
+  <!-- 10 -->
+  <h3><span class="num">10</span>施術後の説明</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>施術後の状態説明、ホームケアの伝え方</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>施術後、お客様にどんな説明をされていますか？</li>
+        <li>その説明は毎回同じですか、メニューやお客様によって変えますか？</li>
+        <li>ホームケアのアドバイスは、口頭・紙・メッセージ どれで渡していますか？</li>
+        <li>「同じこと毎回言ってるな」と感じる説明はありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>ホームケアの案内文 / 配布物</td></tr>
+    <tr><th>改善余地のポイント</th><td>毎回同じ口頭説明を繰り返していないか / 持ち帰り資料があるか / 後で見返せる形になっているか</td></tr>
+    <tr><th>想定される提案例</th><td>メニュー別ホームケアカード（紙 or LINE送付用PDF） / 共通説明はカード化、当日のことだけ口頭で</td></tr>
+  </table>
+
+  <!-- 11 -->
+  <h3><span class="num">11</span>会計</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>会計の流れ、支払い方法、売上記録の方法</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>支払い方法は何が使えますか？（現金、カード、PayPay、振込など）</li>
+        <li>会計にかかる時間はどのくらいですか？</li>
+        <li>領収書・レシートは発行していますか？</li>
+        <li>お客様ごとの支払い記録は、どこに残していますか？</li>
+        <li>その記録と、月の売上集計は同じ場所ですか？別ですか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>売上ノート / 会計帳簿 / 会計アプリの画面</td></tr>
+    <tr><th>改善余地のポイント</th><td>売上記録が分散していないか / 会計とその後の管理が二度手間になっていないか / 領収書発行に手間がかかっていないか</td></tr>
+    <tr><th>想定される提案例</th><td>会計時に売上記録を一元化（スプレッドシート or 会計アプリ） / 領収書テンプレ（PDF or QR）</td></tr>
+  </table>
+
+  <!-- 12 -->
+  <h3><span class="num">12</span>次回予約・来店目安の案内</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>次回予約の提案タイミング・方法、その場で予約しなかった方への後追い</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>次回の来店目安は、どのタイミングでお伝えしていますか？</li>
+        <li>その場で次回予約を取られる方の割合は、感覚でどのくらいですか？</li>
+        <li>「次回はこれくらいの間隔で」とお伝えする基準は何ですか？（メニュー別 / お客様の状態 / 感覚）</li>
+        <li>その場で予約しなかったお客様には、後日どうフォローしていますか？</li>
+        <li>後日フォローを忘れたことはありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>次回案内のメッセージ / 次回予約の管理表（あれば）</td></tr>
+    <tr><th>改善余地のポイント</th><td>次回案内が感覚頼りになっていないか / 後日フォローの抜けがないか / 次回予約率を把握しているか</td></tr>
+    <tr><th>想定される提案例</th><td>メニュー別の次回来店目安表 / 「未予約のまま帰った方」リスト / 1週間後フォローLINE文</td></tr>
+  </table>
+
+  <!-- 13 -->
+  <h3><span class="num">13</span>施術内容の記録</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>施術内容とお客様の状態の記録方法、記録のタイミング</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>その日の施術内容は、何で記録していますか？（紙のカルテ、スマホメモ、エクセル等）</li>
+        <li>記録はいつ書いていますか？（施術直後 / その日の最後 / 後日）</li>
+        <li>過去の記録は、次に来店された時にすぐ見られますか？</li>
+        <li>「書く時間がなくて後回し」になることはありますか？</li>
+        <li>記録に書く項目は決まっていますか？それとも自由記述ですか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>顧客カルテ / 施術記録</td></tr>
+    <tr><th>改善余地のポイント</th><td>記録が後回しになっていないか / 検索性があるか / 場所が分散していないか / 記録項目が定まっているか</td></tr>
+    <tr><th>想定される提案例</th><td>スマホで入力できる顧客カルテ（Googleフォーム / Notion / スプレッドシート） / 記録項目テンプレ化</td></tr>
+  </table>
+
+  <!-- 14 -->
+  <h3><span class="num">14</span>お礼・フォロー連絡</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>来店後のお礼メッセージとその後の声がけ</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>ご来店後、お礼のメッセージは送っていますか？タイミングはいつですか？</li>
+        <li>内容は毎回同じですか、その方ごとに変えていますか？</li>
+        <li>数日後に「その後いかがですか」とお声がけすることはありますか？</li>
+        <li>送り忘れたことはありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>過去のお礼メッセージ履歴</td></tr>
+    <tr><th>改善余地のポイント</th><td>毎回手入力していないか / フォローが感覚頼りになっていないか / 送り忘れ対策があるか</td></tr>
+    <tr><th>想定される提案例</th><td>お礼メッセージのベーステンプレ＋一言追加方式 / 3日後フォローLINEのリマインダー</td></tr>
+  </table>
+
+  <!-- 15 -->
+  <h3><span class="num">15</span>顧客管理</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>お客様情報全体の管理方法、休眠客の把握</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>お客様の情報（連絡先、過去の来店、メニュー、好み）は、どこにまとまっていますか？</li>
+        <li>同じ情報を複数の場所に書いていることはありますか？</li>
+        <li>「あの人いつ来たっけ？」と思って探すことはありますか？</li>
+        <li>3か月以上来ていないお客様は、どう把握していますか？</li>
+        <li>誕生月や記念日の方を把握する仕組みはありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>顧客リスト / 来店履歴 / 連絡先帳</td></tr>
+    <tr><th>改善余地のポイント</th><td>情報が分散していないか / 休眠客が見える化されているか / 二重入力がないか</td></tr>
+    <tr><th>想定される提案例</th><td>一元化された顧客管理表（スプレッドシート） / 最終来店からの経過日数を自動表示 / 休眠客リスト</td></tr>
+  </table>
+
+  <!-- 16 -->
+  <h3><span class="num">16</span>SNS・LINE配信への活用</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>業務中に拾える素材の活用、配信内容の使い回し</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>SNSの投稿ネタは、いつ・どこで思いついていますか？</li>
+        <li>施術中に「投稿になりそう」と思ったことを、後で覚えていますか？どこに残していますか？</li>
+        <li>LINE配信は今、どんな内容を送っていますか？頻度は？</li>
+        <li>同じ内容を毎回打ち直していませんか？</li>
+        <li>投稿用素材（写真・動画）の保存場所は決まっていますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>過去の投稿 / LINE配信履歴 / 素材フォルダ</td></tr>
+    <tr><th>改善余地のポイント</th><td>業務中の気づきが投稿に変換されているか / LINEが手入力ばかりになっていないか / 素材が探せる状態か</td></tr>
+    <tr><th>想定される提案例</th><td>投稿ネタメモ用シート / LINE配信の月間テーマ表 / 配信文テンプレ集 / ChatGPTプロンプト集 / 素材フォルダ整理</td></tr>
+  </table>
+
+  <!-- 17 -->
+  <h3><span class="num">17</span>備品・在庫・消耗品管理</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>消耗品の発注タイミングと在庫切れリスク、コスト把握</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>オイル、コットン、リネンなど、在庫切れに気づくのはどのタイミングですか？</li>
+        <li>発注は、何を、どこから、どれくらいの頻度で行っていますか？</li>
+        <li>「あ、もうない」と慌てたことはありますか？</li>
+        <li>月にどのくらい消耗品費がかかっているか、把握していますか？</li>
+        <li>発注リストはありますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>発注履歴 / 在庫メモ / 仕入れ先リスト</td></tr>
+    <tr><th>改善余地のポイント</th><td>発注が感覚頼りになっていないか / コスト把握ができているか / 在庫切れリスクがあるか</td></tr>
+    <tr><th>想定される提案例</th><td>備品発注チェックリスト / 消耗品の発注タイミング基準（残量◯◯になったら発注） / 月次コスト記録</td></tr>
+  </table>
+
+  <!-- 18 -->
+  <h3><span class="num">18</span>売上記録・会計処理</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>売上の記録方法、月次集計、確定申告に向けた準備</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>1日の売上は、どうやって記録していますか？</li>
+        <li>メニュー別・お客様別の集計はしていますか？</li>
+        <li>月の合計は、いつ・どこで確認していますか？</li>
+        <li>確定申告に向けた帳簿付けはどうしていますか？</li>
+        <li>「先月の売上いくらだったっけ？」がすぐ出てきますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>売上記録 / 会計ソフトの画面 / 月次まとめ</td></tr>
+    <tr><th>改善余地のポイント</th><td>売上記録が一元化されているか / 月次の数字を見ているか / 申告時にまとめて困らないか</td></tr>
+    <tr><th>想定される提案例</th><td>売上記録スプレッドシート（メニュー別／お客様別の自動集計） / 会計ソフト連携 / 月次まとめテンプレ</td></tr>
+  </table>
+
+  <!-- 19 -->
+  <h3><span class="num">19</span>月次の振り返り</h3>
+  <table class="phase-table">
+    <tr><th>確認したいこと</th><td>月単位で数字や状況を振り返る習慣の有無</td></tr>
+    <tr><th>具体的な質問</th><td>
+      <ol>
+        <li>月末・月初に、その月を振り返る時間はありますか？</li>
+        <li>「今月は何件・いくら・どんなメニューが多かったか」を確認していますか？</li>
+        <li>来月の目標やテーマを決めることはありますか？</li>
+        <li>振り返りの結果を、どこかにメモしていますか？</li>
+      </ol>
+    </td></tr>
+    <tr><th>確認したい資料・画面</th><td>月次メモ / 月のまとめ / 来月の予定</td></tr>
+    <tr><th>改善余地のポイント</th><td>振り返りが習慣化されているか / 次の意思決定につながっているか / 数字が手元にあるか</td></tr>
+    <tr><th>想定される提案例</th><td>月次振り返りシート（売上 / 件数 / 気づき / 来月のテーマ） / 月初15分の振り返りタイム設定</td></tr>
+  </table>
+
+  <!-- 視点チェックリスト -->
+  <h2>5. ヒアリング中の確認視点チェックリスト</h2>
+  <p class="lead">支援者側がヒアリング中に確認するチェックリスト。各工程の話を聞きながら、該当があれば☑を入れる。</p>
+  <table class="check-table">
+    <thead>
+      <tr><th>☐</th><th>視点</th><th>メモ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="chk">☐</td><td>毎回同じ説明を口頭または手入力で行っている</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>同じ情報を複数の場所に入力している</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>頭の中だけで管理している情報がある</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>記録が後回しになっている、または書いていない</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>予約・顧客情報・施術記録・売上情報が分散している</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>次回案内が感覚頼りになっている</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>既存のお客様に必要な案内が届いていない領域がある</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>SNS投稿に使える素材を業務中に取りこぼしている</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>LINEで送れる内容を毎回手入力している</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>備品・消耗品の発注が感覚頼りになっている</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>月次の数字を確認する仕組みがない</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>休眠客（3か月以上未来店）の把握ができていない</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>カウンセリングで前回情報が参照されていない</td><td class="memo"></td></tr>
+      <tr><td class="chk">☐</td><td>領収書・売上記録・帳簿が分かれている</td><td class="memo"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 売上機会の取りこぼし確認 -->
+  <h2>6. 売上機会の取りこぼし確認</h2>
+  <p class="lead">押し売りではなく、<strong>必要な案内が届いていない可能性</strong>を確認するための質問。</p>
+  <table class="phase-table">
+    <tr><th>観点</th><td>確認する質問</td></tr>
+    <tr><th>次回未予約のまま</th><td>「その場で次回予約を取らずに帰られた方は、その後どうフォローしていますか？」</td></tr>
+    <tr><th>来店間隔が空きすぎ</th><td>「本来はもう少し短い間隔で来た方が良いのに、間が空いているお客様はいませんか？」</td></tr>
+    <tr><th>別メニューが合いそう</th><td>「『この方には別メニューも合いそう』と思いつつ、お伝えしていない方はいませんか？」</td></tr>
+    <tr><th>3か月以上未来店</th><td>「最後の来店から3か月以上経っている方は、何人くらいいらっしゃいますか？把握できていますか？」</td></tr>
+    <tr><th>自然な声がけが可能</th><td>「LINEやDMで『お元気ですか』と自然に送れる関係性のお客様は、何人くらいいますか？」</td></tr>
+    <tr><th>季節ケア案内</th><td>「季節の変わり目のケア案内（夏前 / 冬前など）は、お送りしていますか？」</td></tr>
+    <tr><th>状態説明と次回予約</th><td>「施術後の状態説明が、次回予約のきっかけになっていますか？それとも別の話題ですか？」</td></tr>
+  </table>
+
+  <!-- 成果物候補 -->
+  <h2>7. ヒアリング後に提案できる成果物候補</h2>
+  <p class="lead">ヒアリング結果に応じて、以下から優先度をつけて提案する。</p>
+
+  <table class="deliverable">
+    <thead>
+      <tr><th>カテゴリ</th><th>成果物</th><th>解決する課題</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat" rowspan="4">問い合わせ・予約</td>
+        <td>初回予約DMテンプレート</td><td>毎回同じ初回案内を手入力している</td>
+      </tr>
+      <tr><td>予約確定メッセージ</td><td>予約確定文を毎回作成している</td></tr>
+      <tr><td>来店前案内文（地図 / 服装 / 食事まで網羅）</td><td>伝え漏れ / 質問返信の手間</td></tr>
+      <tr><td>前日リマインドの半自動化</td><td>リマインド送り忘れ</td></tr>
+
+      <tr>
+        <td class="cat" rowspan="3">カウンセリング・記録</td>
+        <td>初回カウンセリングシート</td><td>初回ヒアリングの抜け漏れ</td>
+      </tr>
+      <tr><td>リピーター用確認シート</td><td>前回情報の参照漏れ</td></tr>
+      <tr><td>施術後メモテンプレート（スマホ入力）</td><td>記録の後回し</td></tr>
+
+      <tr>
+        <td class="cat" rowspan="3">次回予約・フォロー</td>
+        <td>次回来店目安メッセージ</td><td>次回案内の感覚頼り</td>
+      </tr>
+      <tr><td>休眠客向けLINE文</td><td>3か月以上未来店の方への声がけ</td></tr>
+      <tr><td>季節ケア案内文（夏前 / 冬前など）</td><td>定期的な自然な声がけ</td></tr>
+
+      <tr>
+        <td class="cat" rowspan="3">SNS・LINE</td>
+        <td>投稿ネタ記録シート</td><td>業務中の気づきが消えていく</td>
+      </tr>
+      <tr><td>うたかた用プロンプト集（既存）</td><td>投稿の言葉づくりの時間</td></tr>
+      <tr><td>1件の来店から投稿に展開するプロンプト</td><td>素材から投稿化までの導線</td></tr>
+
+      <tr>
+        <td class="cat" rowspan="4">数字・管理</td>
+        <td>月次売上確認表</td><td>月次の振り返り習慣がない</td>
+      </tr>
+      <tr><td>メニュー別 / お客様別売上集計表</td><td>どこに集中しているか見えない</td></tr>
+      <tr><td>備品発注チェックリスト</td><td>在庫切れ / 発注の感覚頼り</td></tr>
+      <tr><td>顧客管理表（Googleスプレッドシート）</td><td>情報の分散・休眠客の見える化</td></tr>
+
+      <tr>
+        <td class="cat">業務全体</td>
+        <td>予約・施術・会計の業務フロー図</td><td>全体像の見える化</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 面談時の注意 -->
+  <h2>8. 面談時の注意点（支援者向け）</h2>
+  <table class="phase-table">
+    <tr><th>尋問にしない</th><td>「なぜそうしていないのですか」ではなく「いまはどうされていますか」と聞く</td></tr>
+    <tr><th>否定しない</th><td>こだわりや丁寧さを「効率化対象」として扱わない</td></tr>
+    <tr><th>探しに行かない</th><td>「できていないこと探し」にしない。事実だけ聞く</td></tr>
+    <tr><th>効率化を目的にしない</th><td>仕組み化は<strong>丁寧さを保つため</strong>の手段、という伝え方をする</td></tr>
+    <tr><th>世界観を壊さない</th><td>うたかたらしい静けさ・誠実さを損なう提案はしない</td></tr>
+    <tr><th>押し売りに転化させない</th><td>売上機会の話は「必要な案内が届いていない可能性」として扱う</td></tr>
+    <tr><th>ペースを合わせる</th><td>1工程ごとに区切り、急かさない。話が広がる工程はそこで深掘る</td></tr>
+  </table>
+
+  <!-- ヒアリング後のまとめ -->
+  <h2>9. ヒアリング終了時のまとめシート</h2>
+  <p class="lead">ヒアリング終了後、支援者がその場 or 帰宅後に整理する欄。</p>
+  <table class="check-table">
+    <thead>
+      <tr><th style="width: 200px;">整理項目</th><th>メモ欄</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>時間がかかっている業務</td><td style="height: 50px;"></td></tr>
+      <tr><td>定型化できそうな業務</td><td style="height: 50px;"></td></tr>
+      <tr><td>記録した方がよい情報</td><td style="height: 50px;"></td></tr>
+      <tr><td>売上機会が漏れていそうな箇所</td><td style="height: 50px;"></td></tr>
+      <tr><td>お客様対応の質を上げられそうな箇所</td><td style="height: 50px;"></td></tr>
+      <tr><td>AI・テンプレートが使えそうな箇所</td><td style="height: 50px;"></td></tr>
+      <tr><td>次回までに作成する成果物候補</td><td style="height: 50px;"></td></tr>
+      <tr><td>次回ヒアリングで深掘りしたい論点</td><td style="height: 50px;"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 提案整理シート -->
+  <h2>10. 提案整理シート（支援者用）</h2>
+  <p class="lead">ヒアリング結果をもとに、次回提示する提案を整理する。優先度は「効果 × 着手のしやすさ」で。</p>
+  <table class="check-table">
+    <thead>
+      <tr>
+        <th style="width: 50px;">優先度</th>
+        <th style="width: 180px;">提案する成果物</th>
+        <th>解決する課題</th>
+        <th style="width: 80px;">想定工数</th>
+        <th style="width: 80px;">着手時期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="height: 38px;">★★★</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="height: 38px;">★★★</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="height: 38px;">★★</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="height: 38px;">★★</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="height: 38px;">★</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="height: 38px;">★</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip" style="margin-top: 28px;">
+    <strong>使い方の補足:</strong>
+    本シートを印刷して訪問時に持参するか、iPadで開きながら記入するのを推奨。
+    Word貼り付け対応のため、必要に応じてセルの色味やフォントは整え直してください。
+  </div>
+
+</div>
+</body>
+</html>
